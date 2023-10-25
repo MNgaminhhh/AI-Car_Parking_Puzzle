@@ -3,6 +3,7 @@ import pygame
 from settings import Settings
 from playing_area import PlayingArea
 from button import Button
+from car import Car
 
 class MyGame:
     pygame.init()
@@ -12,13 +13,18 @@ class MyGame:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
-        #self.btn_newgame = BtnNewGame(self, self.settings.tab_x_btn, self.playing_area.rect.y, "New game")
-        #self.btn_create = BtnNewGame(self, self.settings.tab_x_btn, 
-                                    #self.playing_area.rect.y + self.settings.tab_y_btn + self.settings.btn_height, "Create")
+        self.problem_text = ['a00h', 'p01v', 'x11h']
+        self.cars = pygame.sprite.Group()
         pygame.display.set_caption("Car Parking Puzzle")
+    
+    def create_car(self):
+        for car in self.problem_text:
+            new_car = Car(self, car[0], car[3], int(car[1]), int(car[2]))
+            self.cars.add(new_car)
         
     def new_game(self):
         self.btn_init()
+        self.create_car()
 
     def draw(self):
         for i in self.btn_list:
@@ -28,6 +34,8 @@ class MyGame:
         self.screen.fill(self.settings.bg_color)
         self.playing_area.draw()
         self.draw()
+        for car in self.cars.sprites():
+            car.draw()
         pygame.display.flip()
 
     def btn_init(self):

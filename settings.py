@@ -6,8 +6,8 @@ class Settings:
         self.fps = 60
         self.bg_color = (82, 114, 242)
         #game settings:
-        self.map_height = 4
-        self.map_width = 6
+        self.map_height = 6
+        self.map_width = 8
         self.tile_size =64
         #button settings:
         self.btn_height = 40
