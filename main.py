@@ -1,9 +1,9 @@
 import sys
 import pygame
-from settings import Settings
-from playing_area import PlayingArea
-from button import Button
-from car import Car
+from src.settings import Settings
+from src.playing_area import PlayingArea
+from src.button import Button
+from src.car import Car
 
 class MyGame:
     pygame.init()
