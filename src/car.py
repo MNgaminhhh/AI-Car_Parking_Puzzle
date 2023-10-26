@@ -16,26 +16,16 @@ class Car(Sprite):
         self.start_x, self.start_y = x, y
         self.end_x, self.end_y = self.start_x, self.start_y
         self.image = pygame.image.load('assets/'+str(self.cate)+'.png')
-<<<<<<< HEAD
         length = [('a', 2), ('p', 3), ('x', 2), ('q', 3), ('o', 3), ('c', 2), ('r', 3), ('b', 2)]
         self.length = 1
         for i in length:
             if i[0] == self.cate:
                 self.length = i[1]
         self.image = pygame.transform.scale(self.image, (self.length*self.tile_size, self.tile_size))
-=======
-        self.length = [('a', 2), ('p', 3), ('x', 2), ('q', 3), ('o', 3), ('c', 2), ('r', 3), ('b', 2)]
-        size = 1
-        for i in self.length:
-            if i[0] == self.cate:
-                size = i[1]
-        self.image = pygame.transform.scale(self.image, (size*self.tile_size, self.tile_size))
->>>>>>> 7dca4bd (done move car and display game)
         if self.lines == 'v':
             self.image = pygame.transform.rotate(self.image, 90)
         self.rect = self.image.get_rect()
         self.choose = 0
-<<<<<<< HEAD
         self.rect.x = (self.start_x+1)*self.tile_size
         self.rect.y = (self.start_y+1)*self.tile_size
         self.map = game.map
@@ -53,10 +43,6 @@ class Car(Sprite):
                 self.map[u][v+i] = self.cate
             else:
                 self.map[u+i][v] = self.cate
-=======
-        self.rect.x = (self.x+1)*self.tile_size
-        self.rect.y = (self.y+1)*self.tile_size
->>>>>>> 7dca4bd (done move car and display game)
 
     def draw(self):
         self.playing_area.image.blit(self.image, self.rect)
@@ -69,7 +55,6 @@ class Car(Sprite):
         return left <= mouse_x <= right and top <= mouse_y <= bottom
     
     def move_left(self):
-<<<<<<< HEAD
         self.map[self.end_x+1][self.end_y+1] = 0
         if self.choose and self.lines == 'h':
             self.rect.x-=self.tile_size
@@ -92,23 +77,3 @@ class Car(Sprite):
         if self.choose and self.lines == 'v':
             self.rect.y += self.tile_size
             self.start_y += 1
-=======
-        if self.choose==1 and self.lines == 'h':
-            self.rect.x-=self.tile_size
-            self.x -= 1
-
-    def move_right(self):
-        if self.choose and self.lines == 'h':
-            self.rect.x += self.tile_size
-            self.x += 1
-
-    def move_up(self):
-        if self.choose and self.lines == 'v':
-            self.rect.y -= self.tile_size
-            self.y -= 1
-
-    def move_down(self):
-        if self.choose and self.lines == 'v':
-            self.rect.y += self.tile_size
-            self.y += 1
->>>>>>> 7dca4bd (done move car and display game)
