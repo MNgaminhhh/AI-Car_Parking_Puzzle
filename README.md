@@ -1,11 +1,7 @@
-# AI-Car_Parking_Puzzle
-Mai Tấn Tài <p>
-Nguyễn Minh <p>
-Nguyễn Quốc Long
 # Trò chơi “Car Parking Puzzle”
 
 ## 1. Tên đề tài
-Trò chơi “Car Parking Puzzle”
+Trò chơi <h4>“Car Parking Puzzle”</h4>
 
 ## 2. Giới thiệu sơ lượt về đề tài
 Car parking puzzle là một trò chơi thú vị và đầy thử thách mà bạn không thể bỏ lỡ nếu bạn là một người yêu thích lái xe và thử thách trong việc tìm lối ra cho xe trong một bãi đỗ. Trong trò chơi này, bạn sẽ phải đối mặt với nhiều màn chơi đa dạng, phong phú và phức tạp, yêu cầu bạn phải có kỹ năng lái xe tốt, tốc độ phản ứng nhanh nhẹ, tư duy hình học không gian và khả năng quản lý thời gian. Nhiệm vụ của bạn đơn giản là tìm lối ra cho xe một cách an toàn và chính xác vào vị trí đã được chỉ định.
