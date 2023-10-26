@@ -4,7 +4,7 @@ class Settings:
         self.screen_height = 800
         self.screen_width = 1200
         self.fps = 60
-        self.bg_color = (82, 114, 242)
+        self.bg_color = (0, 0, 0)
         #game settings:
         self.map_height = 6
         self.map_width = 8
