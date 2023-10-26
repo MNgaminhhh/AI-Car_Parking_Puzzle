@@ -40,6 +40,7 @@ class MyGame:
                     col = int(car[2])+1
                     self.map[col][n-1] = 0
                     self.map[col][n-2] = 0
+                    self.goal = (col, n-2)
                 else:
                     row = int(car[1])+1
                     self.map[m-1][row] = 0
@@ -47,6 +48,8 @@ class MyGame:
 
         
     def new_game(self):
+        for car in self.cars:
+            car.kill()
         self.btn_init()
         self.create_car()
         self.create_map()
@@ -96,28 +99,49 @@ class MyGame:
                 car.choose = 0
 
     def move_car(self, event):
-        for car in self.cars.sprites():
-            if car.choose == 1:
-                if event.key == pygame.K_RIGHT:
-                    car.move_right()
-                if event.key == pygame.K_LEFT:
-                    car.move_left()
-                if event.key == pygame.K_UP:
-                    car.move_up()
-                if event.key == pygame.K_DOWN:
-                    car.move_down()
+        if not self.check_end_game():
+            for car in self.cars.sprites():
+                if car.choose == 1:
+                    print(self.goal)
+                    if event.key == pygame.K_RIGHT:
+                        car.move_right()
+                    if event.key == pygame.K_LEFT:
+                        car.move_left()
+                    if event.key == pygame.K_UP:
+                        car.move_up()
+                    if event.key == pygame.K_DOWN:
+                        car.move_down()
 
     def check_btn_click(self, mouse_x, mouse_y):
         for btn in self.all_btn:
             if btn.click(mouse_x, mouse_y):
-                print(btn.name)
+                if btn.name == "buttonNewGame":
+                    self.new_game()
+
+    def check_end_game(self):
+        for car in self.cars:
+            if car.cate == 'x':
+                if car.y + 1 == self.goal[0] and car.x + 1 == self.goal[1]:
+                    image = pygame.Surface((200, 100))
+                    image.fill((255, 255, 255))
+                    image_rect = image.get_rect()
+                    image_rect.center = self.playing_area.image.get_rect().center
+                    font = pygame.font.SysFont('Consolas', 40)
+                    text = font.render('Win', True, (0, 0, 0))
+                    rect = text.get_rect()
+                    rect.center = (100, 50)
+                    image.blit(text, rect)
+                    self.playing_area.image.blit(image, image_rect)
+                    return True
+        return False
 
     def run_game(self):
-        while True: 
+        while True:
             self.update_screen()
             self.all_btn.update()
             self.cars.update()
             self.check_event()
+            self.check_end_game()
 
 if __name__ == '__main__':
     MG = MyGame()
