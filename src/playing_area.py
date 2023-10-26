@@ -19,13 +19,7 @@ class PlayingArea():
             for j in range(self.map_width):
                 x = j*self.tile_size
                 y = i*self.tile_size
-<<<<<<< HEAD
                 if self.map[i][j] == -1:
-=======
-                if self.map[i][j] == 0:
-                    self.tile_image = pygame.image.load('assets/map.png')
-                elif self.map[i][j] == -1:
->>>>>>> 7dca4bd (done move car and display game)
                     self.tile_image = pygame.image.load('assets/block.png')
                 else:
                     self.tile_image = pygame.image.load('assets/map.png')

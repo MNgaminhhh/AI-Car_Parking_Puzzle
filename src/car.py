@@ -8,6 +8,7 @@ class Car(Sprite):
 
     def __init__(self, game, category, lines, x, y):
         super().__init__()
+        self.game = game
         self.playing_area = game.playing_area
         self.settings = game.settings
         self.tile_size = self.settings.tile_size
@@ -55,25 +56,44 @@ class Car(Sprite):
         return left <= mouse_x <= right and top <= mouse_y <= bottom
     
     def move_left(self):
-        self.map[self.end_x+1][self.end_y+1] = 0
-        if self.choose and self.lines == 'h':
+        if self.choose and self.lines == 'h' and self.can_move('l'):
+            self.map[self.end_y+1][self.end_x+1] = 0
             self.rect.x-=self.tile_size
             self.start_x -= 1
+            self.game.expense_move()
 
     def move_right(self):
-        self.map[self.start_y+1][self.start_x+1] = 0
-        if self.choose and self.lines == 'h':
+        if self.choose and self.lines == 'h' and self.can_move('r'):
+            self.map[self.start_y+1][self.start_x+1] = 0
             self.rect.x += self.tile_size
             self.start_x += 1
+            self.game.expense_move()
 
     def move_up(self):
-        self.map[self.end_x+1][self.end_y+1] = 0
-        if self.choose and self.lines == 'v':
+        if self.choose and self.lines == 'v' and self.can_move('u'):
+            self.map[self.end_y+1][self.end_x+1] = 0
             self.rect.y -= self.tile_size
             self.start_y -= 1
+            self.game.expense_move()
 
     def move_down(self):
-        self.map[self.start_y+1][self.start_x+1] = 0
-        if self.choose and self.lines == 'v':
+        if self.choose and self.lines == 'v' and self.can_move('d'):
+            self.map[self.start_y+1][self.start_x+1] = 0
             self.rect.y += self.tile_size
             self.start_y += 1
+            self.game.expense_move()
+
+    def can_move(self, dir):
+        if dir == 'l':
+            if (self.map[self.start_y+1][self.start_x] != 0):
+                return False
+        if dir == 'r':
+            if (self.map[self.end_y+1][self.end_x+2] != 0):
+                return False
+        if dir == 'u':
+            if (self.map[self.start_y][self.start_x+1] != 0):
+                return False
+        if dir =='d':
+            if (self.map[self.end_y+2][self.end_x+1] != 0):
+                return False
+        return True
