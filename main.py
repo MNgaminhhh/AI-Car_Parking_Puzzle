@@ -15,6 +15,7 @@ class MyGame:
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problem_text = ['a00h' , 'p01v','b04v', 'x12h', 'q31v', 'c44h', 'o50v', 'r25h']
+        self.all_btn = pygame.sprite.Group()
         self.cars = pygame.sprite.Group()
         pygame.display.set_caption("Car Parking Puzzle")
     
@@ -51,8 +52,8 @@ class MyGame:
         self.create_map()
 
     def draw(self):
-        for i in self.btn_list:
-            i.blitme()
+        for btn in self.all_btn:
+            btn.blitme()
 
     def update_screen(self):
         self.screen.fill(self.settings.bg_color)
@@ -64,13 +65,14 @@ class MyGame:
 
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['assets/buttonNewGame.png', 'assets/buttonCreate.png', 'assets/buttonReset.png']
+        list_btn = ['buttonNewGame', 'buttonCreate', 'buttonReset']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
         for i, image_path in enumerate(list_btn):
-            y_position = (tab_y + height ) * i + self.playing_area.rect.y
-            self.btn_list.append(Button(self, tab_x, y_position, image_path))
+            y_position = (tab_y + height) * i + self.playing_area.rect.y
+            new_btn = Button(self, tab_x, y_position, image_path)
+            self.all_btn.add(new_btn)
 
     def check_event(self):
         for event in pygame.event.get() :
@@ -78,30 +80,43 @@ class MyGame:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                relative_mouse_x = mouse_x - self.playing_area.rect.x
-                relative_mouse_y = mouse_y - self.playing_area.rect.y
-                print(self.map)
-                for car in self.cars.sprites():
-                    if car.click(relative_mouse_x, relative_mouse_y):
-                        car.choose = 1
-                        print(car.cate)
-                    else:
-                        car.choose = 0
+                self.check_car_click(mouse_x, mouse_y)
+                self.check_btn_click(mouse_x, mouse_y)
             if event.type == pygame.KEYDOWN:
-                for car in self.cars.sprites():
-                    if car.choose == 1:
-                        if event.key == pygame.K_RIGHT:
-                            car.move_right()
-                        if event.key == pygame.K_LEFT:
-                            car.move_left()
-                        if event.key == pygame.K_UP:
-                            car.move_up()
-                        if event.key == pygame.K_DOWN:
-                            car.move_down()
+                self.move_car(event)         
+
+    def check_car_click(self, mouse_x, mouse_y):
+        relative_mouse_x = mouse_x - self.playing_area.rect.x
+        relative_mouse_y = mouse_y - self.playing_area.rect.y
+        for car in self.cars.sprites():
+            if car.click(relative_mouse_x, relative_mouse_y):
+                car.choose = 1
+                print(car.cate)
+            else:
+                car.choose = 0
+
+    def move_car(self, event):
+        for car in self.cars.sprites():
+            if car.choose == 1:
+                if event.key == pygame.K_RIGHT:
+                    car.move_right()
+                if event.key == pygame.K_LEFT:
+                    car.move_left()
+                if event.key == pygame.K_UP:
+                    car.move_up()
+                if event.key == pygame.K_DOWN:
+                    car.move_down()
+
+    def check_btn_click(self, mouse_x, mouse_y):
+        for btn in self.all_btn:
+            if btn.click(mouse_x, mouse_y):
+                print(btn.name)
 
     def run_game(self):
         while True: 
             self.update_screen()
+            self.all_btn.update()
+            self.cars.update()
             self.check_event()
 
 if __name__ == '__main__':
