@@ -68,9 +68,8 @@ class MyGame:
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
-        button_spacing = 100
         for i, image_path in enumerate(list_btn):
-            y_position = (tab_y + height + button_spacing) * i + self.playing_area.rect.y
+            y_position = (tab_y + height ) * i + self.playing_area.rect.y
             self.btn_list.append(Button(self, tab_x, y_position, image_path))
 
     def check_event(self):
