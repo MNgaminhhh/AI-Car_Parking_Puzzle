@@ -24,7 +24,7 @@ class Car(Sprite):
         if self.lines == 'v':
             self.image = pygame.transform.rotate(self.image, 90)
         self.rect = self.image.get_rect()
-        self.choose = 1
+        self.choose = 0
         self.rect.x = (self.x+1)*self.tile_size
         self.rect.y = (self.y+1)*self.tile_size
 
