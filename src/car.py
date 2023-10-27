@@ -55,21 +55,25 @@ class Car(Sprite):
         return left <= mouse_x <= right and top <= mouse_y <= bottom
     
     def move_left(self):
+        self.map[self.end_x+1][self.end_y+1] = 0
         if self.choose and self.lines == 'h':
             self.rect.x-=self.tile_size
             self.start_x -= 1
 
     def move_right(self):
+        self.map[self.start_y+1][self.start_x+1] = 0
         if self.choose and self.lines == 'h':
             self.rect.x += self.tile_size
             self.start_x += 1
 
     def move_up(self):
+        self.map[self.end_x+1][self.end_y+1] = 0
         if self.choose and self.lines == 'v':
             self.rect.y -= self.tile_size
             self.start_y -= 1
 
     def move_down(self):
+        self.map[self.start_y+1][self.start_x+1] = 0
         if self.choose and self.lines == 'v':
             self.rect.y += self.tile_size
             self.start_y += 1

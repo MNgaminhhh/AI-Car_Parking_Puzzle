@@ -84,6 +84,7 @@ class MyGame:
             if car.click(relative_mouse_x, relative_mouse_y):
                 car.choose = 1
                 print(car.start_x, car.start_y, car.end_x, car.end_y)
+                print(self.map)
             else:
                 car.choose = 0
 
