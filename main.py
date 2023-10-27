@@ -55,6 +55,62 @@ class MyGame:
         for event in pygame.event.get() :
             if event.type == pygame.QUIT:
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                self.check_car_click(mouse_x, mouse_y)
+                self.check_btn_click(mouse_x, mouse_y)
+            if event.type == pygame.KEYDOWN:
+                self.move_car(event)         
+
+    def check_car_click(self, mouse_x, mouse_y):
+        relative_mouse_x = mouse_x - self.playing_area.rect.x
+        relative_mouse_y = mouse_y - self.playing_area.rect.y
+        for car in self.cars.sprites():
+            if car.click(relative_mouse_x, relative_mouse_y):
+                car.choose = 1
+                print(car.start_x, car.start_y, car.end_x, car.end_y)
+                print(self.map)
+            else:
+                car.choose = 0
+
+    def move_car(self, event):
+        if not self.check_end_game():
+            for car in self.cars.sprites():
+                if car.choose == 1:
+                    if event.key == pygame.K_RIGHT:
+                        car.move_right()
+                    if event.key == pygame.K_LEFT:
+                        car.move_left()
+                    if event.key == pygame.K_UP:
+                        car.move_up()
+                    if event.key == pygame.K_DOWN:
+                        car.move_down()
+
+    def check_btn_click(self, mouse_x, mouse_y):
+        for btn in self.all_btn:
+            if btn.click(mouse_x, mouse_y):
+                if btn.name == "buttonNewGame":
+                    self.new_game()
+
+    def check_end_game(self):
+        for car in self.cars:
+            if car.cate == 'x':
+                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]:
+                    self.message("Win")
+                    return True
+        return False
+    
+    def message(self, text):
+        image = pygame.Surface((200, 100))
+        image.fill((255, 255, 255))
+        image_rect = image.get_rect()
+        image_rect.center = self.playing_area.image.get_rect().center
+        font = pygame.font.SysFont('Consolas', 40)
+        text = font.render('Win', True, (0, 0, 0))
+        rect = text.get_rect()
+        rect.center = (100, 50)
+        image.blit(text, rect)
+        self.playing_area.image.blit(image, image_rect)
 
     def run_game(self):
         while True: 
