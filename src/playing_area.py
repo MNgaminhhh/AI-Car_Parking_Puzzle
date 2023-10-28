@@ -26,3 +26,5 @@ class PlayingArea():
                 self.tile_image = pygame.transform.scale(self.tile_image, (self.tile_size, self.tile_size))
                 self.image.blit(self.tile_image, (x, y))
     
+    def test(self):
+        print(self.map)
