@@ -11,25 +11,41 @@ class MyGame:
     def __init__(self):
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        self.map = []
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
-        self.problem_text = ['a00h', 'p01v', 'x11h']
+        self.problem_text = ['a00h' , 'p01v','b04v', 'x12h', 'q31v', 'c44h', 'o50v', 'r25h']
+        self.all_btn = pygame.sprite.Group()
         self.cars = pygame.sprite.Group()
+        self.goal = (0, 0)
         pygame.display.set_caption("Car Parking Puzzle")
     
     def create_car(self):
         for car in self.problem_text:
             new_car = Car(self, car[0], car[3], int(car[1]), int(car[2]))
-            
             self.cars.add(new_car)
+
+    def create_map(self):
+        m = self.settings.map_height
+        n = self.settings.map_width
+        for i in range(m):
+            self.map.append([])
+            for j in range(n):
+                if i == 0 or i == m-1 or j == 0 or j == n-1:
+                    self.map[i].append(-1)
+                else:
+                    self.map[i].append(0)
         
     def new_game(self):
+        for car in self.cars:
+            car.kill()
         self.btn_init()
+        self.create_map()
         self.create_car()
 
     def draw(self):
-        for i in self.btn_list:
-            i.blitme()
+        for btn in self.all_btn:
+            btn.blitme()
 
     def update_screen(self):
         self.screen.fill(self.settings.bg_color)
@@ -41,15 +57,14 @@ class MyGame:
 
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['assets/buttonNewGame.png', 'assets/buttonCreate.png', 'assets/buttonReset.png']
+        list_btn = ['buttonNewGame', 'buttonCreate', 'buttonReset']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
-        button_spacing = 100
         for i, image_path in enumerate(list_btn):
-            y_position = (tab_y + height + button_spacing) * i + self.playing_area.rect.y
-            self.btn_list.append(Button(self, tab_x, y_position, image_path))
-
+            y_position = (tab_y + height) * i + self.playing_area.rect.y
+            new_btn = Button(self, tab_x, y_position, image_path)
+            self.all_btn.add(new_btn)
 
     def check_event(self):
         for event in pygame.event.get() :
@@ -113,9 +128,12 @@ class MyGame:
         self.playing_area.image.blit(image, image_rect)
 
     def run_game(self):
-        while True: 
+        while True:
             self.update_screen()
+            self.all_btn.update()
+            self.cars.update()
             self.check_event()
+            self.check_end_game()
 
 if __name__ == '__main__':
     MG = MyGame()

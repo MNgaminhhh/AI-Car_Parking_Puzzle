@@ -6,13 +6,13 @@ class Settings:
         self.fps = 60
         self.bg_color = (0, 0, 0)
         #game settings:
-        self.map_height = 6
-        self.map_width = 8
+        self.map_height = 8
+        self.map_width = 9
         self.tile_size =64
         #button settings:
         self.btn_height = 40
         self.btn_width = 100
         self.tab_x_btn = 50
-        self.tab_y_btn = 10
+        self.tab_y_btn = 100
         self.btn_color = (251, 236, 178)
         self.font_color = (7, 37, 65)
