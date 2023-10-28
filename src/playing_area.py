@@ -19,10 +19,10 @@ class PlayingArea():
             for j in range(self.map_width):
                 x = j*self.tile_size
                 y = i*self.tile_size
-                if self.map[i][j] == 0:
-                    self.tile_image = pygame.image.load('assets/map.png')
-                elif self.map[i][j] == -1:
+                if self.map[i][j] == -1:
                     self.tile_image = pygame.image.load('assets/block.png')
+                else:
+                    self.tile_image = pygame.image.load('assets/map.png')
                 self.tile_image = pygame.transform.scale(self.tile_image, (self.tile_size, self.tile_size))
                 self.image.blit(self.tile_image, (x, y))
     
