@@ -8,6 +8,7 @@ class Car(Sprite):
 
     def __init__(self, game, category, lines, x, y):
         super().__init__()
+        self.game = game
         self.playing_area = game.playing_area
         self.settings = game.settings
         self.tile_size = self.settings.tile_size
@@ -59,24 +60,28 @@ class Car(Sprite):
             self.map[self.end_y+1][self.end_x+1] = 0
             self.rect.x-=self.tile_size
             self.start_x -= 1
+            self.game.expense_move()
 
     def move_right(self):
         if self.choose and self.lines == 'h' and self.can_move('r'):
             self.map[self.start_y+1][self.start_x+1] = 0
             self.rect.x += self.tile_size
             self.start_x += 1
+            self.game.expense_move()
 
     def move_up(self):
         if self.choose and self.lines == 'v' and self.can_move('u'):
             self.map[self.end_y+1][self.end_x+1] = 0
             self.rect.y -= self.tile_size
             self.start_y -= 1
+            self.game.expense_move()
 
     def move_down(self):
         if self.choose and self.lines == 'v' and self.can_move('d'):
             self.map[self.start_y+1][self.start_x+1] = 0
             self.rect.y += self.tile_size
             self.start_y += 1
+            self.game.expense_move()
 
     def can_move(self, dir):
         if dir == 'l':
