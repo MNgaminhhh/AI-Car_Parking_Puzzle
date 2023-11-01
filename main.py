@@ -47,7 +47,7 @@ class MyGame:
         
     def new_game(self):
         self.step = 0
-        self.expense = Text(self, 1000, 50, 'Step: 0')
+        self.expense = Text(self, 900, 50, 'Step: 0')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
