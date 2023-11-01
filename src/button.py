@@ -5,12 +5,17 @@ pygame.font.init()
 
 class Button(Sprite):
     
-    def __init__(self, game, x, y, image_path):
+    def __init__(self, game, x, y, btn_name):
+        super().__init__()
         self.screen = game.screen
-        self.image = pygame.image.load(image_path).convert_alpha()
+        self.name = btn_name
+        self.image = pygame.image.load('assets/'+ btn_name + '.png')
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
     def blitme(self):
         self.screen.blit(self.image, (self.rect.x, self.rect.y))
+
+    def click(self, mouse_x, mouse_y):
+        return self.rect.left <= mouse_x <= self.rect.right and self.rect.top <= mouse_y <= self.rect.bottom

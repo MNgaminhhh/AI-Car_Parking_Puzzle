@@ -4,6 +4,7 @@ from src.settings import Settings
 from src.playing_area import PlayingArea
 from src.button import Button
 from src.car import Car
+from src.text import Text
 
 class MyGame:
     pygame.init()
@@ -11,7 +12,7 @@ class MyGame:
     def __init__(self):
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
-        self.map = []
+        self.init_map()
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problem_text = ['a00h' , 'p01v','b04v', 'x12h', 'q31v', 'c44h', 'o50v', 'r25h']
@@ -19,6 +20,12 @@ class MyGame:
         self.cars = pygame.sprite.Group()
         self.goal = (0, 0)
         pygame.display.set_caption("Car Parking Puzzle")
+        
+    def shuffle_problem():
+        pass
+        
+    def init_map(self):
+        self.map = [[0 for _ in range(self.settings.map_width)] for _ in range(self.settings.map_height)]
     
     def create_car(self):
         for car in self.problem_text:
@@ -28,20 +35,26 @@ class MyGame:
     def create_map(self):
         m = self.settings.map_height
         n = self.settings.map_width
+        y = 0
+        for car in self.cars:
+            if car.cate == 'x':
+                y = car.start_y
         for i in range(m):
-            self.map.append([])
             for j in range(n):
-                if i == 0 or i == m-1 or j == 0 or j == n-1:
-                    self.map[i].append(-1)
-                else:
-                    self.map[i].append(0)
+                if i == 0 or i == m-1 or j == 0 or (i != y+1 and j == n-1) or (i!= y+1 and j == n-2):
+                    self.map[i][j] = -1
+        self.goal = (y+1, n-2)
         
     def new_game(self):
+        self.step = 0
+        self.expense = Text(self, 1000, 50, 'Step: 0')
         for car in self.cars:
             car.kill()
+        for btn in self.all_btn:
+            btn.kill()
         self.btn_init()
-        self.create_map()
         self.create_car()
+        self.create_map()
 
     def draw(self):
         for btn in self.all_btn:
@@ -51,6 +64,7 @@ class MyGame:
         self.screen.fill(self.settings.bg_color)
         self.playing_area.draw()
         self.draw()
+        self.expense.update()
         for car in self.cars.sprites():
             car.draw()
         pygame.display.flip()
@@ -72,6 +86,7 @@ class MyGame:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
+                print(mouse_x, mouse_y)
                 self.check_car_click(mouse_x, mouse_y)
                 self.check_btn_click(mouse_x, mouse_y)
             if event.type == pygame.KEYDOWN:
@@ -83,8 +98,6 @@ class MyGame:
         for car in self.cars.sprites():
             if car.click(relative_mouse_x, relative_mouse_y):
                 car.choose = 1
-                print(car.start_x, car.start_y, car.end_x, car.end_y)
-                print(self.map)
             else:
                 car.choose = 0
 
@@ -105,6 +118,7 @@ class MyGame:
         for btn in self.all_btn:
             if btn.click(mouse_x, mouse_y):
                 if btn.name == "buttonNewGame":
+                    self.init_map()
                     self.new_game()
 
     def check_end_game(self):
@@ -126,6 +140,10 @@ class MyGame:
         rect.center = (100, 50)
         image.blit(text, rect)
         self.playing_area.image.blit(image, image_rect)
+        
+    def expense_move(self):
+        self.step += 1
+        self.expense.text = "Step: " + str(self.step)
 
     def run_game(self):
         while True:
