@@ -17,7 +17,7 @@ class Car(Sprite):
         self.start_x, self.start_y = x, y
         self.end_x, self.end_y = self.start_x, self.start_y
         self.image = pygame.image.load('assets/'+str(self.cate)+'.png')
-        length = [('a', 2), ('p', 3), ('x', 2), ('q', 3), ('o', 3), ('c', 2), ('r', 3), ('b', 2)]
+        length = [('a', 2), ('p', 3), ('x', 2), ('q', 3), ('o', 3), ('c', 2), ('r', 3), ('b', 2), ('d', 2), ('e', 2), ('f', 2), ('g', 2)]
         self.length = 1
         for i in length:
             if i[0] == self.cate:

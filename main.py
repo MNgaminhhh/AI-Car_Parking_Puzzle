@@ -15,7 +15,7 @@ class MyGame:
         self.init_map()
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
-        self.problem_text = ['a00h' , 'p01v','b04v', 'x12h', 'q31v', 'c44h', 'o50v', 'r25h']
+        self.problem_text = ['a20v' ,'b01h' ,'c41v', 'd02v' ,'e43h' ,'f04h' ,'g24h' ,'h54v' ,'i05h' ,'j25h' ,'o30h' ,'p31v' ,'x12h']
         self.all_btn = pygame.sprite.Group()
         self.cars = pygame.sprite.Group()
         self.goal = (0, 0)
