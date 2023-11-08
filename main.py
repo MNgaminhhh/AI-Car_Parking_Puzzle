@@ -62,7 +62,7 @@ class MyGame:
     # Buttons
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonCreate', 'buttonReset']
+        list_btn = ['buttonNewGame', 'buttonReset']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
@@ -72,15 +72,13 @@ class MyGame:
             self.all_btn.add(new_btn)
     
     #Game
-    def new_game(self):
+    def init_game(self):
         self.step = 0
         self.expense = Text(self, 1000, 50, 'Step: 0')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
             btn.kill()
-        self.load_problem()
-        self.shuffle_problem()
         self.btn_init()
         self.create_car()
         self.create_map()
@@ -136,8 +134,12 @@ class MyGame:
         for btn in self.all_btn:
             if btn.click(mouse_x, mouse_y):
                 if btn.name == "buttonNewGame":
+                    self.shuffle_problem()
                     self.init_map()
-                    self.new_game()
+                    self.init_game()
+                if btn.name == "buttonReset":
+                    self.init_map()
+                    self.init_game()
 
     def check_end_game(self):
         for car in self.cars:
@@ -173,5 +175,7 @@ class MyGame:
 
 if __name__ == '__main__':
     MG = MyGame()
-    MG.new_game()
+    MG.load_problem()
+    MG.shuffle_problem()
+    MG.init_game()
     MG.run_game()
