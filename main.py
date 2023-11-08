@@ -1,5 +1,6 @@
 import sys
 import pygame
+import random
 from src.settings import Settings
 from src.playing_area import PlayingArea
 from src.button import Button
@@ -15,22 +16,29 @@ class MyGame:
         self.init_map()
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
-        self.problem_text = ['a00h' , 'p01v','b04v', 'x12h', 'q31v', 'c44h', 'o50v', 'r25h']
+        self.problems = []
+        self.problem = []
         self.all_btn = pygame.sprite.Group()
         self.cars = pygame.sprite.Group()
         self.goal = (0, 0)
         pygame.display.set_caption("Car Parking Puzzle")
-        
-    def shuffle_problem():
-        pass
-        
+
+    # Problem
+    def shuffle_problem(self):
+        max_int = len(self.problems)
+        index = random.randint(0,max_int)
+        self.problem =  self.problems[index]
+
+    def load_problem(self):
+        with open('problem/problem_set.txt', 'r') as f:
+            lines = f.readlines()
+        for line in lines:
+            line = line.rstrip()
+            problem = line.split(" ")
+            self.problems.append(problem)
+    # Map
     def init_map(self):
         self.map = [[0 for _ in range(self.settings.map_width)] for _ in range(self.settings.map_height)]
-    
-    def create_car(self):
-        for car in self.problem_text:
-            new_car = Car(self, car[0], car[3], int(car[1]), int(car[2]))
-            self.cars.add(new_car)
 
     def create_map(self):
         m = self.settings.map_height
@@ -44,7 +52,26 @@ class MyGame:
                 if i == 0 or i == m-1 or j == 0 or (i != y+1 and j == n-1) or (i!= y+1 and j == n-2):
                     self.map[i][j] = -1
         self.goal = (y+1, n-2)
-        
+    
+    # Car
+    def create_car(self):
+        for car in self.problem:
+            new_car = Car(self, car[0], car[3], int(car[1]), int(car[2]))
+            self.cars.add(new_car)
+
+    # Buttons
+    def btn_init(self):
+        self.btn_list = []
+        list_btn = ['buttonNewGame', 'buttonCreate', 'buttonReset']
+        tab_x = self.settings.tab_x_btn
+        tab_y = self.settings.tab_y_btn
+        height = self.settings.btn_height
+        for i, image_path in enumerate(list_btn):
+            y_position = (tab_y + height) * i + self.playing_area.rect.y
+            new_btn = Button(self, tab_x, y_position, image_path)
+            self.all_btn.add(new_btn)
+    
+    #Game
     def new_game(self):
         self.step = 0
         self.expense = Text(self, 1000, 50, 'Step: 0')
@@ -52,6 +79,8 @@ class MyGame:
             car.kill()
         for btn in self.all_btn:
             btn.kill()
+        self.load_problem()
+        self.shuffle_problem()
         self.btn_init()
         self.create_car()
         self.create_map()
@@ -68,17 +97,6 @@ class MyGame:
         for car in self.cars.sprites():
             car.draw()
         pygame.display.flip()
-
-    def btn_init(self):
-        self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonCreate', 'buttonReset']
-        tab_x = self.settings.tab_x_btn
-        tab_y = self.settings.tab_y_btn
-        height = self.settings.btn_height
-        for i, image_path in enumerate(list_btn):
-            y_position = (tab_y + height) * i + self.playing_area.rect.y
-            new_btn = Button(self, tab_x, y_position, image_path)
-            self.all_btn.add(new_btn)
 
     def check_event(self):
         for event in pygame.event.get() :

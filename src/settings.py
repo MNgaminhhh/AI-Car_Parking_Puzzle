@@ -16,3 +16,5 @@ class Settings:
         self.tab_y_btn = 100
         self.btn_color = (251, 236, 178)
         self.font_color = (7, 37, 65)
+        #expense settings:
+        
