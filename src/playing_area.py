@@ -8,10 +8,15 @@ class PlayingArea():
         self.tile_size = self.settings.tile_size
         self.map_width = self.settings.map_width
         self.map_height = self.settings.map_height
-        self.image = pygame.Surface((self.tile_size*self.map_width, self.tile_size*self.map_height))
+        self.image = pygame.Surface((self.tile_size * self.map_width, self.tile_size * self.map_height))
         self.rect = self.image.get_rect()
-        self.rect.center = self.screen_rect.center
         self.map = game.map
+        top_left = (430, 93)
+        bottom_right = (1270, 684)
+        center_x = (top_left[0] + bottom_right[0]) // 2
+        center_y = (top_left[1] + bottom_right[1]) // 2
+        self.rect.center = (center_x, center_y)
+
 
     def draw(self):
         self.screen.blit(self.image, self.rect)

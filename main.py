@@ -5,6 +5,7 @@ from src.playing_area import PlayingArea
 from src.button import Button
 from src.car import Car
 from src.text import Text
+from src.combobox import ComboBox
 
 class MyGame:
     pygame.init()
@@ -13,17 +14,20 @@ class MyGame:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.init_map()
+        self.combobox = ComboBox(50, 50, 140, 32, pygame.Color('lightskyblue3'), ['bfs', 'dfs'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problem_text = ['a00h' , 'p01v','b04v', 'x12h', 'q31v', 'c44h', 'o50v', 'r25h']
         self.all_btn = pygame.sprite.Group()
         self.cars = pygame.sprite.Group()
         self.goal = (0, 0)
+        self.initialize_buttons()
+        self.in_start_menu = True
         pygame.display.set_caption("Car Parking Puzzle")
         
     def shuffle_problem():
         pass
-        
+    
     def init_map(self):
         self.map = [[0 for _ in range(self.settings.map_width)] for _ in range(self.settings.map_height)]
     
@@ -44,7 +48,18 @@ class MyGame:
                 if i == 0 or i == m-1 or j == 0 or (i != y+1 and j == n-1) or (i!= y+1 and j == n-2):
                     self.map[i][j] = -1
         self.goal = (y+1, n-2)
-        
+    def initialize_buttons(self):
+        buttons = [('buttonStart', self.settings.menu_btn_margin), ('buttonSetting', self.settings.menu_btn_margin), ('buttonQuit', self.settings.menu_btn_margin)]
+        tab_x = self.settings.menu_x_btn
+        tab_y = self.settings.menu_y_btn
+        height = self.settings.menu_btn_height
+        self.all_btn.empty()
+        for i, (btn_name, offset) in enumerate(buttons):
+            y_position = (tab_y + height) * i + offset
+            new_btn = Button(self, tab_x, y_position, btn_name, 0.65)
+            self.all_btn.add(new_btn)
+        self.start_button, self.settings_button, self.quit_button = self.all_btn.sprites()
+
     def new_game(self):
         self.step = 0
         self.expense = Text(self, 900, 50, 'Step: 0')
@@ -61,9 +76,12 @@ class MyGame:
             btn.blitme()
 
     def update_screen(self):
-        self.screen.fill(self.settings.bg_color)
+        background_image = pygame.image.load('assets/background_game.png')
+        background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
+        self.screen.blit(background_image, (0, 0))
         self.playing_area.draw()
         self.draw()
+        self.combobox.draw(self.screen)
         self.expense.update()
         for car in self.cars.sprites():
             car.draw()
@@ -82,6 +100,7 @@ class MyGame:
 
     def check_event(self):
         for event in pygame.event.get() :
+            self.combobox.handle_event(event)
             if event.type == pygame.QUIT:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -147,11 +166,33 @@ class MyGame:
 
     def run_game(self):
         while True:
-            self.update_screen()
-            self.all_btn.update()
-            self.cars.update()
-            self.check_event()
-            self.check_end_game()
+            if self.in_start_menu:
+                self.show_start_menu()
+            else:
+                self.update_screen()
+                self.all_btn.update()
+                self.cars.update()
+                self.check_event()
+                self.check_end_game()
+    def show_start_menu(self):
+        background_image = pygame.image.load('assets/background_menu.png').convert()
+        background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
+        self.screen.blit(background_image, [0, 0])
+        self.start_button.blitme()
+        self.settings_button.blitme()
+        self.quit_button.blitme()
+        pygame.display.flip() 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                if self.start_button.click(mouse_x, mouse_y):
+                    self.in_start_menu = False 
+                elif self.settings_button.click(mouse_x, mouse_y):
+                    print("Settings button clicked")
+                elif self.quit_button.click(mouse_x, mouse_y):
+                    sys.exit()
 
 if __name__ == '__main__':
     MG = MyGame()
