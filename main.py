@@ -60,17 +60,6 @@ class MyGame:
             self.all_btn.add(new_btn)
         self.start_button, self.settings_button, self.quit_button = self.all_btn.sprites()
 
-    def new_game(self):
-        self.step = 0
-        self.expense = Text(self, 900, 50, 'Step: 0')
-        for car in self.cars:
-            car.kill()
-        for btn in self.all_btn:
-            btn.kill()
-        self.btn_init()
-        self.create_car()
-        self.create_map()
-
     def draw(self):
         for btn in self.all_btn:
             btn.blitme()
