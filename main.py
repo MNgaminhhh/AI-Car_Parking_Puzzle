@@ -89,7 +89,7 @@ class MyGame:
 
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonCreate', 'buttonReset']
+        list_btn = ['buttonNewGame', 'buttonReset']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
@@ -97,6 +97,31 @@ class MyGame:
             y_position = (tab_y + height) * i + self.playing_area.rect.y
             new_btn = Button(self, tab_x, y_position, image_path)
             self.all_btn.add(new_btn)
+    
+    #Game
+    def init_game(self):
+        self.step = 0
+        self.expense = Text(self, 1000, 50, 'Step: 0')
+        for car in self.cars:
+            car.kill()
+        for btn in self.all_btn:
+            btn.kill()
+        self.btn_init()
+        self.create_car()
+        self.create_map()
+
+    def draw(self):
+        for btn in self.all_btn:
+            btn.blitme()
+
+    def update_screen(self):
+        self.screen.fill(self.settings.bg_color)
+        self.playing_area.draw()
+        self.draw()
+        self.expense.update()
+        for car in self.cars.sprites():
+            car.draw()
+        pygame.display.flip()
 
     def check_event(self):
         for event in pygame.event.get() :
@@ -137,8 +162,12 @@ class MyGame:
         for btn in self.all_btn:
             if btn.click(mouse_x, mouse_y):
                 if btn.name == "buttonNewGame":
+                    self.shuffle_problem()
                     self.init_map()
-                    self.new_game()
+                    self.init_game()
+                if btn.name == "buttonReset":
+                    self.init_map()
+                    self.init_game()
 
     def check_end_game(self):
         for car in self.cars:
@@ -196,5 +225,7 @@ class MyGame:
 
 if __name__ == '__main__':
     MG = MyGame()
-    MG.new_game()
+    MG.load_problem()
+    MG.shuffle_problem()
+    MG.init_game()
     MG.run_game()
