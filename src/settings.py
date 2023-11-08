@@ -24,3 +24,5 @@ class Settings:
         self.menu_y_btn = 65
         self.menu_btn_color = (200, 200, 200)
         self.menu_btn_margin = 240
+        #expense settings:
+        

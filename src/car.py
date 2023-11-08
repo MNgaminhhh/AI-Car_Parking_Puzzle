@@ -1,5 +1,5 @@
 #length:
-#a: 2, p: 3, x:2, q: 3, o: 3, c: 2, r:3, b: 2
+#a: 2, b: 2, c: 2, d:2, e: 2, p: 3, x:2, q: 3, o: 3, r:3
 
 import pygame
 from pygame.sprite import Sprite
