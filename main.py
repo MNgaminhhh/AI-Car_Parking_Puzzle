@@ -30,7 +30,8 @@ class MyGame:
     # Problem
     def shuffle_problem(self):
         max_int = len(self.problems)
-        index = random.randint(0,max_int)
+        index = random.randint(0,max_int-1)
+        print(index)
         self.problem =  self.problems[index]
 
     def load_problem(self):
