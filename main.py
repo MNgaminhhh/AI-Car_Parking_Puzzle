@@ -5,6 +5,7 @@ from src.settings import Settings
 from src.playing_area import PlayingArea
 from src.button import Button
 from src.car import Car
+from src.BFS import BFS
 from src.text import Text
 from src.combobox import ComboBox
 
@@ -32,7 +33,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem =  self.problems[index]
+        self.problem =  self.problems[10]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -123,11 +124,13 @@ class MyGame:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                print(mouse_x, mouse_y)
                 self.check_car_click(mouse_x, mouse_y)
                 self.check_btn_click(mouse_x, mouse_y)
             if event.type == pygame.KEYDOWN:
-                self.move_car(event)         
+                self.move_car(event)
+                if event.key == pygame.K_b:
+                    self.bfs = BFS(self)
+                    self.bfs.test()        
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
@@ -196,6 +199,7 @@ class MyGame:
                 self.cars.update()
                 self.check_event()
                 self.check_end_game()
+    
     def show_start_menu(self):
         background_image = pygame.image.load('assets/background_menu.png').convert()
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
