@@ -15,7 +15,7 @@ class MyGame:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.init_map()
-        self.combobox = ComboBox(50, 50, 140, 32, pygame.Color('lightskyblue3'), ['bfs', 'dfs'])
+        self.combobox = ComboBox(71, 430, 230, 83, 'assets/combobox.png', ['BFS', 'DFS'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -101,13 +101,13 @@ class MyGame:
         height = self.settings.btn_height
         for i, image_path in enumerate(list_btn):
             y_position = (tab_y + height) * i + self.playing_area.rect.y
-            new_btn = Button(self, tab_x, y_position, image_path)
+            new_btn = Button(self, tab_x, y_position, image_path, 0.215)
             self.all_btn.add(new_btn)
     
     #Game
     def init_game(self):
         self.step = 0
-        self.expense = Text(self, 100, 520, 'Step: 0')
+        self.expense = Text(self, 100, 720, 'Step: 0')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
