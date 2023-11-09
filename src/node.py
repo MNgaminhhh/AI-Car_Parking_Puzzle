@@ -7,7 +7,7 @@ class Node:
         self.action = action
 
     def __eq__(self, other):
-        return self.state == other.state
+        return isinstance(other, Node) and self.state == other.state
 
     def __hash__(self):
-        return hash(str(self.state))
+        return hash(self.state)
