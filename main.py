@@ -26,7 +26,6 @@ class MyGame:
         self.goal = (0, 0)
         self.initialize_buttons()
         self.in_start_menu = True
-        self.bfs = BFS(self)
         pygame.display.set_caption("Car Parking Puzzle")
 
     # Problem
@@ -34,7 +33,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem =  self.problems[index]
+        self.problem =  self.problems[10]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -125,17 +124,14 @@ class MyGame:
             if event.type == pygame.QUIT:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                for car in self.bfs.cars:
-                    print (car.cate)
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                for i in self.bfs.create_neighbors(self.map):
-                    for a in i:
-                        print(a)
-                    print()
                 self.check_car_click(mouse_x, mouse_y)
                 self.check_btn_click(mouse_x, mouse_y)
             if event.type == pygame.KEYDOWN:
-                self.move_car(event)         
+                self.move_car(event)
+                if event.key == pygame.K_b:
+                    self.bfs = BFS(self)
+                    self.bfs.test()        
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
@@ -204,6 +200,7 @@ class MyGame:
                 self.cars.update()
                 self.check_event()
                 self.check_end_game()
+    
     def show_start_menu(self):
         background_image = pygame.image.load('assets/background_menu.png').convert()
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))

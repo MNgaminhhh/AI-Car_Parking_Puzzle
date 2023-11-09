@@ -1,7 +1,8 @@
 class Node:
-    def __init__(self, state, parent, car_choose, action):
+    def __init__(self, state, parent, all_cars, car_choose, action):
         self.state = state
         self.parent = parent
+        self.all_cars = all_cars
         self.car_choose = car_choose
         self.action = action
 
