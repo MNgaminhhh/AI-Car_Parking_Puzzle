@@ -40,8 +40,8 @@ class MyGame:
         for line in lines:
             line = line.rstrip()
             problem = line.split(" ")
-            self.problems.append(problem)
-    # Map
+            self.problems.append(problem) 
+    # Map  
     def init_map(self):
         self.map = [[0 for _ in range(self.settings.map_width)] for _ in range(self.settings.map_height)]
 
