@@ -1,6 +1,7 @@
 import sys
 import pygame
 import random
+from src.BFS import BFS
 from src.settings import Settings
 from src.playing_area import PlayingArea
 from src.button import Button
@@ -25,6 +26,7 @@ class MyGame:
         self.goal = (0, 0)
         self.initialize_buttons()
         self.in_start_menu = True
+        self.bfs = BFS(self)
         pygame.display.set_caption("Car Parking Puzzle")
 
     # Problem
@@ -57,6 +59,7 @@ class MyGame:
                 if i == 0 or i == m-1 or j == 0 or (i != y+1 and j == n-1) or (i!= y+1 and j == n-2):
                     self.map[i][j] = -1
         self.goal = (y+1, n-2)
+
     def initialize_buttons(self):
         buttons = [('buttonStart', self.settings.menu_btn_margin), ('buttonSetting', self.settings.menu_btn_margin), ('buttonQuit', self.settings.menu_btn_margin)]
         tab_x = self.settings.menu_x_btn
@@ -122,8 +125,13 @@ class MyGame:
             if event.type == pygame.QUIT:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                for car in self.bfs.cars:
+                    print (car.cate)
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                print(mouse_x, mouse_y)
+                for i in self.bfs.create_neighbors(self.map):
+                    for a in i:
+                        print(a)
+                    print()
                 self.check_car_click(mouse_x, mouse_y)
                 self.check_btn_click(mouse_x, mouse_y)
             if event.type == pygame.KEYDOWN:
