@@ -1,6 +1,7 @@
 import sys
 import pygame
 import random
+from src.BFS import BFS
 from src.settings import Settings
 from src.playing_area import PlayingArea
 from src.button import Button
@@ -58,6 +59,7 @@ class MyGame:
                 if i == 0 or i == m-1 or j == 0 or (i != y+1 and j == n-1) or (i!= y+1 and j == n-2):
                     self.map[i][j] = -1
         self.goal = (y+1, n-2)
+
     def initialize_buttons(self):
         buttons = [('buttonStart', self.settings.menu_btn_margin), ('buttonSetting', self.settings.menu_btn_margin), ('buttonQuit', self.settings.menu_btn_margin)]
         tab_x = self.settings.menu_x_btn
