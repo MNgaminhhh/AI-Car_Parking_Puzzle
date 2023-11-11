@@ -89,7 +89,7 @@ class BFS:
         queue = deque()
         queue.append(start_node)
 
-        for i in range(100):
+        while queue:
             current_node = queue.popleft()
             key = self.convert_to_key(current_node.state)
             visited.append(key)
@@ -98,6 +98,7 @@ class BFS:
 
                 key = self.convert_to_key(neighbor_node.state)
                 if key not in visited:
+                    print(key)
                     for car in neighbor_node.all_cars:
                         if car["cate"] == 'x':
                             if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]:
@@ -109,8 +110,47 @@ class BFS:
                     queue.append(neighbor_node)
         return None
     
+    def solve_dfs(self):
+        self.init_cars()
+        visited = []
+        start_node = Node(self.quizz, None, self.cars, None, None)
+
+        queue = deque()
+        queue.append(start_node)
+        init = 1
+        max_dept = 10
+        while queue:
+            if init:
+                current_node = queue.popleft()
+            else:
+                if max_dept > 0:
+                    current_node = queue.pop()
+                    max_dept -= 1
+                else:
+                    current_node = queue.popleft()
+                    max_dept = 10
+            key = self.convert_to_key(current_node.state)
+            visited.append(key)
+            for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
+                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3])
+
+                key = self.convert_to_key(neighbor_node.state)
+                if key not in visited:
+                    print(key)
+                    for car in neighbor_node.all_cars:
+                        if car["cate"] == 'x':
+                            if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]:
+                                path = [neighbor_node]
+                                while neighbor_node.parent is not None:
+                                    path.insert(0, neighbor_node.parent)
+                                    neighbor_node = neighbor_node.parent
+                                return path
+                    queue.append(neighbor_node)
+        return None
+            
+    
     def test(self):
-        path = self.solve()
+        path = self.solve_dfs()
         if path:
             for i, node in enumerate(path):
                 print(f"Step {i}:")

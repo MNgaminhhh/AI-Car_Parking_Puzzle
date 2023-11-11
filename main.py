@@ -33,7 +33,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem =  self.problems[0]
+        self.problem =  self.problems[index]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -57,7 +57,7 @@ class MyGame:
             for j in range(n):
                 if i == 0 or i == m-1 or j == 0 or (i != y+1 and j == n-1) or (i!= y+1 and j == n-2):
                     self.map[i][j] = -1
-        self.goal = (y+1, n-2)
+        self.goal = (y+1, n-4)
 
     def initialize_buttons(self):
         buttons = [('buttonStart', self.settings.menu_btn_margin), ('buttonSetting', self.settings.menu_btn_margin), ('buttonQuit', self.settings.menu_btn_margin)]
