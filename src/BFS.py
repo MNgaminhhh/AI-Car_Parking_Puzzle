@@ -42,8 +42,6 @@ class BFS:
     
     def create_neighbors(self, parent, cars):
         neighbors = []
-        with open("test.txt", 'a') as f:
-            f.writelines("Parent: "+self.convert_to_key(parent))
         print("parent: ",self.convert_to_key(parent));
         for index in range(len(cars)):
             if cars[index]["lines"] == 'h':
@@ -100,8 +98,6 @@ class BFS:
 
                 key = self.convert_to_key(neighbor_node.state)
                 if key not in visited:
-                    with open("test.txt", 'a') as f:
-                        f.write(key+"\n")
                     for car in neighbor_node.all_cars:
                         if car["cate"] == 'x':
                             if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]:
