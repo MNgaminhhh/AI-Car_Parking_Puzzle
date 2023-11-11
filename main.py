@@ -34,7 +34,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem =  self.problems[0]
+        self.problem =  self.problems[3]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
