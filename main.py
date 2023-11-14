@@ -63,7 +63,7 @@ class MyGame:
     def initialize_buttons(self):
         buttons = [('buttonStart', self.settings.menu_btn_margin), ('buttonSetting', self.settings.menu_btn_margin), ('buttonQuit', self.settings.menu_btn_margin)]
         tab_x = self.settings.menu_x_btn
-        tab_y = self.settings.menu_y_btn
+        tab_y = self.settings.menu_y_btn2
         height = self.settings.menu_btn_height
         self.all_btn.empty()
         for i, (btn_name, offset) in enumerate(buttons):
@@ -170,7 +170,7 @@ class MyGame:
     def check_end_game(self):
         for car in self.cars:
             if car.cate == 'x':
-                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]:
+                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]-2:
                     self.message("Win")
                     return True
         return False
