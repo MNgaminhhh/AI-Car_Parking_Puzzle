@@ -17,7 +17,7 @@ class MyGame:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.init_map()
-        self.combobox = ComboBox(71, 430, 230, 83, 'assets/combobox.png', ['BFS', 'DFS'])
+        self.combobox = ComboBox(71, 630, 230, 83, 'assets/combobox.png', ['BFS', 'DFS'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -34,7 +34,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem =  self.problems[3]
+        self.problem =  self.problems[2]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -63,7 +63,7 @@ class MyGame:
     def initialize_buttons(self):
         buttons = [('buttonStart', self.settings.menu_btn_margin), ('buttonSetting', self.settings.menu_btn_margin), ('buttonQuit', self.settings.menu_btn_margin)]
         tab_x = self.settings.menu_x_btn
-        tab_y = self.settings.menu_y_btn2
+        tab_y = self.settings.menu_y_btn
         height = self.settings.menu_btn_height
         self.all_btn.empty()
         for i, (btn_name, offset) in enumerate(buttons):
@@ -98,12 +98,13 @@ class MyGame:
     # Buttons
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonReset']
+        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
+        padding = self.settings.btn_padding_top
         for i, image_path in enumerate(list_btn):
-            y_position = (tab_y + height) * i + self.playing_area.rect.y
+            y_position = (tab_y + height) * i + padding
             new_btn = Button(self, tab_x, y_position, image_path, 0.215)
             self.all_btn.add(new_btn)
     
@@ -166,6 +167,14 @@ class MyGame:
                 if btn.name == "buttonReset":
                     self.init_map()
                     self.init_game()
+                if btn.name == "buttonStart2":
+                    selected_algorithm = self.combobox.get_selected_option()
+                    if selected_algorithm == 'BFS':
+                        bfs = BFS(self)
+                        bfs.test()
+                    elif selected_algorithm == 'DFS':
+                        # Add logic to execute DFS
+                        pass    
 
     def check_end_game(self):
         for car in self.cars:

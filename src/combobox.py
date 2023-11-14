@@ -35,9 +35,9 @@ class ComboBox:
                         break
         if event.type == pygame.KEYDOWN:
             if self.active:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_LEFT:
                     self.selected_option_index = max(0, self.selected_option_index - 1)
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_RIGHT:
                     self.selected_option_index = min(len(self.options) - 1, self.selected_option_index + 1)
                 self.txt_surface = self.font.render(self.options[self.selected_option_index], True, (0, 0, 0))
 
@@ -48,11 +48,5 @@ class ComboBox:
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
         transparent_color = (200, 200, 200, 100)
-        if self.is_open:
-            for i, option in enumerate(self.options):
-                option_rect = pygame.Rect(self.rect.x, self.rect.y + (i + 1) * self.rect.height, self.rect.width, self.rect.height)
-                transparent_surface = pygame.Surface((option_rect.width, option_rect.height), pygame.SRCALPHA)
-                transparent_surface.fill(transparent_color)
-                screen.blit(transparent_surface, option_rect)
-                option_surface = pygame.font.Font(None, 32).render(option, True, (0, 0, 0))
-                screen.blit(option_surface, (option_rect.x + 5, option_rect.y + 5))
+    def get_selected_option(self):
+        return self.options[self.selected_option_index]

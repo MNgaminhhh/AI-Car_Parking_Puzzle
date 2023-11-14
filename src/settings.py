@@ -14,9 +14,10 @@ class Settings:
         self.btn_height = 40
         self.btn_width = 100
         self.tab_x_btn = 70
-        self.tab_y_btn = 100
+        self.tab_y_btn = 50
         self.btn_color = (251, 236, 178)
         self.font_color = (7, 37, 65)
+        self.btn_padding_top = 55
         #menu settings:
         self.menu_btn_height = 40
         self.menu_btn_width = 100

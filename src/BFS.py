@@ -10,7 +10,13 @@ class BFS:
     def init_cars(self):
         self.cars = []
         for car in self.game.cars:
-            self.cars.append(car.__dict__)
+            cate = car.cate
+            lines = car.lines
+            start_x = car.start_x
+            start_y = car.start_y
+            end_x = car.end_x
+            end_y = car.end_y
+            self.cars.append({"cate": cate, "lines": lines, "start_x": start_x, "start_y": start_y, "end_x": end_x, "end_y": end_y})
 
     def can_move(self, quizz, car, dir):
         if dir == 'l':
@@ -33,21 +39,24 @@ class BFS:
         key = key.replace('-1', '')
         return key
 
+    
     def create_neighbors(self, parent, cars):
         neighbors = []
+        print("parent: ",self.convert_to_key(parent));
         for index in range(len(cars)):
             if cars[index]["lines"] == 'h':
                 if self.can_move(parent, cars[index], 'l'):
-                    new_state = [row[:] for row in parent]
-                    new_car = cars[:]
+                    new_state = copy.deepcopy(parent)
+                    new_car = copy.deepcopy(cars)
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]] = new_car[index]["cate"]
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+1] = 0
+                    new_car[index]
                     new_car[index]["start_x"] -= 1
                     new_car[index]["end_x"] -=1
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
                 if self.can_move(parent, cars[index], 'r'):
-                    new_state = [row[:] for row in parent]
-                    new_car = cars[:]
+                    new_state = copy.deepcopy(parent)
+                    new_car = copy.deepcopy(cars)
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+2] = new_car[index]["cate"]
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_x"] += 1
@@ -55,24 +64,23 @@ class BFS:
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'r'))
             if cars[index]["lines"] == 'v':
                 if self.can_move(parent, cars[index], 'u'):
-                    new_state = [row[:] for row in parent]
-                    new_car = cars[:]
+                    new_state = copy.deepcopy(parent)
+                    new_car = copy.deepcopy(cars)
                     new_state[new_car[index]["start_y"]][new_car[index]["start_x"]+1] = new_car[index]["cate"]
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+1] = 0
                     new_car[index]["start_y"] -= 1
                     new_car[index]["end_y"] -=1
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'u'))
                 if self.can_move(parent, cars[index], 'd'):
-                    new_state = [row[:] for row in parent]
-                    new_car = cars[:]
+                    new_state = copy.deepcopy(parent)
+                    new_car = copy.deepcopy(cars)
                     new_state[new_car[index]["end_y"]+2][new_car[index]["end_x"]+1] = new_car[index]["cate"]
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_y"] += 1
                     new_car[index]["end_y"] +=1
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'd'))
         return neighbors
-
-
+    
     def solve(self):
         self.init_cars()
         visited = []
@@ -109,3 +117,5 @@ class BFS:
                 print(node.car_choose, node.action)
         else:
             print("No solution found.")
+
+       
