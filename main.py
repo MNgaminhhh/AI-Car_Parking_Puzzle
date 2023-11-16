@@ -1,6 +1,7 @@
 import sys
 import pygame
 import random
+from src.IDS import IDS
 from src.BFS import BFS
 from src.settings import Settings
 from src.playing_area import PlayingArea
@@ -8,7 +9,7 @@ from src.button import Button
 from src.car import Car
 from src.text import Text
 from src.combobox import ComboBox
-
+from src.node import Node
 class MyGame:
     pygame.init()
 
@@ -16,7 +17,7 @@ class MyGame:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.init_map()
-        self.combobox = ComboBox(50, 50, 140, 32, pygame.Color('lightskyblue3'), ['bfs', 'dfs'])
+        self.combobox = ComboBox(71, 630, 230, 83, 'assets/combobox.png', ['BFS', 'DFS', 'IDS'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -97,19 +98,20 @@ class MyGame:
     # Buttons
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonReset']
+        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
+        padding = self.settings.btn_padding_top
         for i, image_path in enumerate(list_btn):
-            y_position = (tab_y + height) * i + self.playing_area.rect.y
-            new_btn = Button(self, tab_x, y_position, image_path)
+            y_position = (tab_y + height) * i + padding
+            new_btn = Button(self, tab_x, y_position, image_path, 0.215)
             self.all_btn.add(new_btn)
     
     #Game
     def init_game(self):
         self.step = 0
-        self.expense = Text(self, 100, 520, 'Step: 0')
+        self.expense = Text(self, 100, 720, 'Step: 0')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
@@ -165,11 +167,105 @@ class MyGame:
                 if btn.name == "buttonReset":
                     self.init_map()
                     self.init_game()
-
+                if btn.name == "buttonStart2":
+                    selected_algorithm = self.combobox.get_selected_option()
+                    if selected_algorithm == 'BFS':
+                        print('BFS')
+                        self.runBFSsolver()
+                    if selected_algorithm == 'IDS':
+                        print('IDS')
+                        self.runBFSsolver()
+                    elif selected_algorithm == 'DFS':
+                        print('DFS')
+                        pass 
+    def runBFSsolver(self):
+        bfs = BFS(self)
+        path = bfs.solve()
+        if path:
+            for i, node in enumerate(path):
+                print(f"step {i}:")
+                print("car:", node.car_choose)
+                print("action:", node.action)
+                if node.car_choose is not None:
+                    chosen_car = None
+                    for car in self.cars.sprites():
+                        if car.cate == node.car_choose:
+                            chosen_car = car
+                            break
+                    if chosen_car:
+                        if chosen_car.lines == 'h':
+                            if node.action == 'l':
+                                print("Moving Left")
+                                chosen_car.choose = 1
+                                chosen_car.move_left()
+                               
+                            elif node.action == 'r':
+                                print("Moving Right")
+                                chosen_car.choose = 1
+                                chosen_car.move_right()
+                                
+                        elif chosen_car.lines == 'v':
+                            if node.action == 'u':
+                                print("Moving Up")
+                                chosen_car.choose = 1
+                                chosen_car.move_up()
+                                
+                            elif node.action == 'd':
+                                print("Moving Down")
+                                chosen_car.choose = 1
+                                chosen_car.move_down()
+                        self.update_screen()
+                        pygame.time.wait(100) 
+                        self.update_screen()
+                print("---------------")
+        else:
+            print("Không tìm thấy đường đi")
+    def runBFSsolver(self):
+        ids = IDS(self)
+        path = ids.solve()
+        if path:
+            for i, node in enumerate(path):
+                print(f"step {i}:")
+                print("car:", node.car_choose)
+                print("action:", node.action)
+                if node.car_choose is not None:
+                    chosen_car = None
+                    for car in self.cars.sprites():
+                        if car.cate == node.car_choose:
+                            chosen_car = car
+                            break
+                    if chosen_car:
+                        if chosen_car.lines == 'h':
+                            if node.action == 'l':
+                                print("Moving Left")
+                                chosen_car.choose = 1
+                                chosen_car.move_left()
+                               
+                            elif node.action == 'r':
+                                print("Moving Right")
+                                chosen_car.choose = 1
+                                chosen_car.move_right()
+                                
+                        elif chosen_car.lines == 'v':
+                            if node.action == 'u':
+                                print("Moving Up")
+                                chosen_car.choose = 1
+                                chosen_car.move_up()
+                                
+                            elif node.action == 'd':
+                                print("Moving Down")
+                                chosen_car.choose = 1
+                                chosen_car.move_down()
+                        self.update_screen()
+                        pygame.time.wait(100) 
+                        self.update_screen()
+                print("---------------")
+        else:
+            print("Không tìm thấy đường đi")
     def check_end_game(self):
         for car in self.cars:
             if car.cate == 'x':
-                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]:
+                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]-2:
                     self.message("Win")
                     return True
         return False

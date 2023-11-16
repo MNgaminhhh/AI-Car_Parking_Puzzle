@@ -6,6 +6,7 @@ class Node:
         self.car_choose = car_choose
         self.action = action
 
+
     def __eq__(self, other):
         return isinstance(other, Node) and self.state == other.state
 

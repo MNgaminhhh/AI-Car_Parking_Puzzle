@@ -107,10 +107,10 @@ class IDS:
 
                 key = self.convert_to_key(neighbor_node.state)
                 if key not in visited:
-                    print(key)
+                    # print(key)
                     for car in neighbor_node.all_cars:
                         if car["cate"] == 'x':
-                            if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]:
+                            if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]-2:
                                 path = [neighbor_node]
                                 while neighbor_node.parent is not None:
                                     path.insert(0, neighbor_node.parent)
@@ -118,15 +118,5 @@ class IDS:
                                 return path
                     queue.append(neighbor_node)
         return None
-            
-    
-    def test(self):
-        path = self.solve_dfs()
-        if path:
-            for i, node in enumerate(path):
-                print(f"Step {i}:")
-                print(node.car_choose, node.action)
-        else:
-            print("No solution found.")
 
        
