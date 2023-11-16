@@ -42,7 +42,7 @@ class IDS:
     
     def create_neighbors(self, parent, cars):
         neighbors = []
-        # print("parent: ",self.convert_to_key(parent));
+        print("parent: ",self.convert_to_key(parent));
         for index in range(len(cars)):
             if cars[index]["lines"] == 'h':
                 if self.can_move(parent, cars[index], 'l'):
