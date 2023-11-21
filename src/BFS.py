@@ -84,7 +84,7 @@ class BFS:
     def solve(self):
         self.init_cars()
         visited = []
-        start_node = Node(self.quizz, None, self.cars, None, None)
+        start_node = Node(self.quizz, None, self.cars, None, None, None)
 
         queue = deque()
         queue.append(start_node)
@@ -94,7 +94,7 @@ class BFS:
             key = self.convert_to_key(current_node.state)
             visited.append(key)
             for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
-                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3])
+                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], Node)
 
                 key = self.convert_to_key(neighbor_node.state)
                 if key not in visited:
