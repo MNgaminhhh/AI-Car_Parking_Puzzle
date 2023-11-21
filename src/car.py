@@ -81,7 +81,6 @@ class Car(Sprite):
             self.map[self.start_y+1][self.start_x+1] = 0
             self.rect.y += self.tile_size
             self.start_y += 1
-            print("acc")
             self.game.expense_move()
 
     def can_move(self, dir):

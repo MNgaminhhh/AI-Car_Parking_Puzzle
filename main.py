@@ -1,6 +1,7 @@
 import sys
 import pygame
 import random
+from src.IDS import IDS
 from src.BFS import BFS
 from src.UCS import UCS
 #from src.Greedy import Greedy
@@ -18,7 +19,7 @@ class MyGame:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.init_map()
-        self.combobox = ComboBox(71, 630, 230, 83, 'assets/combobox.png', ['BFS', 'DFS'])
+        self.combobox = ComboBox(71, 630, 230, 83, 'assets/combobox.png', ['BFS', 'DFS', 'IDS'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -35,7 +36,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem =  self.problems[2]
+        self.problem =  self.problems[index]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -193,9 +194,9 @@ class MyGame:
         path = bfs.solve()
         if path:
             for i, node in enumerate(path):
-                print(f"Step {i}:")
-                print("Selected Car:", node.car_choose)
-                print("Action:", node.action)
+                print(f"step {i}:")
+                print("car:", node.car_choose)
+                print("action:", node.action)
                 if node.car_choose is not None:
                     chosen_car = None
                     for car in self.cars.sprites():
