@@ -84,7 +84,7 @@ class IDS:
     def solve(self):
         self.init_cars()
         visited = []
-        start_node = Node(self.quizz, None, self.cars, None, None)
+        start_node = Node(self.quizz, None, self.cars, None, None, None)
 
         queue = deque()
         queue.append(start_node)

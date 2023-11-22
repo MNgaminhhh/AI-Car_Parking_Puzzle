@@ -13,3 +13,9 @@ class Node:
 
     def __hash__(self):
         return hash(self.state)
+
+#so sánh chi phí
+    def __lt__(self, other):
+        if self.cost == other.cost:
+            return str(self.state) < str(other.state)
+        return self.cost < other.cost

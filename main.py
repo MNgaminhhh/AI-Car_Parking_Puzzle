@@ -4,7 +4,7 @@ import random
 from src.IDS import IDS
 from src.BFS import BFS
 from src.UCS import UCS
-#from src.Greedy import Greedy
+from src.GREEDY import GREEDY
 from src.settings import Settings
 from src.playing_area import PlayingArea
 from src.button import Button
@@ -135,10 +135,13 @@ class MyGame:
                 self.move_car(event)
                 if event.key == pygame.K_b:
                     self.bfs = BFS(self)
-                    self.bfs.test()      
+                    self.bfs.solve()      
                 if event.key == pygame.K_u:
                     self.ucs = UCS(self)
                     self.ucs.test()  
+                if event.key == pygame.K_g:
+                    self.greedy = GREEDY(self)
+                    self.greedy.test()
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
@@ -174,21 +177,13 @@ class MyGame:
                     self.init_game()
                 if btn.name == "buttonStart2":
                     selected_algorithm = self.combobox.get_selected_option()
-                    #if selected_algorithm == 'BFS':
+                    # if selected_algorithm == 'BFS':
                     #    self.run_bfs_solver()   
-                    #   self.run_ucs_solver()
-                    #if selected_algorithm == 'BFS':
-                    #    self.run_bfs_solver()
-                    if selected_algorithm == 'UCS':
-                        self.run_ucs_solver()
-
-                    #if selected_algorithm == 'BFS':
-                    #    self.run_bfs_solver()
-                  #  elif selected_algorithm == 'DFS':
-                        # Add logic to execute DFS
-                  #      pass  
-
-                     
+                    # if selected_algorithm == 'UCS':
+                    #    self.run_ucs_solver()
+                    if selected_algorithm == 'GREEDY':
+                        self.run_greedy_solver()
+          
     def run_bfs_solver(self):
         bfs = BFS(self)
         path = bfs.solve()
@@ -275,9 +270,9 @@ class MyGame:
                 print("---------------")
         else:
             print("No solution found.")
-    '''
+    
     def run_greedy_solver(self):
-        greedy = Greedy(self)
+        greedy = GREEDY(self)
         path = greedy.solve()
         if path:
             for i, node in enumerate(path):
@@ -318,7 +313,6 @@ class MyGame:
                 print("---------------")
         else:
             print("No solution found.")    
-    '''
 
     def check_end_game(self):
         for car in self.cars:
