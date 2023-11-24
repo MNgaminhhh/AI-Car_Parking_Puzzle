@@ -84,7 +84,7 @@ class IDS:
     def solve(self):
         self.init_cars()
         visited = []
-        start_node = Node(self.quizz, None, self.cars, None, None)
+        start_node = Node(self.quizz, None, self.cars, None, None, None)
 
         queue = deque()
         queue.append(start_node)
@@ -118,5 +118,15 @@ class IDS:
                                 return path
                     queue.append(neighbor_node)
         return None
-
+            
+'''
+    def test(self):
+        path = self.solve_dfs()
+        if path:
+            for i, node in enumerate(path):
+                print(f"Step {i}:")
+                print(node.car_choose, node.action)
+        else:
+            print("No solution found.")
+'''
        
