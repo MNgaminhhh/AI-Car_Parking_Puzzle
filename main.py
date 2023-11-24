@@ -133,7 +133,7 @@ class MyGame:
                 self.move_car(event)
                 if event.key == pygame.K_b:
                     self.bfs = BFS(self)
-                    self.bfs.test()        
+                    self.bfs.solve()        
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
@@ -220,7 +220,8 @@ class MyGame:
                 print("---------------")
         else:
             print("Không tìm thấy đường đi")
-    def runBFSsolver(self):
+    
+    def runIDSsolver(self):
         ids = IDS(self)
         path = ids.solve()
         if path:
@@ -265,7 +266,7 @@ class MyGame:
     def check_end_game(self):
         for car in self.cars:
             if car.cate == 'x':
-                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]-2:
+                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]:
                     self.message("Win")
                     return True
         return False

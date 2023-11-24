@@ -76,6 +76,7 @@ class BFS:
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'd'))
         return neighbors
     def solve(self):
+        print('helloooooooooooooo')
         self.init_cars()
         visited = []
         start_node = Node(self.quizz, None, self.cars, None, None)
@@ -92,7 +93,8 @@ class BFS:
                     print(key)
                     for car in neighbor_node.all_cars:
                         if car["cate"] == 'x':
-                            if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]-2:
+                            print(car["start_y"], car["start_x"])
+                            if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]:
                                 path = [neighbor_node]
                                 while neighbor_node.parent is not None:
                                     path.insert(0, neighbor_node.parent)
@@ -100,3 +102,10 @@ class BFS:
                                 return path
                     queue.append(neighbor_node)
         return None
+    
+    def test(self):
+        print(self.goal)
+        self.init_cars()
+        for car in self.cars:
+            if car["cate"] == 'x':
+                print(car["start_x"], car["start_y"])
