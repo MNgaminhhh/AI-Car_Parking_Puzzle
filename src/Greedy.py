@@ -52,7 +52,7 @@ class GREEDY:
 
     def create_neighbors(self, parent, cars, cost): #cost
         neighbors = []
-        print("parent: ",self.convert_to_key(parent));
+        print("parent: ",self.convert_to_key(parent))
         for index in range(len(cars)):
             if cars[index]["lines"] == 'h':
                 if self.can_move(parent, cars[index], 'l'):
@@ -120,7 +120,7 @@ class GREEDY:
                 if key not in visited:
                     for car in neighbor_node.all_cars:
                         if car["cate"] == 'x':
-                            if car["start_y"] + 1 == self.goal[0] and car["start_x"] + 1 == self.goal[1]-2: #-2
+                            if car["start_y"] + 1 == self.goal[0] and car["start_x"] + 1 == self.goal[1]: #-2
                                 path = [neighbor_node]
                                 while neighbor_node.parent is not None:
                                     path.insert(0, neighbor_node.parent)

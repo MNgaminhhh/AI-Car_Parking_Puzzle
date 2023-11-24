@@ -193,7 +193,6 @@ class MyGame:
         ids = IDS(self)
         path = ids.solve()
         self.AI_playing(path)
-    
 
     def run_ucs_solver(self):
         ucs = UCS(self)
@@ -203,45 +202,7 @@ class MyGame:
     def run_greedy_solver(self):
         greedy = GREEDY(self)
         path = greedy.solve()
-        if path:
-            for i, node in enumerate(path):
-                print(f"Step {i}:")
-                print("Selected Car:", node.car_choose)
-                print("Action:", node.action)
-                if node.car_choose is not None:
-                    chosen_car = None
-                    for car in self.cars:
-                        if car.cate == node.car_choose:
-                            chosen_car = car
-                            break
-                    if chosen_car:
-                        if chosen_car.lines == 'h':
-                            if node.action == 'l':
-                                print("Moving Left")
-                                chosen_car.choose = 1
-                                chosen_car.move_left()
-                            
-                            elif node.action == 'r':
-                                print("Moving Right")
-                                chosen_car.choose = 1
-                                chosen_car.move_right()
-                                
-                        elif chosen_car.lines == 'v':
-                            if node.action == 'u':
-                                print("Moving Up")
-                                chosen_car.choose = 1
-                                chosen_car.move_up()
-                                
-                            elif node.action == 'd':
-                                print("Moving Down")
-                                chosen_car.choose = 1
-                                chosen_car.move_down()
-                        self.update_screen()
-                        pygame.time.wait(100) 
-                        self.update_screen()
-                print("---------------")
-        else:
-            print("No solution found.")   
+        self.AI_playing(path)
 
     def AI_playing(self, path):
         if path:
