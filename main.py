@@ -5,6 +5,7 @@ from src.IDS import IDS
 from src.BFS import BFS
 from src.UCS import UCS
 from src.Greedy import GREEDY
+from src.Astar import ASTAR
 from src.Hill_climbing import Hill_climbing
 from src.settings import Settings
 from src.playing_area import PlayingArea
@@ -145,6 +146,8 @@ class MyGame:
                     self.greedy.test()
                 if event.key == pygame.K_h:
                     self.run_hillclimbing_solver()
+                if event.key == pygame.K_j:
+                    self.run_astar_solver()
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
@@ -206,6 +209,10 @@ class MyGame:
         greedy = GREEDY(self)
         path = greedy.solve()
         self.AI_playing(path)
+    def run_astar_solver(self):
+        astar = ASTAR(self)
+        path = astar.solve()
+        self.AI_playing(path)
 
     def run_hillclimbing_solver(self):
         hill = Hill_climbing(self)
@@ -249,7 +256,7 @@ class MyGame:
                                 chosen_car.choose = 1
                                 chosen_car.move_down()
                         self.update_screen()
-                        pygame.time.wait(100) 
+                        pygame.time.wait(1000) 
                         self.update_screen()
                 print("---------------")
         else:
