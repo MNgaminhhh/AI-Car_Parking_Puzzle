@@ -1,5 +1,4 @@
 from src.node import Node
-from collections import deque
 import copy
 
 class Hill_climbing:
