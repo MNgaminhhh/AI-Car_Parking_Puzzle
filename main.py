@@ -4,7 +4,8 @@ import random
 from src.IDS import IDS
 from src.BFS import BFS
 from src.UCS import UCS
-from src.GREEDY import GREEDY
+from src.Greedy import GREEDY
+from src.Hill_climbing import Hill_climbing
 from src.settings import Settings
 from src.playing_area import PlayingArea
 from src.button import Button
@@ -60,7 +61,7 @@ class MyGame:
             for j in range(n):
                 if i == 0 or i == m-1 or j == 0 or (i != y+1 and j == n-1) or (i!= y+1 and j == n-2):
                     self.map[i][j] = -1
-        self.goal = (y+1, n-2)
+        self.goal = (y+1, n-4)
 
     def initialize_buttons(self):
         buttons = [('buttonStart', self.settings.menu_btn_margin), ('buttonSetting', self.settings.menu_btn_margin), ('buttonQuit', self.settings.menu_btn_margin)]
@@ -142,6 +143,8 @@ class MyGame:
                 if event.key == pygame.K_g:
                     self.greedy = GREEDY(self)
                     self.greedy.test()
+                if event.key == pygame.K_h:
+                    self.run_hillclimbing_solver()
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
@@ -177,103 +180,41 @@ class MyGame:
                     self.init_game()
                 if btn.name == "buttonStart2":
                     selected_algorithm = self.combobox.get_selected_option()
-                    # if selected_algorithm == 'BFS':
+                    #if selected_algorithm == 'BFS':
                     #    self.run_bfs_solver()   
-                    #  if selected_algorithm == 'UCS':
-                    #     self.run_ucs_solver()
+                    # if selected_algorithm == 'UCS':
+                    #    self.run_ucs_solver()
                     if selected_algorithm == 'GREEDY':
                        self.run_greedy_solver()
           
     def run_bfs_solver(self):
         bfs = BFS(self)
         path = bfs.solve()
-        if path:
-            for i, node in enumerate(path):
-                print(f"step {i}:")
-                print("car:", node.car_choose)
-                print("action:", node.action)
-                if node.car_choose is not None:
-                    chosen_car = None
-                    for car in self.cars.sprites():
-                        if car.cate == node.car_choose:
-                            chosen_car = car
-                            break
-                    if chosen_car:
-                        if chosen_car.lines == 'h':
-                            if node.action == 'l':
-                                print("Moving Left")
-                                chosen_car.choose = 1
-                                chosen_car.move_left()
-                               
-                            elif node.action == 'r':
-                                print("Moving Right")
-                                chosen_car.choose = 1
-                                chosen_car.move_right()
-                                
-                        elif chosen_car.lines == 'v':
-                            if node.action == 'u':
-                                print("Moving Up")
-                                chosen_car.choose = 1
-                                chosen_car.move_up()
-                                
-                            elif node.action == 'd':
-                                print("Moving Down")
-                                chosen_car.choose = 1
-                                chosen_car.move_down()
-                        self.update_screen()
-                        pygame.time.wait(100) 
-                        self.update_screen()
-                print("---------------")
-        else:
-            print("No solution found.")
+        self.AI_playing(path)
     
+    def runIDSsolver(self):
+        ids = IDS(self)
+        path = ids.solve()
+        self.AI_playing(path)
 
     def run_ucs_solver(self):
         ucs = UCS(self)
         path = ucs.solve()
-        if path:
-            for i, node in enumerate(path):
-                print(f"Step {i}:")
-                print("Selected Car:", node.car_choose)
-                print("Action:", node.action)
-                if node.car_choose is not None:
-                    chosen_car = None
-                    for car in self.cars:
-                        if car.cate == node.car_choose:
-                            chosen_car = car
-                            break
-                    if chosen_car:
-                        if chosen_car.lines == 'h':
-                            if node.action == 'l':
-                                print("Moving Left")
-                                chosen_car.choose = 1
-                                chosen_car.move_left()
-                            
-                            elif node.action == 'r':
-                                print("Moving Right")
-                                chosen_car.choose = 1
-                                chosen_car.move_right()
-                                
-                        elif chosen_car.lines == 'v':
-                            if node.action == 'u':
-                                print("Moving Up")
-                                chosen_car.choose = 1
-                                chosen_car.move_up()
-                                
-                            elif node.action == 'd':
-                                print("Moving Down")
-                                chosen_car.choose = 1
-                                chosen_car.move_down()
-                        self.update_screen()
-                        pygame.time.wait(100) 
-                        self.update_screen()
-                print("---------------")
-        else:
-            print("No solution found.")
+        self.AI_playing(path)
     
     def run_greedy_solver(self):
         greedy = GREEDY(self)
         path = greedy.solve()
+        self.AI_playing(path)
+
+    def run_hillclimbing_solver(self):
+        hill = Hill_climbing(self)
+        path = hill.solve()
+        if (len(path)>1):
+            self.AI_playing(path)
+        else:
+            print('Maximum local: ',path[0])
+    def AI_playing(self, path):
         if path:
             for i, node in enumerate(path):
                 print(f"Step {i}:")
@@ -312,12 +253,12 @@ class MyGame:
                         self.update_screen()
                 print("---------------")
         else:
-            print("No solution found.")    
+            print("No solution found.") 
 
     def check_end_game(self):
         for car in self.cars:
             if car.cate == 'x':
-                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]-2:
+                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]:
                     self.message("Win")
                     return True
         return False

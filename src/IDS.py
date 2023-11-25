@@ -110,7 +110,7 @@ class IDS:
                     # print(key)
                     for car in neighbor_node.all_cars:
                         if car["cate"] == 'x':
-                            if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]-2:
+                            if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]:
                                 path = [neighbor_node]
                                 while neighbor_node.parent is not None:
                                     path.insert(0, neighbor_node.parent)
