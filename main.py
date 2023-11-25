@@ -144,8 +144,7 @@ class MyGame:
                     self.greedy = GREEDY(self)
                     self.greedy.test()
                 if event.key == pygame.K_h:
-                    self.hill = Hill_climbing(self)
-                    self.hill.test()
+                    self.run_hillclimbing_solver()
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
@@ -208,6 +207,13 @@ class MyGame:
         path = greedy.solve()
         self.AI_playing(path)
 
+    def run_hillclimbing_solver(self):
+        hill = Hill_climbing(self)
+        path = hill.solve()
+        if (len(path)>1):
+            self.AI_playing(path)
+        else:
+            print('Maximum local: ',path[0])
     def AI_playing(self, path):
         if path:
             for i, node in enumerate(path):

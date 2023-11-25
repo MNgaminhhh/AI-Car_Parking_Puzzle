@@ -1,7 +1,7 @@
 from src.node import Node
-from src.priority_queue import priority_queue
+from src.priority_queue import QueueElement
 import copy
-
+import queue
 class Hill_climbing:
 
     def __init__(self, game):
@@ -44,7 +44,6 @@ class Hill_climbing:
     
     def create_neighbors(self, parent, cars):
         neighbors = []
-        print("parent: ",self.convert_to_key(parent));
         for index in range(len(cars)):
             if cars[index]["lines"] == 'h':
                 if self.can_move(parent, cars[index], 'l'):
@@ -110,8 +109,40 @@ class Hill_climbing:
     def solve(self):
         self.init_cars()
         start_node = Node(self.quizz, None, self.cars, None, None, None)
-        visited = set()
-        
+        visited = []
+        priority_queue = queue.PriorityQueue()
+        priority_queue.put(QueueElement(start_node, self.heuristic_distance(start_node), 
+                                        self.heuristic_obstacle(start_node)))
+        while priority_queue:
+            current_element = priority_queue.get()
+            current_node = current_element.value
+            print("Parent: ", self.convert_to_key(current_node.state))
+            visited.append(self.convert_to_key(current_node.state))
+            c_distance = current_element.priority1
+            c_obstacle = current_element.priority2
+            improvement = False
+            
+            for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
+                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], 
+                                     neighbor_state[3], None)
+                key = self.convert_to_key(neighbor_node.state)
+                n_distance = self.heuristic_distance(neighbor_node)
+                n_obstacle = self.heuristic_obstacle(neighbor_node)
+                if key not in visited and (n_distance < c_distance or (n_distance==c_distance and n_obstacle<c_obstacle)):
+                    print(key)
+                    for car in neighbor_node.all_cars:
+                        if car['cate'] == 'x':
+                            if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]:
+                                path = [neighbor_node]
+                                while neighbor_node.parent is not None:
+                                    path.insert(0, neighbor_node.parent)
+                                    neighbor_node = neighbor_node.parent
+                                return path
+                        priority_queue.put(QueueElement(neighbor_node, n_distance, n_obstacle))
+                        improvement = True
+            if not improvement:
+                return [self.convert_to_key(current_node.state)]
+
     
     def test(self):
         self.init_cars()
