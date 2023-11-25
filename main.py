@@ -5,6 +5,7 @@ from src.IDS import IDS
 from src.BFS import BFS
 from src.UCS import UCS
 from src.Greedy import GREEDY
+from src.Hill_climbing import Hill_climbing
 from src.settings import Settings
 from src.playing_area import PlayingArea
 from src.button import Button
@@ -142,6 +143,9 @@ class MyGame:
                 if event.key == pygame.K_g:
                     self.greedy = GREEDY(self)
                     self.greedy.test()
+                if event.key == pygame.K_h:
+                    self.hill = Hill_climbing(self)
+                    self.hill.test()
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
