@@ -1,4 +1,5 @@
 from src.node import Node
+from src.priority_queue import priority_queue
 import copy
 
 class Hill_climbing:
@@ -105,6 +106,12 @@ class Hill_climbing:
                 if val != 0 and val != 'x':
                     obstacle += 1
         return obstacle
+    
+    def solve(self):
+        self.init_cars()
+        start_node = Node(self.quizz, None, self.cars, None, None, None)
+        visited = set()
+        
     
     def test(self):
         self.init_cars()

@@ -1,5 +1,4 @@
 import queue
-
 class QueueElement:
     def __init__(self, value, priority1, priority2):
         self.value = value
