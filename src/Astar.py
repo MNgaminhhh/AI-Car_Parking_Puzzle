@@ -36,7 +36,6 @@ class ASTAR:
         return False
     
     def heuristic(self, current_state):
-        # Find the position of the 'x' car in the current state
         x_car_position = None
         for row_idx, row in enumerate(current_state):
             for col_idx, value in enumerate(row):
@@ -47,11 +46,8 @@ class ASTAR:
                 break
 
         if x_car_position is None:
-            # 'x' car not found in the current state
-            return 0  # Heuristic value of 0
-
-        # Calculate Manhattan distance from the 'x' car position to the goal position
-        goal_position = (self.goal[0] - 1, self.goal[1] - 1)  # Adjust goal indices to 0-based
+            return 0
+        goal_position = (self.goal[0] - 1, self.goal[1] - 1)
         distance = abs(x_car_position[0] - goal_position[0]) + abs(x_car_position[1] - goal_position[1])
 
         return distance
@@ -132,8 +128,6 @@ class ASTAR:
                                 path.insert(0, neighbor_node.parent)
                                 neighbor_node = neighbor_node.parent
                             return path
-
                     heappush(priority_queue, (self.heuristic(neighbor_node.state), neighbor_node))
-
         return None
     

@@ -256,7 +256,7 @@ class MyGame:
                                 chosen_car.choose = 1
                                 chosen_car.move_down()
                         self.update_screen()
-                        pygame.time.wait(1000) 
+                        pygame.time.wait(500) 
                         self.update_screen()
                 print("---------------")
         else:
