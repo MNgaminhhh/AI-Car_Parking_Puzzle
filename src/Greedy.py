@@ -50,13 +50,12 @@ class GREEDY:
         return key
         
 
-    def create_neighbors(self, parent, cars, cost): #cost
+    def create_neighbors(self, parent, cars): #cost
         neighbors = []
         print("parent: ",self.convert_to_key(parent))
         for index in range(len(cars)):
             if cars[index]["lines"] == 'h':
                 if self.can_move(parent, cars[index], 'l'):
-                    new_cost = cost
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]] = new_car[index]["cate"]
@@ -64,39 +63,32 @@ class GREEDY:
                     new_car[index]
                     new_car[index]["start_x"] -= 1
                     new_car[index]["end_x"] -=1
-                    new_cost = new_cost + 1
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'l', new_cost))
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
                 if self.can_move(parent, cars[index], 'r'):
-                    new_cost = cost
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+2] = new_car[index]["cate"]
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_x"] += 1
                     new_car[index]["end_x"] +=1
-                    new_cost = new_cost + 1
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'r', new_cost))
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'r'))
             if cars[index]["lines"] == 'v':
                 if self.can_move(parent, cars[index], 'u'):
-                    new_cost = cost
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_state[new_car[index]["start_y"]][new_car[index]["start_x"]+1] = new_car[index]["cate"]
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+1] = 0
                     new_car[index]["start_y"] -= 1
                     new_car[index]["end_y"] -=1
-                    new_cost = new_cost + 1
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'u', new_cost))
                 if self.can_move(parent, cars[index], 'd'):
-                    new_cost = cost
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_state[new_car[index]["end_y"]+2][new_car[index]["end_x"]+1] = new_car[index]["cate"]
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_y"] += 1
                     new_car[index]["end_y"] +=1
-                    new_cost = new_cost + 1
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'd', new_cost))
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'd'))
         return neighbors        
 
     def solve(self):
