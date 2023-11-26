@@ -2,7 +2,6 @@ from src.node import Node
 from src.priority_queue import QueueElement
 import copy
 import queue
-
 class ASTAR:
     def __init__(self, game):
         self.quizz = game.map
@@ -133,8 +132,7 @@ class ASTAR:
         return None
 
     def is_goal_state(self, node):
-        # Check if the goal state is reached
         for car in node.all_cars:
-            if car['cate'] == 'x' and car["start_y"] + 1 == self.goal[0] and car["start_x"] + 1 == self.goal[1]:
+            if car['cate'] == 'x' and car["start_y"] + 1 == self.goal[0] and car["start_x"] + 1 == self.goal[1] :
                 return True
         return False

@@ -4,6 +4,7 @@ import random
 from src.IDS import IDS
 from src.BFS import BFS
 from src.UCS import UCS
+from src.Beam import BEAM
 from src.Greedy import GREEDY
 from src.Astar import ASTAR
 from src.Hill_climbing import Hill_climbing
@@ -29,7 +30,7 @@ class MyGame:
         self.all_btn = pygame.sprite.Group()
         self.cars = pygame.sprite.Group()
         self.goal = (0, 0)
-        self.initialize_buttons()
+        self.initialize_buttons() 
         self.in_start_menu = True
         pygame.display.set_caption("Car Parking Puzzle")
 
@@ -144,10 +145,12 @@ class MyGame:
                 if event.key == pygame.K_g:
                     self.greedy = GREEDY(self)
                     self.greedy.test()
-                if event.key == pygame.K_h:
+                if event.key == pygame.K_h: 
                     self.run_hillclimbing_solver()
                 if event.key == pygame.K_j:
                     self.run_astar_solver()
+                if event.key == pygame.K_k:
+                    self.run_beam_solver()
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
@@ -194,7 +197,10 @@ class MyGame:
         bfs = BFS(self)
         path = bfs.solve()
         self.AI_playing(path)
-    
+    def run_beam_solver(self):
+        beam = BEAM(self, 100)
+        path = beam.solve()
+        self.AI_playing(path)
     def runIDSsolver(self):
         ids = IDS(self)
         path = ids.solve()
@@ -239,24 +245,29 @@ class MyGame:
                                 print("Moving Left")
                                 chosen_car.choose = 1
                                 chosen_car.move_left()
+                                chosen_car.choose = 0
                             
                             elif node.action == 'r':
                                 print("Moving Right")
                                 chosen_car.choose = 1
                                 chosen_car.move_right()
+                                chosen_car.choose = 0
                                 
                         elif chosen_car.lines == 'v':
                             if node.action == 'u':
                                 print("Moving Up")
                                 chosen_car.choose = 1
                                 chosen_car.move_up()
+                                chosen_car.choose = 0
                                 
                             elif node.action == 'd':
                                 print("Moving Down")
                                 chosen_car.choose = 1
                                 chosen_car.move_down()
+                                chosen_car.choose = 0
                         self.update_screen()
                         pygame.time.wait(1000) 
+                        self.update_screen()
 
                 print("---------------")
         else:
