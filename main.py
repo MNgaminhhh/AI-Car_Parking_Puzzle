@@ -38,7 +38,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem =  self.problems[index]
+        self.problem = self.problems[4]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -170,7 +170,7 @@ class MyGame:
                         car.move_up()
                     if event.key == pygame.K_DOWN:
                         car.move_down()
-
+        self.update_screen()
     def check_btn_click(self, mouse_x, mouse_y):
         for btn in self.all_btn:
             if btn.click(mouse_x, mouse_y):
@@ -256,8 +256,8 @@ class MyGame:
                                 chosen_car.choose = 1
                                 chosen_car.move_down()
                         self.update_screen()
-                        pygame.time.wait(500) 
-                        self.update_screen()
+                        pygame.time.wait(1000) 
+
                 print("---------------")
         else:
             print("No solution found.") 

@@ -1,7 +1,8 @@
 from src.node import Node
-from collections import deque 
+from src.priority_queue import QueueElement
 import copy
-from heapq import heappush, heappop
+import queue
+
 class ASTAR:
     def __init__(self, game):
         self.quizz = game.map
@@ -51,7 +52,6 @@ class ASTAR:
         distance = abs(x_car_position[0] - goal_position[0]) + abs(x_car_position[1] - goal_position[1])
 
         return distance
-
 
     def convert_to_key(self, state):
         key = ''.join([str(i) for row in state for i in row])
@@ -103,11 +103,12 @@ class ASTAR:
         visited = set()
         start_node = Node(self.quizz, None, self.cars, None, None, None)
 
-        priority_queue = []
-        heappush(priority_queue, (self.heuristic(start_node.state), start_node))
+        priority_queue = queue.PriorityQueue()
+        priority_queue.put(QueueElement(start_node, 0, self.heuristic(start_node.state)))
 
-        while priority_queue:
-            _, current_node = heappop(priority_queue)
+        while not priority_queue.empty():
+            current_element = priority_queue.get()
+            current_node = current_element.value
 
             key = self.convert_to_key(current_node.state)
             if key in visited:
@@ -120,14 +121,20 @@ class ASTAR:
 
                 key = self.convert_to_key(neighbor_node.state)
                 if key not in visited:
-                    for car in neighbor_node.all_cars:
-                        if car["cate"] == 'x' and car["start_y"] + 1 == self.goal[0] and car["start_x"] + 1 == self.goal[1]:
-                            # Found the goal state
-                            path = [neighbor_node]
-                            while neighbor_node.parent is not None:
-                                path.insert(0, neighbor_node.parent)
-                                neighbor_node = neighbor_node.parent
-                            return path
-                    heappush(priority_queue, (self.heuristic(neighbor_node.state), neighbor_node))
+                    if self.is_goal_state(neighbor_node):
+                        # Found the goal state
+                        path = [neighbor_node]
+                        while neighbor_node.parent is not None:
+                            path.insert(0, neighbor_node.parent)
+                            neighbor_node = neighbor_node.parent
+                        return path
+                    priority_queue.put(QueueElement(neighbor_node, current_element.priority1 + 1, current_element.priority2))
+
         return None
-    
+
+    def is_goal_state(self, node):
+        # Check if the goal state is reached
+        for car in node.all_cars:
+            if car['cate'] == 'x' and car["start_y"] + 1 == self.goal[0] and car["start_x"] + 1 == self.goal[1]:
+                return True
+        return False
