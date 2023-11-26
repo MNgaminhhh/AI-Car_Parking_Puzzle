@@ -1,7 +1,8 @@
 from src.node import Node
 from collections import deque
+from src.priority_queue import QueueElement 
 import copy
-import heapq 
+import queue
 
 class GREEDY:
     def __init__(self, game):
@@ -50,7 +51,7 @@ class GREEDY:
         return key
         
 
-    def create_neighbors(self, parent, cars): #cost
+    def create_neighbors(self, parent, cars): 
         neighbors = []
         print("parent: ",self.convert_to_key(parent))
         for index in range(len(cars)):
@@ -80,7 +81,7 @@ class GREEDY:
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+1] = 0
                     new_car[index]["start_y"] -= 1
                     new_car[index]["end_y"] -=1
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'u', new_cost))
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'u'))
                 if self.can_move(parent, cars[index], 'd'):
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
@@ -94,34 +95,36 @@ class GREEDY:
     def solve(self):
         self.init_cars()
         visited = []
-        start_node = Node(self.quizz, None, self.cars, None, None, 0) #None
+        start_node = Node(self.quizz, None, self.cars, None, None, None) #None  
 
-        priority_queue = [(self.heuristic(start_node.state), start_node)]
-        heapq.heapify(priority_queue)
+        #Khởi tạo hàng đợi 
+        priority_queue = queue.PriorityQueue()
+
+        #thêm nút
+        priority_queue.put((self.heuristic(start_node.state), start_node))
 
         while priority_queue:
-            _, current_node = heapq.heappop(priority_queue)
-            #_, current_node = priority_queue.pop(0)
+            element = priority_queue.get()[1]
+            current_node = element
+
+            # current_node = priority_queue.get()[1] #Lấy nút ưu tiên cao nhất
             key = self.convert_to_key(current_node.state)
             visited.append(key)
             
-            for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars, current_node.cost):
-                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], neighbor_state[4]) #neighbor[4]
-                
+            for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
+                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], None) 
                 key = self.convert_to_key(neighbor_node.state)
+                
                 if key not in visited:
                     for car in neighbor_node.all_cars:
                         if car["cate"] == 'x': 
-                            if car["start_y"] + 1 == self.goal[0] and car["start_x"] + 1 == self.goal[1]-2: #-2
+                            if car["start_y"] + 1 == self.goal[0] and car["start_x"] + 1 == self.goal[1]: #-2
                                 path = [neighbor_node]
                                 while neighbor_node.parent is not None:
                                     path.insert(0, neighbor_node.parent)
                                     neighbor_node = neighbor_node.parent
                                 return path
-                    
-                    heapq.heappush(priority_queue, (self.heuristic(neighbor_node.state), neighbor_node))
-                    # priority_queue.append((self.heuristic(neighbor_node.state), neighbor_node))
-                    # priority_queue.sort(key=lambda x: x[0])
+                    priority_queue.put((self.heuristic(neighbor_node.state), neighbor_node))
         return None
 
     def test(self):

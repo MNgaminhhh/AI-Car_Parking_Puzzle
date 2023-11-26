@@ -13,6 +13,7 @@ from src.car import Car
 from src.text import Text
 from src.combobox import ComboBox
 from src.node import Node
+#from src.priority_queue import QueueElement
 class MyGame:
     pygame.init()
 
@@ -182,10 +183,10 @@ class MyGame:
                     selected_algorithm = self.combobox.get_selected_option()
                     #if selected_algorithm == 'BFS':
                     #    self.run_bfs_solver()   
-                    # if selected_algorithm == 'UCS':
-                    #    self.run_ucs_solver()
+                    if selected_algorithm == 'UCS':
+                       self.run_ucs_solver()
                     if selected_algorithm == 'GREEDY':
-                       self.run_greedy_solver()
+                        self.run_greedy_solver()
           
     def run_bfs_solver(self):
         bfs = BFS(self)
