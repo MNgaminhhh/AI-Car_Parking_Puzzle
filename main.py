@@ -183,6 +183,8 @@ class MyGame:
                     selected_algorithm = self.combobox.get_selected_option()
                     #if selected_algorithm == 'BFS':
                     #    self.run_bfs_solver()   
+                    # if selected_algorithm == 'IDS':
+                    #     self.runIDSsolver()
                     if selected_algorithm == 'UCS':
                        self.run_ucs_solver()
                     if selected_algorithm == 'GREEDY':
@@ -208,6 +210,13 @@ class MyGame:
         path = greedy.solve()
         self.AI_playing(path)
 
+        # greedy = GREEDY(self)
+        # path = greedy.solve()
+        # if len(path) > 1:
+        #     self.AI_playing(path)
+        # else:
+        #     print('Maximun local: ', path[0])
+
     def run_hillclimbing_solver(self):
         hill = Hill_climbing(self)
         path = hill.solve()
@@ -215,6 +224,12 @@ class MyGame:
             self.AI_playing(path)
         else:
             print('Maximum local: ',path[0])
+
+    def print_heuristic_values(self, node):
+        distance = node.heuristic_distance
+        obstacle = node.heuristic_obstacle
+        print(f'Khoảng cách: {distance}, Số lượng vật cản: {obstacle}')
+
     def AI_playing(self, path):
         if path:
             for i, node in enumerate(path):
@@ -253,6 +268,8 @@ class MyGame:
                         pygame.time.wait(100) 
                         self.update_screen()
                 print("---------------")
+            #cập nhật lần cuối  
+            self.update_screen()
         else:
             print("No solution found.") 
 
@@ -317,4 +334,3 @@ if __name__ == '__main__':
     MG.shuffle_problem()
     MG.init_game()
     MG.run_game()
-    #main()

@@ -93,40 +93,22 @@ class UCS:
 
 
     def solve(self):
-        #khởi tạo danh sách
         self.init_cars()
         visited = []
-        # visited = []
-        #tạo xuất phát trạng thái
         start_node = Node(self.quizz, None, self.cars, None, None, 0)
 
-        #khởi tạo hàng đợi chi phí đường đi ưu tiên (path_cost)
         priority_queue = queue.PriorityQueue()
         priority_queue.put(QueueElement(start_node, 0, start_node.cost))
 
         #duyệt hàng đợi
         while not priority_queue.empty():
-        # current_cost, current_node = priority_queue.popleft()
-        # print("parent:", current_node.state)
-        # key = self.convert_to_key(current_node.state)
-        # visited.append(key)
-            # current_cost, current_element = priority_queue.get()
             current_element = priority_queue.get()
-            current_node = current_element.value
-            #chuyển trạng thái hiện tại thành 1 khóa để kiểm tra              
+            current_node = current_element.value            
             key = self.convert_to_key(current_node.state)
-            #thêm trạng thái vào danh sách
             visited.append(key)
-
-        # while not priority_queue.empty():
-        #     current_element = priority_queue.get()
-        #     current_node = current_element.value
-        #     key = self.convert_to_key(current_node.state)
-        #     visited.add(key)
-
             #(tạo các nút từ trạng thái hiện tại)
             for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars, current_node.cost):
-                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], neighbor_state[4]) #
+                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], neighbor_state[4]) 
             #chuyển trạng thái thành khóa
                 key = self.convert_to_key(neighbor_node.state)
                 #kiểm tra đã được thăm chưa
@@ -134,7 +116,7 @@ class UCS:
                     for car in neighbor_node.all_cars:
                         if car["cate"] == 'x':
                             #nếu 1 trong các xe là đích thì ktra đã đến đích chưa
-                            if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]: #-2
+                            if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1]: #
                                 #nếu đến đích trả về danh sách đường đi
                                 path = [neighbor_node]
                                 while neighbor_node.parent is not None:

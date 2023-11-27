@@ -7,7 +7,6 @@ class Node:
         self.action = action
         self.cost = cost
 
-
     def __eq__(self, other):
         return isinstance(other, Node) and self.state == other.state
 

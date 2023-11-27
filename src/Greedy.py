@@ -8,6 +8,7 @@ class GREEDY:
     def __init__(self, game):
         self.quizz = game.map
         self.goal = game.goal
+        self.cars = game.cars
         self.game = game
 
     def init_cars(self):
@@ -21,13 +22,29 @@ class GREEDY:
             end_y = car.end_y
             self.cars.append({"cate": cate, "lines": lines, "start_x": start_x, "start_y": start_y, "end_x": end_x, "end_y": end_y})
 
-    def heuristic(self, state):
-        distance = 0
-        for car in self.cars:
-            if car["cate"] == 'x':
-                distance += abs(car["start_x"] - self.goal[1]) + abs(car["start_y"] - self.goal[0])
+    def heuristic_distance(self, node):
+        cars = node.all_cars
+        for car in cars:
+            if car['cate'] == 'x':
+                distance = self.goal[1] - car['start_x'] - 1
         return distance
-        #pass
+    
+    def heuristic_obstacle(self, node):
+        state = node.state
+        cars = node.all_cars
+        row = 0
+        obstacle = 0
+        for car in cars:
+            if car['cate'] == 'x':
+                row = car['start_y']+1
+                end_index = car['end_x']+1
+                break
+        for col in range(self.game.settings.map_width-2):
+            if col > end_index:
+                val = state[row][col]
+                if val != 0 and val != 'x':
+                    obstacle += 1
+        return obstacle
 
     def can_move(self, quizz, car, dir):
         if dir == 'l':
@@ -50,8 +67,7 @@ class GREEDY:
         key = key.replace('-1','')
         return key
         
-
-    def create_neighbors(self, parent, cars): 
+    def create_neighbors(self, parent, cars):  
         neighbors = []
         print("parent: ",self.convert_to_key(parent))
         for index in range(len(cars)):
@@ -64,6 +80,11 @@ class GREEDY:
                     new_car[index]
                     new_car[index]["start_x"] -= 1
                     new_car[index]["end_x"] -=1
+                    #thêm giá trị
+                    # distance = 0
+                    # obstacle = 0
+                    # neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
+                    #thêm distance, obstacle
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
                 if self.can_move(parent, cars[index], 'r'):
                     new_state = copy.deepcopy(parent)
@@ -72,7 +93,10 @@ class GREEDY:
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_x"] += 1
                     new_car[index]["end_x"] +=1
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'r'))
+                    #thêm giá trị
+                    # distance = 0
+                    # obstacle = 0
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
             if cars[index]["lines"] == 'v':
                 if self.can_move(parent, cars[index], 'u'):
                     new_state = copy.deepcopy(parent)
@@ -81,7 +105,10 @@ class GREEDY:
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+1] = 0
                     new_car[index]["start_y"] -= 1
                     new_car[index]["end_y"] -=1
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'u'))
+                    #thêm giá trị
+                    # distance = 0
+                    # obstacle = 0
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
                 if self.can_move(parent, cars[index], 'd'):
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
@@ -89,31 +116,41 @@ class GREEDY:
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_y"] += 1
                     new_car[index]["end_y"] +=1
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'd'))
-        return neighbors        
+                    #thêm giá trị
+                    # distance = 0
+                    # obstacle = 0
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
+        return neighbors
 
     def solve(self):
         self.init_cars()
         visited = []
-        start_node = Node(self.quizz, None, self.cars, None, None, None) #None  
+        start_node = Node(self.quizz, None, self.cars, None, None, None)
 
         #Khởi tạo hàng đợi 
         priority_queue = queue.PriorityQueue()
 
         #thêm nút
-        priority_queue.put((self.heuristic(start_node.state), start_node))
+        priority_queue.put(QueueElement(start_node, self.heuristic_distance(start_node), 
+                                        self.heuristic_obstacle(start_node)))
 
         while priority_queue:
-            element = priority_queue.get()[1]
-            current_node = element
+            current_element = priority_queue.get()
+            current_node = current_element.value
 
-            # current_node = priority_queue.get()[1] #Lấy nút ưu tiên cao nhất
+            # current_node = priority_queue.get()[1] #Lấy nút ưu tiên cao nhất  
             key = self.convert_to_key(current_node.state)
             visited.append(key)
+
+            c_distance = current_element.priority1
+            c_obstacle = current_element.priority2
+            improvement = False
             
             for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
-                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], None) 
+                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], None)
                 key = self.convert_to_key(neighbor_node.state)
+                n_distance = self.heuristic_distance(neighbor_node)
+                n_obstacle = self.heuristic_obstacle(neighbor_node)
                 
                 if key not in visited:
                     for car in neighbor_node.all_cars:
@@ -124,14 +161,25 @@ class GREEDY:
                                     path.insert(0, neighbor_node.parent)
                                     neighbor_node = neighbor_node.parent
                                 return path
-                    priority_queue.put((self.heuristic(neighbor_node.state), neighbor_node))
-        return None
+                    # priority_queue.put((self.heuristic(neighbor_node.state), neighbor_node, n_distance, n_obstacle))
+                    priority_queue.put(QueueElement(neighbor_node, n_distance, n_obstacle))
+                    improvement = True
+            if not improvement:
+                return [self.convert_to_key(current_node.state)]
+        # # return None
 
     def test(self):
+        self.init_cars()
+        node = Node(self.quizz, None, self.cars, None, None, None)
+        distance = self.heuristic_distance(node)
+        obstacle = self.heuristic_obstacle(node)
         path = self.solve()
         if path:
             for i, node in enumerate(path):
                 print(f"Step {i}:")
                 print(node.car_choose, node.action)
+                print('Distance: ', distance)
+                print('Obstacle: ', obstacle)
         else:
             print("No solution found.")
+
