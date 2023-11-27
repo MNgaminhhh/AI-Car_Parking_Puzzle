@@ -7,7 +7,7 @@ class ComboBox:
         self.image = pygame.transform.scale(self.image, (width, height))
         self.options = options
         self.selected_option_index = 0
-        self.font = pygame.font.Font(None, 42)
+        self.font = pygame.font.Font(None, 40)
         self.txt_surface = self.font.render(self.options[self.selected_option_index], True, (0, 0, 0))
         self.active = False
         self.is_open = False
