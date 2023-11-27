@@ -39,7 +39,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[4]
+        self.problem = self.problems[index]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -97,9 +97,12 @@ class MyGame:
     
     # Car
     def create_car(self):
-        for car in self.problem:
-            new_car = Car(self, car[0], car[3], int(car[1]), int(car[2]))
-            self.cars.add(new_car)
+        if self.problem!=[]:
+            for car in self.problem:
+                new_car = Car(self, car[0], car[3], int(car[1]), int(car[2]))
+                self.cars.add(new_car)
+        else:
+            new_car = Car(self, 'x', 0, 2)
 
     # Buttons
     def btn_init(self):
@@ -290,6 +293,7 @@ class MyGame:
         while True:
             if self.in_start_menu:
                 self.show_start_menu()
+                #self.show_settings()
             else:
                 self.update_screen()
                 self.all_btn.update()
@@ -297,24 +301,36 @@ class MyGame:
                 self.check_end_game()
     
     def show_start_menu(self):
+        show_settings = True
         background_image = pygame.image.load('assets/background_menu.png').convert()
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, [0, 0])
         self.start_button.blitme()
         self.settings_button.blitme()
         self.quit_button.blitme()
-        pygame.display.flip() 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = pygame.mouse.get_pos()
-                if self.start_button.click(mouse_x, mouse_y):
-                    self.in_start_menu = False 
-                elif self.settings_button.click(mouse_x, mouse_y):
-                    print("Settings button clicked")
-                elif self.quit_button.click(mouse_x, mouse_y):
+        while self.in_start_menu:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    if self.start_button.click(mouse_x, mouse_y):
+                        self.in_start_menu = False 
+                    elif self.settings_button.click(mouse_x, mouse_y):
+                        self.show_settings(show_settings)
+                    elif self.quit_button.click(mouse_x, mouse_y):
+                        sys.exit()
+            self.cars.update()
+            pygame.display.flip() 
+    
+    def show_settings(self, isVisible):
+        screen_width = self.settings.screen_width
+        screen_height = self.settings.screen_height
+        self.board = pygame.Surface((screen_width*0.9, screen_height*0.9))
+        self.board_rect = self.board.get_rect()
+        self.board_rect.center = self.screen.get_rect().center
+        if isVisible:
+            self.screen.blit(self.board, self.board_rect)
 
 if __name__ == '__main__':
     MG = MyGame()
