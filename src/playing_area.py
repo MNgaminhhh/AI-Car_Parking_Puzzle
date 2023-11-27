@@ -26,15 +26,20 @@ class PlayingArea():
             for j in range(self.map_width):
                 x = j * self.tile_size
                 y = i * self.tile_size
-                if self.map[i][j] == -1:
-                    tile_image = pygame.image.load('assets/block.png')
+                if i == 3 and self.map[i][j] != -1:
+                    way_image = pygame.image.load('assets/way.png')
+                    way_image = pygame.transform.scale(way_image, (self.tile_size, self.tile_size))
                 else:
-                    tile_image = pygame.image.load('assets/map.png')
-
-                tile_image = pygame.transform.scale(tile_image, (self.tile_size, self.tile_size))
-                # Lấy góc xoay đã được lưu trữ cho tile này
-                angle = self.tile_rotations[i][j]
-                tile_image = pygame.transform.rotate(tile_image, angle)
-                tile_rect = tile_image.get_rect(center=(x + self.tile_size // 2, y + self.tile_size // 2))
-                self.image.blit(tile_image, tile_rect.topleft)
-    
+                    if self.map[i][j] == -1:
+                        tile_image = pygame.image.load('assets/block.png')
+                    else:
+                        tile_image = pygame.image.load('assets/map.png')
+                    tile_image = pygame.transform.scale(tile_image, (self.tile_size, self.tile_size))
+                    angle = self.tile_rotations[i][j]
+                    tile_image = pygame.transform.rotate(tile_image, angle)
+                if i == 3 and self.map[i][j] != -1:
+                    tile_rect = way_image.get_rect(center=(x + self.tile_size // 2, y + self.tile_size // 2))
+                    self.image.blit(way_image, tile_rect.topleft)
+                else:
+                    tile_rect = tile_image.get_rect(center=(x + self.tile_size // 2, y + self.tile_size // 2))
+                    self.image.blit(tile_image, tile_rect.topleft)

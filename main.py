@@ -22,7 +22,7 @@ class MyGame:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.init_map()
-        self.combobox = ComboBox(71, 630, 230, 83, 'assets/combobox.png', ['BFS', 'DFS', 'IDS'])
+        self.combobox = ComboBox(71, 530, 230, 83, 'assets/combobox.png', ['BFS', 'DFS', 'IDS', 'A*', 'BEAM', 'Hill Climbing', 'Greedy'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -103,7 +103,7 @@ class MyGame:
     # Buttons
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2']
+        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2', 'buttonstop']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
@@ -116,7 +116,7 @@ class MyGame:
     #Game
     def init_game(self):
         self.step = 0
-        self.expense = Text(self, 100, 720, 'Step: 0')
+        self.expense = Text(self, 71, 630, 'Step: 0')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
@@ -192,6 +192,12 @@ class MyGame:
                     #    self.run_ucs_solver()
                     if selected_algorithm == 'GREEDY':
                         self.run_greedy_solver()
+                    if selected_algorithm == 'A*':
+                        self.run_astar_solver()
+                    if selected_algorithm == 'BEAM':
+                        self.run_beam_solver()
+                    if selected_algorithm == 'Hill climbing':
+                        self.run_hillclimbing_solver()
           
     def run_bfs_solver(self):
         bfs = BFS(self)

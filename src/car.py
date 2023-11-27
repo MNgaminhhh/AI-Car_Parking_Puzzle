@@ -30,7 +30,7 @@ class Car(Sprite):
         self.rect.x = (self.start_x+1)*self.tile_size
         self.rect.y = (self.start_y+1)*self.tile_size
         self.map = game.map
-
+    
     def update(self):
         u = self.start_y+1
         v = self.start_x+1
@@ -95,5 +95,5 @@ class Car(Sprite):
                 return False
         if dir == 'd':
             if (self.map[self.end_y+2][self.end_x+1] != 0):
-                return False
+                return False                  
         return True
