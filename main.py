@@ -22,7 +22,7 @@ class MyGame:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.init_map()
-        self.combobox = ComboBox(71, 530, 230, 83, 'assets/combobox.png', ['BFS', 'DFS', 'IDS', 'A*', 'BEAM', 'Hill Climbing', 'Greedy'])
+        self.combobox = ComboBox(71, 530, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill Climbing', 'Greedy'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -89,6 +89,7 @@ class MyGame:
         self.draw()
         self.combobox.draw(self.screen)
         self.expense.update()
+        self.cars.update()
         for car in self.cars.sprites():
             car.draw()
         pygame.display.flip()
@@ -173,6 +174,7 @@ class MyGame:
                         car.move_up()
                     if event.key == pygame.K_DOWN:
                         car.move_down()
+                    print(car.cate, car.start_x, car.start_y)
         self.update_screen()
     def check_btn_click(self, mouse_x, mouse_y):
         for btn in self.all_btn:
@@ -188,26 +190,30 @@ class MyGame:
                     selected_algorithm = self.combobox.get_selected_option()
                     if selected_algorithm == 'BFS':
                         self.run_bfs_solver()   
-                    # if selected_algorithm == 'UCS':
-                    #    self.run_ucs_solver()
-                    if selected_algorithm == 'GREEDY':
+                    elif selected_algorithm == 'GREEDY':
                         self.run_greedy_solver()
-                    if selected_algorithm == 'A*':
+                    elif selected_algorithm == 'A*':
                         self.run_astar_solver()
-                    if selected_algorithm == 'BEAM':
+                    elif selected_algorithm == 'BEAM':
                         self.run_beam_solver()
-                    if selected_algorithm == 'Hill climbing':
+                    elif selected_algorithm == 'Hill climbing':
                         self.run_hillclimbing_solver()
+                    elif selected_algorithm == 'UCS':
+                        self.run_ucs_solver()
+                    elif selected_algorithm == 'IDS':
+                        self.run_IDS_solver()
           
     def run_bfs_solver(self):
         bfs = BFS(self)
         path = bfs.solve()
         self.AI_playing(path)
+    
     def run_beam_solver(self):
         beam = BEAM(self, 100)
         path = beam.solve()
         self.AI_playing(path)
-    def runIDSsolver(self):
+    
+    def run_IDS_solver(self):
         ids = IDS(self)
         path = ids.solve()
         self.AI_playing(path)
@@ -239,43 +245,20 @@ class MyGame:
                 print(f"Step {i}:")
                 print("Selected Car:", node.car_choose)
                 print("Action:", node.action)
-                if node.car_choose is not None:
-                    chosen_car = None
-                    for car in self.cars:
-                        if car.cate == node.car_choose:
-                            chosen_car = car
-                            break
-                    if chosen_car:
-                        if chosen_car.lines == 'h':
-                            if node.action == 'l':
-                                print("Moving Left")
-                                chosen_car.choose = 1
-                                chosen_car.move_left()
-                                chosen_car.choose = 0
-                            
-                            elif node.action == 'r':
-                                print("Moving Right")
-                                chosen_car.choose = 1
-                                chosen_car.move_right()
-                                chosen_car.choose = 0
-                                
-                        elif chosen_car.lines == 'v':
-                            if node.action == 'u':
-                                print("Moving Up")
-                                chosen_car.choose = 1
-                                chosen_car.move_up()
-                                chosen_car.choose = 0
-                                
-                            elif node.action == 'd':
-                                print("Moving Down")
-                                chosen_car.choose = 1
-                                chosen_car.move_down()
-                                chosen_car.choose = 0
-                        self.update_screen()
-                        pygame.time.wait(1000) 
-                        self.update_screen()
-
-                print("---------------")
+                for car in self.cars:
+                    if car.cate == node.car_choose:
+                        car.choose = 1
+                        if node.action == 'l':
+                            car.move_left()
+                        elif node.action == 'r':
+                            car.move_right()
+                        elif node.action == 'u':
+                            car.move_up()
+                        else:
+                            car.move_down()
+                    else:
+                        car.choose = 0
+                self.update_screen()
         else:
             print("No solution found.") 
 
@@ -310,7 +293,6 @@ class MyGame:
             else:
                 self.update_screen()
                 self.all_btn.update()
-                self.cars.update()
                 self.check_event()
                 self.check_end_game()
     

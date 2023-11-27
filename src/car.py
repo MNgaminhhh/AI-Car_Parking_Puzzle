@@ -44,6 +44,7 @@ class Car(Sprite):
                 self.map[u][v+i] = self.cate
             else:
                 self.map[u+i][v] = self.cate
+        self.draw()
 
     def draw(self):
         self.playing_area.image.blit(self.image, self.rect)
