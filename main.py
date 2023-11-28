@@ -90,6 +90,7 @@ class MyGame:
         self.combobox.draw(self.screen)
         self.expense.update()
         self.visited_text.update2()
+        self.backtomenu.update3()
         self.cars.update()
         for car in self.cars.sprites():
             car.draw()
@@ -120,6 +121,7 @@ class MyGame:
         self.expense = Text(self, 71, 580, 'Step: 0')
         self.visited = 0
         self.visited_text = Text(self, 49, 670, 'Visited States: 0')
+        self.backtomenu = Text(self, 71, 370, '')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
@@ -127,7 +129,8 @@ class MyGame:
         self.btn_init()
         self.create_car()
         self.create_map()
-
+    def check_back_to_menu(self, mouse_x, mouse_y):
+        self.in_start_menu = True 
     def check_event(self):
         for event in pygame.event.get() :
             self.combobox.handle_event(event)
@@ -137,6 +140,7 @@ class MyGame:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 self.check_car_click(mouse_x, mouse_y)
                 self.check_btn_click(mouse_x, mouse_y)
+                self.check_back_to_menu(mouse_x, mouse_y)
             if event.type == pygame.KEYDOWN:
                 self.move_car(event)
                 if event.key == pygame.K_b:
@@ -313,24 +317,43 @@ class MyGame:
                 self.check_end_game()
     
     def show_start_menu(self):
+        show_settings = True
         background_image = pygame.image.load('assets/background_menu.png').convert()
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, [0, 0])
         self.start_button.blitme()
         self.settings_button.blitme()
         self.quit_button.blitme()
-        pygame.display.flip() 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = pygame.mouse.get_pos()
-                if self.start_button.click(mouse_x, mouse_y):
-                    self.in_start_menu = False 
-                elif self.settings_button.click(mouse_x, mouse_y):
-                    print("Settings button clicked")
-                elif self.quit_button.click(mouse_x, mouse_y):
+        while self.in_start_menu:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    if self.start_button.click(mouse_x, mouse_y):
+                        self.in_start_menu = False 
+                    elif self.settings_button.click(mouse_x, mouse_y):
+                        self.show_settings(show_settings)
+                    elif self.quit_button.click(mouse_x, mouse_y):
+                        sys.exit()
+            self.cars.update()
+            pygame.display.flip() 
+    
+    def show_settings(self, isVisible):
+        screen_width = self.settings.screen_width
+        screen_height = self.settings.screen_height
+        if isVisible:
+            settings_background = pygame.image.load('assets/background_setting.png')
+            settings_background = pygame.transform.scale(settings_background, (screen_width, screen_height))
+            self.screen.blit(settings_background, [0, 0])
+            menu_width = screen_width * 1
+            menu_height = screen_height * 1
+            menu_x = (screen_width - menu_width) // 2
+            menu_y = (screen_height - menu_height) // 2
+            self.board = pygame.Surface((menu_width, menu_height))
+            self.board_rect = self.board.get_rect()
+            self.board_rect.topleft = (menu_x, menu_y)
+            pygame.display.flip()
 
 if __name__ == '__main__':
     MG = MyGame()
