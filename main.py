@@ -22,7 +22,7 @@ class MyGame:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.init_map()
-        self.combobox = ComboBox(71, 495, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill Climbing', 'Greedy'])
+        self.combobox = ComboBox(71, 495, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'Greedy'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -39,7 +39,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[index]
+        self.problem = self.problems[4]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -250,6 +250,8 @@ class MyGame:
         hill = Hill_climbing(self)
         path = hill.solve()
         if (len(path)>1):
+            self.visited = hill.visited_states_count
+            self.visited_text.text = "Visited States: " + str(self.visited)
             self.AI_playing(path)
         else:
             print('Maximum local: ',path[0])

@@ -9,7 +9,7 @@ class Hill_climbing:
         self.goal = game.goal
         self.cars = game.cars
         self.game = game
-
+        self.visited_states_count = 0
     def init_cars(self):
         self.cars = []
         for car in self.game.cars:
@@ -118,6 +118,7 @@ class Hill_climbing:
             current_node = current_element.value
             print("Parent: ", self.convert_to_key(current_node.state))
             visited.append(self.convert_to_key(current_node.state))
+            self.visited_states_count += 1
             c_distance = current_element.priority1
             c_obstacle = current_element.priority2
             improvement = False
