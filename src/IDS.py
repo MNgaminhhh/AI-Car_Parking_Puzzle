@@ -6,7 +6,7 @@ class IDS:
         self.quizz = game.map
         self.goal = game.goal
         self.game = game
-
+        self.visited_states_count = 0
     def init_cars(self):
         self.cars = []
         for car in self.game.cars:
@@ -85,7 +85,6 @@ class IDS:
         self.init_cars()
         visited = []
         start_node = Node(self.quizz, None, self.cars, None, None, None)
-
         queue = deque()
         queue.append(start_node)
         init = 1
@@ -102,8 +101,9 @@ class IDS:
                     max_dept = 10
             key = self.convert_to_key(current_node.state)
             visited.append(key)
+            self.visited_states_count += 1
             for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
-                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3])
+                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], None)
 
                 key = self.convert_to_key(neighbor_node.state)
                 if key not in visited:

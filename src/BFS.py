@@ -6,7 +6,7 @@ class BFS:
         self.quizz = game.map
         self.goal = game.goal
         self.game = game
-    
+        self.visited_states_count = 0
     def init_cars(self):
         self.cars = []
         for car in self.game.cars:
@@ -91,6 +91,7 @@ class BFS:
             current_node = queue.popleft()
             key = self.convert_to_key(current_node.state)
             visited.append(key)
+            self.visited_states_count += 1
             for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
                 neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], None)
 

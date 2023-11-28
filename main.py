@@ -22,7 +22,7 @@ class MyGame:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.init_map()
-        self.combobox = ComboBox(71, 530, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill Climbing', 'Greedy'])
+        self.combobox = ComboBox(71, 495, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill Climbing', 'Greedy'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -89,25 +89,22 @@ class MyGame:
         self.draw()
         self.combobox.draw(self.screen)
         self.expense.update()
+        self.visited_text.update2()
         self.cars.update()
         for car in self.cars.sprites():
             car.draw()
         pygame.display.flip()
 
-    
     # Car
     def create_car(self):
-        if self.problem!=[]:
-            for car in self.problem:
-                new_car = Car(self, car[0], car[3], int(car[1]), int(car[2]))
-                self.cars.add(new_car)
-        else:
-            new_car = Car(self, 'x', 0, 2)
+        for car in self.problem:
+            new_car = Car(self, car[0], car[3], int(car[1]), int(car[2]))
+            self.cars.add(new_car)
 
     # Buttons
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2', 'buttonstop']
+        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
@@ -120,7 +117,9 @@ class MyGame:
     #Game
     def init_game(self):
         self.step = 0
-        self.expense = Text(self, 71, 630, 'Step: 0')
+        self.expense = Text(self, 71, 580, 'Step: 0')
+        self.visited = 0
+        self.visited_text = Text(self, 49, 670, 'Visited States: 0')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
@@ -209,30 +208,42 @@ class MyGame:
     def run_bfs_solver(self):
         bfs = BFS(self)
         path = bfs.solve()
+        self.visited = bfs.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
     
     def run_beam_solver(self):
         beam = BEAM(self, 100)
         path = beam.solve()
+        self.visited = beam.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
     
     def run_IDS_solver(self):
         ids = IDS(self)
         path = ids.solve()
+        self.visited = ids.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
 
     def run_ucs_solver(self):
         ucs = UCS(self)
         path = ucs.solve()
+        self.visited = ucs.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
     
     def run_greedy_solver(self):
         greedy = GREEDY(self)
         path = greedy.solve()
+        self.visited = greedy.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
     def run_astar_solver(self):
         astar = ASTAR(self)
         path = astar.solve()
+        self.visited = astar.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
 
     def run_hillclimbing_solver(self):
@@ -293,7 +304,6 @@ class MyGame:
         while True:
             if self.in_start_menu:
                 self.show_start_menu()
-                #self.show_settings()
             else:
                 self.update_screen()
                 self.all_btn.update()
@@ -301,36 +311,24 @@ class MyGame:
                 self.check_end_game()
     
     def show_start_menu(self):
-        show_settings = True
         background_image = pygame.image.load('assets/background_menu.png').convert()
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, [0, 0])
         self.start_button.blitme()
         self.settings_button.blitme()
         self.quit_button.blitme()
-        while self.in_start_menu:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+        pygame.display.flip() 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                if self.start_button.click(mouse_x, mouse_y):
+                    self.in_start_menu = False 
+                elif self.settings_button.click(mouse_x, mouse_y):
+                    print("Settings button clicked")
+                elif self.quit_button.click(mouse_x, mouse_y):
                     sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    if self.start_button.click(mouse_x, mouse_y):
-                        self.in_start_menu = False 
-                    elif self.settings_button.click(mouse_x, mouse_y):
-                        self.show_settings(show_settings)
-                    elif self.quit_button.click(mouse_x, mouse_y):
-                        sys.exit()
-            self.cars.update()
-            pygame.display.flip() 
-    
-    def show_settings(self, isVisible):
-        screen_width = self.settings.screen_width
-        screen_height = self.settings.screen_height
-        self.board = pygame.Surface((screen_width*0.9, screen_height*0.9))
-        self.board_rect = self.board.get_rect()
-        self.board_rect.center = self.screen.get_rect().center
-        if isVisible:
-            self.screen.blit(self.board, self.board_rect)
 
 if __name__ == '__main__':
     MG = MyGame()

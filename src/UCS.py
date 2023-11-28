@@ -7,7 +7,7 @@ class UCS:
         self.quizz = game.map
         self.goal = game.goal
         self.game = game
-
+        self.visited_states_count = 0
     def init_cars(self):
         self.cars = []
         for car in self.game.cars:
@@ -107,6 +107,7 @@ class UCS:
             print("parent:", current_node.state)
             key = self.convert_to_key(current_node.state)
             visited.append(key)
+            self.visited_states_count += 1
             # #lấy ra 1 nút từ hàng đợi
             # current_node = priority_queue.popleft()[1]
             # #chuyển trạng thái hiện tại thành 1 khóa để kiểm tra              
