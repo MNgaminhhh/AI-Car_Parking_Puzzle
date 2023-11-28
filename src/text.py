@@ -9,18 +9,32 @@ class Text:
         self.text = text
     
     def update(self):
-        # Load the background image
         background_image = pygame.image.load('assets/button.png')
-        background_image = pygame.transform.scale(background_image, (230, 83))  # Adjust the size as needed
-        
-        # Blit the background image onto the screen
+        background_image = pygame.transform.scale(background_image, (230, 83))
         self.screen.blit(background_image, (self.x, self.y))
-        
-        # Render the text
-        self.font = pygame.font.SysFont('Consolas', 32)
+        self.font = pygame.font.SysFont(None, 40)
         self.image = self.font.render(self.text, True, (0, 0, 0)) 
         self.rect = self.image.get_rect()
-        # Adjust the position of the text based on the background image's position and size
+        self.rect.x = self.x + (background_image.get_width() - self.image.get_width()) // 2
+        self.rect.y = self.y + (background_image.get_height() - self.image.get_height()) // 2
+        self.screen.blit(self.image, self.rect)
+    def update2(self):
+        background_image = pygame.image.load('assets/button2.png')
+        background_image = pygame.transform.scale(background_image, (280, 83))
+        self.screen.blit(background_image, (self.x, self.y))
+        self.font = pygame.font.SysFont(None, 38)
+        self.image = self.font.render(self.text, True, (0, 0, 0)) 
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x + (background_image.get_width() - self.image.get_width()) // 2
+        self.rect.y = self.y + (background_image.get_height() - self.image.get_height()) // 2
+        self.screen.blit(self.image, self.rect)
+    def update3(self):
+        background_image = pygame.image.load('assets/backtomenu.png')
+        background_image = pygame.transform.scale(background_image, (83, 83))
+        self.screen.blit(background_image, (self.x, self.y))
+        self.font = pygame.font.SysFont(None, 38)
+        self.image = self.font.render(self.text, True, (0, 0, 0)) 
+        self.rect = self.image.get_rect()
         self.rect.x = self.x + (background_image.get_width() - self.image.get_width()) // 2
         self.rect.y = self.y + (background_image.get_height() - self.image.get_height()) // 2
         self.screen.blit(self.image, self.rect)

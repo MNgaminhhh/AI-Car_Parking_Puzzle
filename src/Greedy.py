@@ -10,7 +10,7 @@ class GREEDY:
         self.goal = game.goal
         self.cars = game.cars
         self.game = game
-
+        self.visited_states_count = 0
     def init_cars(self):
         self.cars = []
         for car in self.game.cars:
@@ -141,13 +141,10 @@ class GREEDY:
             # current_node = priority_queue.get()[1] #Lấy nút ưu tiên cao nhất  
             key = self.convert_to_key(current_node.state)
             visited.append(key)
-
-            c_distance = current_element.priority1
-            c_obstacle = current_element.priority2
-            improvement = False
             
-            for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
-                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], None)
+            for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars, current_node.cost):
+                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], neighbor_state[4]) #neighbor[4]
+                
                 key = self.convert_to_key(neighbor_node.state)
                 n_distance = self.heuristic_distance(neighbor_node)
                 n_obstacle = self.heuristic_obstacle(neighbor_node)

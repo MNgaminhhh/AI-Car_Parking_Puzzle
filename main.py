@@ -23,7 +23,7 @@ class MyGame:
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.init_map()
-        self.combobox = ComboBox(71, 530, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill Climbing', 'Greedy'])
+        self.combobox = ComboBox(71, 495, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'Greedy'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -33,6 +33,7 @@ class MyGame:
         self.goal = (0, 0)
         self.initialize_buttons() 
         self.in_start_menu = True
+        self.buttons_visible = True
         pygame.display.set_caption("Car Parking Puzzle")
 
     # Problem
@@ -40,7 +41,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[index]
+        self.problem = self.problems[4]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -90,25 +91,22 @@ class MyGame:
         self.draw()
         self.combobox.draw(self.screen)
         self.expense.update()
+        self.visited_text.update2()
         self.cars.update()
         for car in self.cars.sprites():
             car.draw()
         pygame.display.flip()
 
-    
     # Car
     def create_car(self):
-        if self.problem!=[]:
-            for car in self.problem:
-                new_car = Car(self, car[0], car[3], int(car[1]), int(car[2]))
-                self.cars.add(new_car)
-        else:
-            new_car = Car(self, 'x', 0, 2)
+        for car in self.problem:
+            new_car = Car(self, car[0], car[3], int(car[1]), int(car[2]))
+            self.cars.add(new_car)
 
     # Buttons
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2', 'buttonstop']
+        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2', 'buttonstop','backtomenu']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
@@ -121,7 +119,9 @@ class MyGame:
     #Game
     def init_game(self):
         self.step = 0
-        self.expense = Text(self, 71, 630, 'Step: 0')
+        self.expense = Text(self, 71, 580, 'Step: 0')
+        self.visited = 0
+        self.visited_text = Text(self, 49, 670, 'Visited States: 0')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
@@ -129,7 +129,8 @@ class MyGame:
         self.btn_init()
         self.create_car()
         self.create_map()
-
+    def check_back_to_menu(self):
+        self.in_start_menu = True 
     def check_event(self):
         for event in pygame.event.get() :
             self.combobox.handle_event(event)
@@ -156,6 +157,7 @@ class MyGame:
                     self.run_astar_solver()
                 if event.key == pygame.K_k:
                     self.run_beam_solver()
+
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
@@ -190,6 +192,11 @@ class MyGame:
                 if btn.name == "buttonReset":
                     self.init_map()
                     self.init_game()
+                if btn.name == "buttonstop":
+                    self.init_map()
+                    self.init_game()
+                if btn.name == "backtomenu":
+                    self.check_back_to_menu()
                 if btn.name == "buttonStart2":
                     selected_algorithm = self.combobox.get_selected_option()
                     if selected_algorithm == 'BFS':
@@ -210,30 +217,42 @@ class MyGame:
     def run_bfs_solver(self):
         bfs = BFS(self)
         path = bfs.solve()
+        self.visited = bfs.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
     
     def run_beam_solver(self):
         beam = BEAM(self, 100)
         path = beam.solve()
+        self.visited = beam.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
     
     def run_IDS_solver(self):
         ids = IDS(self)
         path = ids.solve()
+        self.visited = ids.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
 
     def run_ucs_solver(self):
         ucs = UCS(self)
         path = ucs.solve()
+        self.visited = ucs.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
     
     def run_greedy_solver(self):
         greedy = GREEDY(self)
         path = greedy.solve()
+        self.visited = greedy.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
     def run_astar_solver(self):
         astar = ASTAR(self)
         path = astar.solve()
+        self.visited = astar.visited_states_count
+        self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
 
         # greedy = GREEDY(self)
@@ -247,6 +266,8 @@ class MyGame:
         hill = Hill_climbing(self)
         path = hill.solve()
         if (len(path)>1):
+            self.visited = hill.visited_states_count
+            self.visited_text.text = "Visited States: " + str(self.visited)
             self.AI_playing(path)
         else:
             print('Maximum local: ',path[0])
@@ -325,7 +346,6 @@ class MyGame:
         while True:
             if self.in_start_menu:
                 self.show_start_menu()
-                #self.show_settings()
             else:
                 self.update_screen()
                 self.all_btn.update()
@@ -337,9 +357,10 @@ class MyGame:
         background_image = pygame.image.load('assets/background_menu.png').convert()
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, [0, 0])
-        self.start_button.blitme()
-        self.settings_button.blitme()
-        self.quit_button.blitme()
+        if self.buttons_visible:
+            self.start_button.blitme()
+            self.settings_button.blitme()
+            self.quit_button.blitme()
         while self.in_start_menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -350,6 +371,7 @@ class MyGame:
                         self.in_start_menu = False 
                     elif self.settings_button.click(mouse_x, mouse_y):
                         self.show_settings(show_settings)
+                        self.buttons_visible = False
                     elif self.quit_button.click(mouse_x, mouse_y):
                         sys.exit()
             self.cars.update()
@@ -358,11 +380,18 @@ class MyGame:
     def show_settings(self, isVisible):
         screen_width = self.settings.screen_width
         screen_height = self.settings.screen_height
-        self.board = pygame.Surface((screen_width*0.9, screen_height*0.9))
-        self.board_rect = self.board.get_rect()
-        self.board_rect.center = self.screen.get_rect().center
         if isVisible:
-            self.screen.blit(self.board, self.board_rect)
+            settings_background = pygame.image.load('assets/background_setting.png')
+            settings_background = pygame.transform.scale(settings_background, (screen_width, screen_height))
+            self.screen.blit(settings_background, [0, 0])
+            menu_width = screen_width * 1
+            menu_height = screen_height * 1
+            menu_x = (screen_width - menu_width) // 2
+            menu_y = (screen_height - menu_height) // 2
+            self.board = pygame.Surface((menu_width, menu_height))
+            self.board_rect = self.board.get_rect()
+            self.board_rect.topleft = (menu_x, menu_y)
+            pygame.display.flip()
 
 if __name__ == '__main__':
     MG = MyGame()
