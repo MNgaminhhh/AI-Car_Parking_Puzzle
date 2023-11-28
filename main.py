@@ -32,6 +32,7 @@ class MyGame:
         self.goal = (0, 0)
         self.initialize_buttons() 
         self.in_start_menu = True
+        self.buttons_visible = True
         pygame.display.set_caption("Car Parking Puzzle")
 
     # Problem
@@ -90,7 +91,6 @@ class MyGame:
         self.combobox.draw(self.screen)
         self.expense.update()
         self.visited_text.update2()
-        self.backtomenu.update3()
         self.cars.update()
         for car in self.cars.sprites():
             car.draw()
@@ -105,7 +105,7 @@ class MyGame:
     # Buttons
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2']
+        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2', 'buttonstop','backtomenu']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
@@ -121,7 +121,6 @@ class MyGame:
         self.expense = Text(self, 71, 580, 'Step: 0')
         self.visited = 0
         self.visited_text = Text(self, 49, 670, 'Visited States: 0')
-        self.backtomenu = Text(self, 71, 370, '')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
@@ -129,7 +128,7 @@ class MyGame:
         self.btn_init()
         self.create_car()
         self.create_map()
-    def check_back_to_menu(self, mouse_x, mouse_y):
+    def check_back_to_menu(self):
         self.in_start_menu = True 
     def check_event(self):
         for event in pygame.event.get() :
@@ -140,7 +139,6 @@ class MyGame:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 self.check_car_click(mouse_x, mouse_y)
                 self.check_btn_click(mouse_x, mouse_y)
-                self.check_back_to_menu(mouse_x, mouse_y)
             if event.type == pygame.KEYDOWN:
                 self.move_car(event)
                 if event.key == pygame.K_b:
@@ -158,6 +156,7 @@ class MyGame:
                     self.run_astar_solver()
                 if event.key == pygame.K_k:
                     self.run_beam_solver()
+
 
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
@@ -192,6 +191,11 @@ class MyGame:
                 if btn.name == "buttonReset":
                     self.init_map()
                     self.init_game()
+                if btn.name == "buttonstop":
+                    self.init_map()
+                    self.init_game()
+                if btn.name == "backtomenu":
+                    self.check_back_to_menu()
                 if btn.name == "buttonStart2":
                     selected_algorithm = self.combobox.get_selected_option()
                     if selected_algorithm == 'BFS':
@@ -321,9 +325,10 @@ class MyGame:
         background_image = pygame.image.load('assets/background_menu.png').convert()
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, [0, 0])
-        self.start_button.blitme()
-        self.settings_button.blitme()
-        self.quit_button.blitme()
+        if self.buttons_visible:
+            self.start_button.blitme()
+            self.settings_button.blitme()
+            self.quit_button.blitme()
         while self.in_start_menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -334,6 +339,7 @@ class MyGame:
                         self.in_start_menu = False 
                     elif self.settings_button.click(mouse_x, mouse_y):
                         self.show_settings(show_settings)
+                        self.buttons_visible = False
                     elif self.quit_button.click(mouse_x, mouse_y):
                         sys.exit()
             self.cars.update()
