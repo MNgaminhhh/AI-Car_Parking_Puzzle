@@ -111,7 +111,7 @@ class GREEDY:
     def solve(self):
         self.init_cars()
         visited = []
-        start_node = Node(self.quizz, None, self.cars, None, None)
+        start_node = Node(self.quizz, None, self.cars, None, None, None)
 
         #Khởi tạo hàng đợi 
         priority_queue = queue.PriorityQueue()
@@ -128,7 +128,7 @@ class GREEDY:
             visited.append(key)
             
             for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
-                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3]) #neighbor[4]
+                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], None) #neighbor[4]
                 
                 key = self.convert_to_key(neighbor_node.state)
                 n_distance = self.heuristic_distance(neighbor_node)
