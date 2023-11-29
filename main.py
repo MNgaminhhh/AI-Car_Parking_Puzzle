@@ -285,6 +285,10 @@ class MyGame:
             print(f"BFS took {end_time - start_time:.6f} seconds")
             self.AI_playing(path)
         else:
+            self.visited = hill.visited_states_count
+            self.visited_text.text = "Visited States: " + str(self.visited)
+            end_time = time.time()
+            print(f"BFS took {end_time - start_time:.6f} seconds")
             print('Maximum local: ',path[0])
     def AI_playing(self, path):
         if path:
