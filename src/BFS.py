@@ -1,6 +1,7 @@
 from src.node import Node
 from collections import deque 
 import copy
+import time
 class BFS:
     def __init__(self, game):
         self.quizz = game.map
@@ -81,6 +82,7 @@ class BFS:
         return neighbors
     
     def solve(self):
+        
         self.init_cars()
         visited = []
         start_node = Node(self.quizz, None, self.cars, None, None, None)
