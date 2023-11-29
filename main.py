@@ -354,7 +354,7 @@ class MyGame:
     
     def show_start_menu(self):
         show_settings = True
-        background_image = pygame.image.load('assets/background_menu.png').convert()
+        background_image = pygame.image.load('assets/background_menu.png')
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, [0, 0])
         if self.buttons_visible:
@@ -371,7 +371,6 @@ class MyGame:
                         self.in_start_menu = False 
                     elif self.settings_button.click(mouse_x, mouse_y):
                         self.show_settings(show_settings)
-                        self.buttons_visible = False
                     elif self.quit_button.click(mouse_x, mouse_y):
                         sys.exit()
             self.cars.update()
@@ -384,6 +383,10 @@ class MyGame:
             settings_background = pygame.image.load('assets/background_setting.png')
             settings_background = pygame.transform.scale(settings_background, (screen_width, screen_height))
             self.screen.blit(settings_background, [0, 0])
+
+            playing_area = PlayingArea(self)
+            playing_area.draw()
+
             menu_width = screen_width * 1
             menu_height = screen_height * 1
             menu_x = (screen_width - menu_width) // 2
@@ -391,7 +394,87 @@ class MyGame:
             self.board = pygame.Surface((menu_width, menu_height))
             self.board_rect = self.board.get_rect()
             self.board_rect.topleft = (menu_x, menu_y)
-            pygame.display.flip()
+            self.btn_init_backtomenu()
+            self.screen.blit(playing_area.image, playing_area.rect.topleft)
+            for btn in self.all_btn:
+                btn.blitme()
+                cars = [('x', 2), ('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2), ('f', 2), ('g', 2), ('h', 2),
+                        ('i', 2), ('j', 2), ('k', 2), ('l', 2), ('m', 2), ('n', 2), ('o', 2), ('p', 3), ('q', 3), ('r', 3)]
+                car_objects = []
+                for car_info in cars:
+                    category, length = car_info
+                    car = Car(self, category, 'h', 0, 0)
+                    car_objects.append((car, length))
+                num_rows = 5
+                num_columns = 4
+            dragging_car = None
+            offset_x, offset_y = 0, 0
+            dragging_image = None
+
+            while True:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        for (car, _), i in zip(car_objects, range(len(car_objects))):
+                            row = i // num_columns
+                            col = i % num_columns
+                            car_rect = pygame.Rect(100 + col * 120, 200 + row * 80, int(car.length * car.tile_size * scaling_factor), int(car.tile_size * scaling_factor))
+
+                            if car_rect.collidepoint(event.pos):
+                                dragging_car = car
+                                offset_x = event.pos[0] - car.rect.x
+                                offset_y = event.pos[1] - car.rect.y
+                                dragging_image = pygame.image.load(f'assets/{dragging_car.cate}.png')
+                                scaling_factor = 0.7
+                                dragging_image = pygame.transform.scale(dragging_image, (int(dragging_car.length * dragging_car.tile_size * scaling_factor), int(dragging_car.tile_size * scaling_factor)))
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE and dragging_car is not None:
+                            dragging_car.rotate()
+                    elif event.type == pygame.MOUSEMOTION:
+                        if dragging_car is not None:
+                            dragging_car.rect.x = event.pos[0] - offset_x
+                            dragging_car.rect.y = event.pos[1] - offset_y
+                    elif event.type == pygame.MOUSEBUTTONUP:
+                        if dragging_car is not None:
+                            map_col = (event.pos[0] - playing_area.rect.topleft[0]) // playing_area.tile_size
+                            map_row = (event.pos[1] - playing_area.rect.topleft[1]) // playing_area.tile_size
+                            self.map[map_row][map_col] = dragging_car.cate
+                            print(f"Dropped car {dragging_car.cate} into map at row {map_row}, column {map_col} {dragging_car.rotate()}")
+                            print(f"{dragging_car.cate}{map_row-1}{map_col-1}{dragging_car.rotate()}")
+                            
+                            dragging_car = None
+                            dragging_image = None
+                self.screen.fill((255, 255, 255))
+                self.screen.blit(settings_background, [0, 0])
+                playing_area.draw()
+                for (car, _), i in zip(car_objects, range(len(car_objects))):
+                    row = i // num_columns
+                    col = i % num_columns
+                    car_image = pygame.image.load(f'assets/{car.cate}.png')
+                    scaling_factor = 0.7
+                    car_image = pygame.transform.scale(car_image, (int(car.length * car.tile_size * scaling_factor), int(car.tile_size * scaling_factor)))
+                    car.rect.topleft = (100 + col * 120, 200 + row * 80)
+                    self.screen.blit(car_image, car.rect.topleft)
+                if dragging_image is not None:
+                    self.screen.blit(dragging_image, (pygame.mouse.get_pos()[0] - offset_x, pygame.mouse.get_pos()[1] - offset_y))
+
+                pygame.display.flip()
+                        
+    def btn_init_backtomenu(self):
+        # Initialize only the "backtomenu" button
+        self.all_btn.empty()
+        list_btn = ['backtomenu']
+        tab_x = self.settings.tab_x_btn
+        tab_y = self.settings.tab_y_btn
+        height = self.settings.btn_height
+        padding = self.settings.btn_padding_top
+        for i, image_path in enumerate(list_btn):
+            y_position = (tab_y + height) * i + padding
+            new_btn = Button(self, tab_x, y_position, image_path, 0.215)
+            self.all_btn.add(new_btn)
+
 
 if __name__ == '__main__':
     MG = MyGame()
