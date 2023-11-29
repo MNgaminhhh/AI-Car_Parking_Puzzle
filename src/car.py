@@ -49,7 +49,6 @@ class Car(Sprite):
                 self.map[u][v+i] = self.cate
             else:
                 self.map[u+i][v] = self.cate
-        self.draw()
 
     def draw(self):
         self.playing_area.image.blit(self.image, self.rect)
@@ -103,3 +102,6 @@ class Car(Sprite):
             if (self.map[self.end_y+2][self.end_x+1] != 0):
                 return False                  
         return True
+
+    def blitme(self, surface):
+        surface.blit(self.image, self.rect)

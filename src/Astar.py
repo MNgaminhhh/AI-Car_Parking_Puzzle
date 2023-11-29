@@ -99,6 +99,7 @@ class ASTAR:
     
     def solve(self):
         self.init_cars()
+        print(self.goal)
         visited = set()
         start_node = Node(self.quizz, None, self.cars, None, None, None)
 
@@ -133,6 +134,6 @@ class ASTAR:
 
     def is_goal_state(self, node):
         for car in node.all_cars:
-            if car['cate'] == 'x' and car["start_y"] + 1 == self.goal[0] and car["start_x"] + 1 == self.goal[1] :
+            if car['cate'] == 'x' and car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1] :
                 return True
         return False
