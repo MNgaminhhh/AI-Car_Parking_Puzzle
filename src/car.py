@@ -30,6 +30,7 @@ class Car(Sprite):
         self.rect.x = (self.start_x+1)*self.tile_size
         self.rect.y = (self.start_y+1)*self.tile_size
         self.map = game.map
+        self.update()
     def rotate(self):
         if self.lines == 'h':
             self.lines = 'v'
@@ -49,6 +50,8 @@ class Car(Sprite):
                 self.map[u][v+i] = self.cate
             else:
                 self.map[u+i][v] = self.cate
+        self.rect.x = (self.start_x+1)*self.tile_size
+        self.rect.y = (self.start_y+1)*self.tile_size
 
     def draw(self):
         self.playing_area.image.blit(self.image, self.rect)

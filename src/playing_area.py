@@ -26,7 +26,7 @@ class PlayingArea():
             for j in range(self.map_width):
                 x = j * self.tile_size
                 y = i * self.tile_size
-                if i == 3 and self.map[i][j] != -1:
+                if (i == 3 and self.map[i][j] != -1):
                     way_image = pygame.image.load('assets/way.png')
                     way_image = pygame.transform.scale(way_image, (self.tile_size, self.tile_size))
                     tile_rect = way_image.get_rect(center=(x + self.tile_size // 2, y + self.tile_size // 2))
