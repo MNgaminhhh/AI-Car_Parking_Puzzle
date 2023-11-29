@@ -15,7 +15,8 @@ from src.car import Car
 from src.text import Text
 from src.combobox import ComboBox
 from src.node import Node
-#from src.priority_queue import QueueElement
+import time
+
 class MyGame:
     pygame.init()
 
@@ -24,7 +25,7 @@ class MyGame:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.map=[]
         self.init_map()
-        self.combobox = ComboBox(71, 495, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'Greedy'])
+        self.combobox = ComboBox(71, 495, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'GREEDY'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -43,7 +44,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[index]
+        self.problem = self.problems[9]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -230,45 +231,63 @@ class MyGame:
                         self.run_IDS_solver()
           
     def run_bfs_solver(self):
+        start_time = time.time()
         bfs = BFS(self)
         path = bfs.solve()
         self.visited = bfs.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
     def run_beam_solver(self):
+        start_time = time.time()
         beam = BEAM(self, 100)
         path = beam.solve()
         self.visited = beam.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
     
     def run_IDS_solver(self):
+        start_time = time.time()
         ids = IDS(self)
         path = ids.solve()
         self.visited = ids.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
     def run_ucs_solver(self):
+        start_time = time.time()
         ucs = UCS(self)
         path = ucs.solve()
         self.visited = ucs.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
     
     def run_greedy_solver(self):
+        start_time = time.time()
         greedy = GREEDY(self)
         path = greedy.solve()
         self.visited = greedy.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
     def run_astar_solver(self):
+        start_time = time.time()
         astar = ASTAR(self)
         path = astar.solve()
         self.visited = astar.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
         # greedy = GREEDY(self)
@@ -279,13 +298,20 @@ class MyGame:
         #     print('Maximun local: ', path[0])
 
     def run_hillclimbing_solver(self):
+        start_time = time.time()
         hill = Hill_climbing(self)
         path = hill.solve()
         if (len(path)>1):
             self.visited = hill.visited_states_count
             self.visited_text.text = "Visited States: " + str(self.visited)
+            end_time = time.time()
+            print(f"BFS took {end_time - start_time:.6f} seconds")
             self.AI_playing(path)
         else:
+            self.visited = hill.visited_states_count
+            self.visited_text.text = "Visited States: " + str(self.visited)
+            end_time = time.time()
+            print(f"BFS took {end_time - start_time:.6f} seconds")
             print('Maximum local: ',path[0])
 
     def AI_playing(self, path):
@@ -403,7 +429,7 @@ class MyGame:
                         map[i].append(-1) 
                     else:
                         map[i].append(0)
-            settings_background = pygame.image.load('assets/background_setting.png')
+            settings_background = pygame.image.load('assets/background_setting2.png')
             settings_background = pygame.transform.scale(settings_background, (screen_width, screen_height))
             playing_area = PlayingArea(self)
             all_car = [Car(self, 'x', 'h', 0, 2)]
