@@ -473,7 +473,7 @@ class MyGame:
                         if acc_button.rect.collidepoint(event.pos):
                             self.in_start_menu=False
                             isVisible=False
-                            self.problem=problems
+                            self.problem=problems 
                             self.newgame=False
                             self.init_game()
                             return
