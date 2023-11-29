@@ -401,7 +401,7 @@ class MyGame:
                         map[i].append(-1) 
                     else:
                         map[i].append(0)
-            settings_background = pygame.image.load('assets/background_setting.png')
+            settings_background = pygame.image.load('assets/background_setting2.png')
             settings_background = pygame.transform.scale(settings_background, (screen_width, screen_height))
             playing_area = PlayingArea(self)
             all_car = [Car(self, 'x', 'h', 0, 2)]
