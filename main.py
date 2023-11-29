@@ -255,13 +255,6 @@ class MyGame:
         self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
 
-        # greedy = GREEDY(self)
-        # path = greedy.solve()
-        # if len(path) > 1:
-        #     self.AI_playing(path)
-        # else:
-        #     print('Maximun local: ', path[0])
-
     def run_hillclimbing_solver(self):
         hill = Hill_climbing(self)
         path = hill.solve()
