@@ -421,6 +421,12 @@ class MyGame:
             screen_height = self.settings.screen_height
             map_width = self.settings.map_width
             map_height = self.settings.map_height
+            str = '- Press S: Starting the game settings \n- Drag each car into map to create map \n- Press K_Right or K_Left to move main car'
+            font = pygame.font.SysFont('Consolas', 15)
+            font_image = font.render(str, True, (0,0,0))
+            rect = font_image.get_rect()
+            rect.center = (screen_width//2, 100)
+            back_to_menu = Button(self, 0, 0, 'backtomenu', 0.4)
             map = []
             hello_font = pygame.font.SysFont(None, 40)
             hello_text = hello_font.render('<= or => move car playing, drag car to map to setting map press space rotate car', True, (255, 255, 255))
@@ -455,7 +461,9 @@ class MyGame:
             dragging_car = None
             offset_x, offset_y = 0, 0
             dragging_image = None
-            while True:
+            bool = True
+
+            while bool:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -473,15 +481,11 @@ class MyGame:
                                 dragging_image = pygame.image.load(f'assets/{dragging_car.cate}.png')
                                 scaling_factor = 0.7
                                 dragging_image = pygame.transform.scale(dragging_image, (int(dragging_car.length * dragging_car.tile_size * scaling_factor), int(dragging_car.tile_size * scaling_factor)))
-                        if back_to_menu_button.rect.collidepoint(event.pos):
+                        mouse_x, mouse_y = pygame.mouse.get_pos()
+                        if back_to_menu.click(mouse_x, mouse_y):
+                            self.in_start_menu=True
                             self.show_start_menu()
-                            # print(self.settings_visible)
-                        if acc_button.rect.collidepoint(event.pos):
-                            self.in_start_menu=False
                             isVisible=False
-                            self.problem=problems 
-                            self.newgame=False
-                            self.init_game()
                             return
                     if event.type == pygame.KEYDOWN:
 
@@ -552,9 +556,10 @@ class MyGame:
                             dragging_image = None
                 
                 self.screen.fill((255, 255, 255))
-                self.screen.blit(settings_background, [0, 0])
-                self.screen.blit(playing_area.image, playing_area.rect.topleft)
+                self.screen.blit(settings_background, [0, 0])           
+                self.screen.blit(font_image, rect)
                 playing_area.draw(map)
+                back_to_menu.blitme()
                 for i in all_car:
                     i.blitme(playing_area.image)
                 for (car, _), i in zip(car_objects, range(len(car_objects))):
