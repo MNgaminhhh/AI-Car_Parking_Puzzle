@@ -88,7 +88,7 @@ class GREEDY:
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_x"] += 1
                     new_car[index]["end_x"] +=1
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'r'))
             if cars[index]["lines"] == 'v':
                 if self.can_move(parent, cars[index], 'u'):
                     new_state = copy.deepcopy(parent)
@@ -97,7 +97,7 @@ class GREEDY:
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+1] = 0
                     new_car[index]["start_y"] -= 1
                     new_car[index]["end_y"] -=1
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'u'))
                 if self.can_move(parent, cars[index], 'd'):
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
@@ -105,7 +105,7 @@ class GREEDY:
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_y"] += 1
                     new_car[index]["end_y"] +=1
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'd'))
         return neighbors
 
     def solve(self):

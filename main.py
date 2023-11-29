@@ -43,7 +43,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[4]
+        self.problem = self.problems[index]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -161,7 +161,6 @@ class MyGame:
                     self.ucs.test()  
                 if event.key == pygame.K_g:
                     self.greedy = GREEDY(self)
-                    path = self.greedy.solve()
                     self.run_greedy_solver()
                 if event.key == pygame.K_h: 
                     self.run_hillclimbing_solver()
