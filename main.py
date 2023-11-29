@@ -36,6 +36,7 @@ class MyGame:
         self.initialize_buttons() 
         self.in_start_menu = True
         self.newgame = True
+        self.settings_visible = True
         pygame.display.set_caption("Car Parking Puzzle")
 
     # Problem
@@ -108,7 +109,7 @@ class MyGame:
     # Buttons
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2', 'buttonstop','backtomenu']
+        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2','backtomenu']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
@@ -384,7 +385,7 @@ class MyGame:
                 self.check_end_game()
     
     def show_start_menu(self):
-        show_settings = True
+        
         background_image = pygame.image.load('assets/background_menu.png')
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, [0, 0])
@@ -400,7 +401,8 @@ class MyGame:
                     if self.start_button.click(mouse_x, mouse_y):
                         self.in_start_menu = False 
                     elif self.settings_button.click(mouse_x, mouse_y):
-                        self.show_settings(show_settings)
+                        # self.show_settings(True)
+                        self.show_settings(self.settings_visible)
                     elif self.quit_button.click(mouse_x, mouse_y):
                         sys.exit()
             self.cars.update()
@@ -418,7 +420,7 @@ class MyGame:
             hello_text = hello_font.render('<- or -> move car playing, drag car to map to setting map press space rotate car', True, (255, 255, 255))
             hello_rect = hello_text.get_rect()
             hello_rect.center = (screen_width // 2, screen_height - 110)
-            back_to_menu_button = Button(self, 10, 10, 'backtomenu', 0.65)
+            back_to_menu_button = Button(self, 35, 35, 'backtomenu', 0.21)
 
             for i in range(map_height):
                 map.append([])
@@ -446,9 +448,6 @@ class MyGame:
             dragging_image = None
             while True:
                 for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         for (car, _), i in zip(car_objects, range(len(car_objects))):
                             row = i // num_columns
@@ -462,7 +461,11 @@ class MyGame:
                                 dragging_image = pygame.image.load(f'assets/{dragging_car.cate}.png')
                                 scaling_factor = 0.7
                                 dragging_image = pygame.transform.scale(dragging_image, (int(dragging_car.length * dragging_car.tile_size * scaling_factor), int(dragging_car.tile_size * scaling_factor)))
+                        if back_to_menu_button.rect.collidepoint(event.pos):
+                            self.check_back_to_menu()
+                            print(self.settings_visible)
                     if event.type == pygame.KEYDOWN:
+
                         if event.key == pygame.K_SPACE and dragging_car is not None:
                             dragging_car.rotate()
                             dragging_image = pygame.transform.rotate(dragging_image, 90)
@@ -542,11 +545,10 @@ class MyGame:
                     self.screen.blit(car_image, car.rect)
                 if dragging_image is not None:
                     self.screen.blit(dragging_image, (pygame.mouse.get_pos()[0] - offset_x, pygame.mouse.get_pos()[1] - offset_y))
-                self.btn_init()
                 self.screen.blit(hello_text, hello_rect)
+                back_to_menu_button.blitme()
                 pygame.display.flip()
                 pygame.time.Clock().tick(60)
-     
 if __name__ == '__main__':
     MG = MyGame()
     MG.load_problem()
