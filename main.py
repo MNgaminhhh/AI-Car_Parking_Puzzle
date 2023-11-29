@@ -150,7 +150,8 @@ class MyGame:
                     self.ucs.test()  
                 if event.key == pygame.K_g:
                     self.greedy = GREEDY(self)
-                    self.greedy.test()
+                    path = self.greedy.solve()
+                    self.run_greedy_solver()
                 if event.key == pygame.K_h: 
                     self.run_hillclimbing_solver()
                 if event.key == pygame.K_j:
@@ -203,6 +204,7 @@ class MyGame:
                         self.run_bfs_solver()   
                     elif selected_algorithm == 'GREEDY':
                         self.run_greedy_solver()
+                        print(1)
                     elif selected_algorithm == 'A*':
                         self.run_astar_solver()
                     elif selected_algorithm == 'BEAM':
@@ -248,6 +250,7 @@ class MyGame:
         self.visited = greedy.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
+
     def run_astar_solver(self):
         astar = ASTAR(self)
         path = astar.solve()
@@ -255,12 +258,6 @@ class MyGame:
         self.visited_text.text = "Visited States: " + str(self.visited)
         self.AI_playing(path)
 
-        # greedy = GREEDY(self)
-        # path = greedy.solve()
-        # if len(path) > 1:
-        #     self.AI_playing(path)
-        # else:
-        #     print('Maximun local: ', path[0])
 
     def run_hillclimbing_solver(self):
         hill = Hill_climbing(self)
