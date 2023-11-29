@@ -23,6 +23,7 @@ class MyGame:
     def __init__(self):
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        self.map=[]
         self.init_map()
         self.combobox = ComboBox(71, 495, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'GREEDY'])
         self.playing_area = PlayingArea(self)
@@ -35,8 +36,7 @@ class MyGame:
         self.initialize_buttons() 
         self.in_start_menu = True
         self.buttons_visible = True
-        self.problem_settings = []
-        self.map_settings = False
+        self.newgame = True
         pygame.display.set_caption("Car Parking Puzzle")
 
     # Problem
@@ -55,20 +55,19 @@ class MyGame:
             self.problems.append(problem)
     # Map
     def init_map(self):
-        self.map = [[0 for _ in range(self.settings.map_width)] for _ in range(self.settings.map_height)]
+        map_width = self.settings.map_width
+        map_height = self.settings.map_height
+        for i in range(map_height):
+            self.map.append([])
+            for j in range(map_width):
+                if i == 0 or i == map_height-1 or j == 0 or ((j == map_width-1 or j == map_width-2) and i != 3):
+                    self.map[i].append(-1)
+                else:  
+                    self.map[i].append(0)
 
     def create_map(self):
-        m = self.settings.map_height
-        n = self.settings.map_width
-        y = 0
-        for car in self.cars:
-            if car.cate == 'x':
-                y = car.start_y
-        for i in range(m):
-            for j in range(n):
-                if i == 0 or i == m-1 or j == 0 or (i != y+1 and j == n-1) or (i!= y+1 and j == n-2):
-                    self.map[i][j] = -1
-        self.goal = (y+1, n-4)
+        self.map=[]
+        self.init_map()
 
     def initialize_buttons(self):
         buttons = [('buttonStart', self.settings.menu_btn_margin), ('buttonSetting', self.settings.menu_btn_margin), ('buttonQuit', self.settings.menu_btn_margin)]
@@ -87,6 +86,7 @@ class MyGame:
             btn.blitme()
 
     def update_screen(self):
+        print(self.map)
         background_image = pygame.image.load('assets/background_game.png')
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, (0, 0))
@@ -129,16 +129,18 @@ class MyGame:
             car.kill()
         for btn in self.all_btn:
             btn.kill()
-        if (self.problem_settings):
-            self.problem = self.problem_settings
-        else:
+        if self.newgame:
             self.shuffle_problem()
+            self.newgame=False
         self.btn_init()
+        self.create_map()
         self.create_car()
-        if (self.map_settings == False):
-            self.create_map()
-        else:
-            self.map = self.map_settings
+        for car in self.cars:
+            if car.cate == 'x':
+                start_y = car.start_y
+                self.goal = (start_y+1, self.settings.map_width-4)
+                self.map[start_y+1][self.settings.map_width-2] = 0
+                self.map[start_y+1][self.settings.map_width-1] = 0
     
     def check_back_to_menu(self):
         self.in_start_menu = True 
@@ -198,12 +200,11 @@ class MyGame:
         for btn in self.all_btn:
             if btn.click(mouse_x, mouse_y):
                 if btn.name == "buttonNewGame":
+                    self.newgame = True
                     self.map_settings = False
                     self.problem_settings = []
-                    self.shuffle_problem()
                     self.init_map()
                     self.init_game()
-                    print(self.map_settings)
                 if btn.name == "buttonReset":
                     self.init_map()
                     self.init_game()
@@ -218,7 +219,6 @@ class MyGame:
                         self.run_bfs_solver()   
                     elif selected_algorithm == 'GREEDY':
                         self.run_greedy_solver()
-                        print(1)
                     elif selected_algorithm == 'A*':
                         self.run_astar_solver()
                     elif selected_algorithm == 'BEAM':
@@ -307,11 +307,6 @@ class MyGame:
             end_time = time.time()
             print(f"BFS took {end_time - start_time:.6f} seconds")
             print('Maximum local: ',path[0])
-
-    def print_heuristic_values(self, node):
-        distance = node.heuristic_distance
-        obstacle = node.heuristic_obstacle
-        print(f'Khoảng cách: {distance}, Số lượng vật cản: {obstacle}')
 
     def AI_playing(self, path):
         print(self.goal)
@@ -415,7 +410,7 @@ class MyGame:
     
     def show_settings(self, isVisible):
         if isVisible:
-            problems=['x02h']
+            problems = ['x02h']
             screen_width = self.settings.screen_width
             screen_height = self.settings.screen_height
             map_width = self.settings.map_width
@@ -424,7 +419,7 @@ class MyGame:
             for i in range(map_height):
                 map.append([])
                 for j in range(map_width):
-                    if i == 0 or i == map_height-1  or j == 0 or j == map_width-1 or j==map_width-2:
+                    if i == 0 or i == map_height-1  or j == 0 or ((j == map_width-1 or j==map_width-2) and i!=3):
                         map[i].append(-1) 
                     else:
                         map[i].append(0)
@@ -471,11 +466,18 @@ class MyGame:
                         if event.key == pygame.K_s:
                             self.in_start_menu=False
                             isVisible=False
-                            self.problem_settings=problems
-                            self.map_settings = map
+                            self.problem=problems
+                            self.newgame=False
                             self.init_game()
-                            self.goal = (3,5)
                             return
+                        if event.key == pygame.K_RIGHT:
+                            for i in all_car:
+                                if i.cate == 'x':
+                                    if map[i.end_y][i.end_x+2]==0:
+                                        i.start_x += 1
+                                        i.update()
+                            for i in all_car:
+                                print(i.cate, i.start_x)
                     if event.type == pygame.MOUSEMOTION:
                         if dragging_car is not None:
                             dragging_car.rect.x = event.pos[0] - offset_x
@@ -511,7 +513,10 @@ class MyGame:
                 self.screen.blit(settings_background, [0, 0])
                 playing_area.draw(map)
                 for i in all_car:
+                    print(i.rect)
                     i.blitme(playing_area.image)
+                    map[i.start_y+1][i.start_x+1] = i.cate
+                    map[i.end_y+1][i.end_x+1] = i.cate
                 for (car, _), i in zip(car_objects, range(len(car_objects))):
                     row = i // num_columns
                     col = i % num_columns
