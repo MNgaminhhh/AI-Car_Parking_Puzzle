@@ -86,7 +86,6 @@ class MyGame:
             btn.blitme()
 
     def update_screen(self):
-        print(self.map)
         background_image = pygame.image.load('assets/background_game.png')
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, (0, 0))
@@ -402,6 +401,7 @@ class MyGame:
                         self.in_start_menu = False 
                     elif self.settings_button.click(mouse_x, mouse_y):
                         # self.show_settings(True)
+                        # self.in_start_menu = False
                         self.show_settings(self.settings_visible)
                     elif self.quit_button.click(mouse_x, mouse_y):
                         sys.exit()
@@ -417,10 +417,11 @@ class MyGame:
             map_height = self.settings.map_height
             map = []
             hello_font = pygame.font.SysFont(None, 40)
-            hello_text = hello_font.render('<- or -> move car playing, drag car to map to setting map press space rotate car', True, (255, 255, 255))
+            hello_text = hello_font.render('<= or => move car playing, drag car to map to setting map press space rotate car', True, (255, 255, 255))
             hello_rect = hello_text.get_rect()
             hello_rect.center = (screen_width // 2, screen_height - 110)
-            back_to_menu_button = Button(self, 35, 35, 'backtomenu', 0.21)
+            back_to_menu_button = Button(self, 100, 110, 'backtomenu', 0.21)
+            acc_button = Button(self, 200, 110, 'buttonAcc', 0.20)
 
             for i in range(map_height):
                 map.append([])
@@ -429,6 +430,8 @@ class MyGame:
                         map[i].append(-1) 
                     else:
                         map[i].append(0)
+            map[3][1] = 'x'
+            map[3][2] = 'x'
             settings_background = pygame.image.load('assets/background_setting2.png')
             settings_background = pygame.transform.scale(settings_background, (screen_width, screen_height))
             playing_area = PlayingArea(self)
@@ -448,6 +451,9 @@ class MyGame:
             dragging_image = None
             while True:
                 for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         for (car, _), i in zip(car_objects, range(len(car_objects))):
                             row = i // num_columns
@@ -462,8 +468,15 @@ class MyGame:
                                 scaling_factor = 0.7
                                 dragging_image = pygame.transform.scale(dragging_image, (int(dragging_car.length * dragging_car.tile_size * scaling_factor), int(dragging_car.tile_size * scaling_factor)))
                         if back_to_menu_button.rect.collidepoint(event.pos):
-                            self.check_back_to_menu()
-                            print(self.settings_visible)
+                            self.show_start_menu()
+                            # print(self.settings_visible)
+                        if acc_button.rect.collidepoint(event.pos):
+                            self.in_start_menu=False
+                            isVisible=False
+                            self.problem=problems
+                            self.newgame=False
+                            self.init_game()
+                            return
                     if event.type == pygame.KEYDOWN:
 
                         if event.key == pygame.K_SPACE and dragging_car is not None:
@@ -479,19 +492,28 @@ class MyGame:
                         if event.key == pygame.K_RIGHT:
                             for i in all_car:
                                 if i.cate == 'x':
-                                    if map[i.end_y][i.end_x+2]==0:
+                                    if map[i.end_y+1][i.end_x+2]==0:
+                                        map[i.start_y+1][i.start_x+1] = 0
+                                        map[i.end_y+1][i.end_x+2]='x'
                                         i.start_x += 1
                                         i.update()
-                            for i in all_car:
-                                print(i.cate, i.start_x)
+                                        p = i.cate+str(i.start_x)+str(i.start_y)+'h'
+                                        problems.pop(0)
+                                        problems.insert(0, p)
                         if event.key == pygame.K_LEFT:
                             for i in all_car:
                                 if i.cate == 'x':
-                                    if map[i.end_y][i.end_x+2]==0:
+                                    if map[i.start_y+1][i.start_x] == 0:
+                                        map[i.end_y+1][i.end_x+1] = 0
+                                        map[i.start_y+1][i.start_x] = 'x'
                                         i.start_x -= 1
                                         i.update()
-                            for i in all_car:
-                                print(i.cate, i.start_x)
+                                        p = i.cate+str(i.start_x)+str(i.start_y)+'h'
+                                        problems.pop(0)
+                                        problems.insert(0, p)
+                                    print(map)
+                        for i in all_car:
+                            print(i.cate, i.start_x)
                     if event.type == pygame.MOUSEMOTION:
                         if dragging_car is not None:
                             dragging_car.rect.x = event.pos[0] - offset_x
@@ -510,7 +532,7 @@ class MyGame:
                                 start_y = new_car.start_y
                                 end_x = new_car.end_x
                                 end_y = new_car.end_y
-                                if (map[end_y+1][end_x+1] != 0):
+                                if (map[end_y+1][end_x+1] != 0 or (start_y+1 == 3 and new_car.lines == 'h')):
                                     all_car.pop()
                                 else:
                                     map[start_y+1][start_x+1]=new_car.cate
@@ -528,10 +550,7 @@ class MyGame:
                 self.screen.blit(playing_area.image, playing_area.rect.topleft)
                 playing_area.draw(map)
                 for i in all_car:
-                    print(i.rect)
                     i.blitme(playing_area.image)
-                    map[i.start_y+1][i.start_x+1] = i.cate
-                    map[i.end_y+1][i.end_x+1] = i.cate
                 for (car, _), i in zip(car_objects, range(len(car_objects))):
                     row = i // num_columns
                     col = i % num_columns
@@ -547,6 +566,9 @@ class MyGame:
                     self.screen.blit(dragging_image, (pygame.mouse.get_pos()[0] - offset_x, pygame.mouse.get_pos()[1] - offset_y))
                 self.screen.blit(hello_text, hello_rect)
                 back_to_menu_button.blitme()
+                acc_button.blitme()
+                for car in all_car:
+                    car.update()
                 pygame.display.flip()
                 pygame.time.Clock().tick(60)
 if __name__ == '__main__':
