@@ -20,26 +20,24 @@ class PlayingArea():
         self.rect.center = (center_x, center_y)
         self.tile_rotations = [[random.choice([0, 90, 180]) for _ in range(self.map_width)] for _ in range(self.map_height)]
 
-    def draw(self):
+    def draw(self, map):
         self.screen.blit(self.image, self.rect)
         for i in range(self.map_height):
             for j in range(self.map_width):
                 x = j * self.tile_size
                 y = i * self.tile_size
-                if i == 3 and self.map[i][j] != -1:
+                if (i == 3 and self.map[i][j] != -1):
                     way_image = pygame.image.load('assets/way.png')
                     way_image = pygame.transform.scale(way_image, (self.tile_size, self.tile_size))
+                    tile_rect = way_image.get_rect(center=(x + self.tile_size // 2, y + self.tile_size // 2))
+                    self.image.blit(way_image, tile_rect)
                 else:
-                    if self.map[i][j] == -1:
+                    if map[i][j] == -1:
                         tile_image = pygame.image.load('assets/block.png')
                     else:
                         tile_image = pygame.image.load('assets/map.png')
                     tile_image = pygame.transform.scale(tile_image, (self.tile_size, self.tile_size))
                     angle = self.tile_rotations[i][j]
                     tile_image = pygame.transform.rotate(tile_image, angle)
-                if i == 3 and self.map[i][j] != -1:
-                    tile_rect = way_image.get_rect(center=(x + self.tile_size // 2, y + self.tile_size // 2))
-                    self.image.blit(way_image, tile_rect.topleft)
-                else:
                     tile_rect = tile_image.get_rect(center=(x + self.tile_size // 2, y + self.tile_size // 2))
-                    self.image.blit(tile_image, tile_rect.topleft)
+                    self.image.blit(tile_image, tile_rect)
