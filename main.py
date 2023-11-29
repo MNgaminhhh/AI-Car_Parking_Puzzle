@@ -44,7 +44,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[2]
+        self.problem = self.problems[index]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -162,7 +162,7 @@ class MyGame:
                     self.ucs.test()  
                 if event.key == pygame.K_g:
                     self.greedy = GREEDY(self)
-                    self.greedy.test()
+                    self.run_greedy_solver()
                 if event.key == pygame.K_h: 
                     self.run_hillclimbing_solver()
                 if event.key == pygame.K_j:
@@ -218,6 +218,7 @@ class MyGame:
                         self.run_bfs_solver()   
                     elif selected_algorithm == 'GREEDY':
                         self.run_greedy_solver()
+                        print(1)
                     elif selected_algorithm == 'A*':
                         self.run_astar_solver()
                     elif selected_algorithm == 'BEAM':
@@ -278,6 +279,7 @@ class MyGame:
         end_time = time.time()
         print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
+
     def run_astar_solver(self):
         start_time = time.time()
         astar = ASTAR(self)
@@ -287,6 +289,7 @@ class MyGame:
         end_time = time.time()
         print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
+
 
     def run_hillclimbing_solver(self):
         start_time = time.time()
@@ -304,6 +307,12 @@ class MyGame:
             end_time = time.time()
             print(f"BFS took {end_time - start_time:.6f} seconds")
             print('Maximum local: ',path[0])
+
+    def print_heuristic_values(self, node):
+        distance = node.heuristic_distance
+        obstacle = node.heuristic_obstacle
+        print(f'Khoảng cách: {distance}, Số lượng vật cản: {obstacle}')
+
     def AI_playing(self, path):
         print(self.goal)
         if path:
@@ -311,20 +320,38 @@ class MyGame:
                 print(f"Step {i}:")
                 print("Selected Car:", node.car_choose)
                 print("Action:", node.action)
-                for car in self.cars:
-                    if car.cate == node.car_choose:
-                        car.choose = 1
-                        if node.action == 'l':
-                            car.move_left()
-                        elif node.action == 'r':
-                            car.move_right()
-                        elif node.action == 'u':
-                            car.move_up()
-                        else:
-                            car.move_down()
-                    else:
-                        car.choose = 0
-                self.update_screen()
+                if node.car_choose is not None:
+                    chosen_car = None
+                    for car in self.cars:
+                        if car.cate == node.car_choose:
+                            chosen_car = car
+                            break
+                    if chosen_car:
+                        if chosen_car.lines == 'h':
+                            if node.action == 'l':
+                                print("Moving Left")
+                                chosen_car.choose = 1
+                                chosen_car.move_left()
+                            
+                            elif node.action == 'r':
+                                print("Moving Right")
+                                chosen_car.choose = 1
+                                chosen_car.move_right()
+                                
+                        elif chosen_car.lines == 'v':
+                            if node.action == 'u':
+                                print("Moving Up")
+                                chosen_car.choose = 1
+                                chosen_car.move_up()
+                                
+                            elif node.action == 'd':
+                                print("Moving Down")
+                                chosen_car.choose = 1
+                                chosen_car.move_down()
+                        self.update_screen()
+                        pygame.time.wait(100) 
+                        self.update_screen()
+                print("---------------")
         else:
             print("No solution found.") 
 
@@ -520,4 +547,3 @@ if __name__ == '__main__':
     MG.load_problem()
     MG.init_game()
     MG.run_game()
-    #main()
