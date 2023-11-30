@@ -44,7 +44,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[9]
+        self.problem = self.problems[2]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -93,6 +93,7 @@ class MyGame:
         self.combobox.draw(self.screen)
         self.expense.update()
         self.visited_text.update2()
+        self.time_text.update2()
         self.cars.update()
         self.playing_area.draw(self.map)
         for car in self.cars.sprites():
@@ -124,6 +125,7 @@ class MyGame:
         self.expense = Text(self, 71, 580, 'Step: 0')
         self.visited = 0
         self.visited_text = Text(self, 49, 670, 'Visited States: 0')
+        self.time_text = Text(self, 49, 410, 'Time: 0')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
@@ -236,6 +238,7 @@ class MyGame:
         self.visited = bfs.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
         end_time = time.time()
+        self.time_text.text = "Time: {:.6f}".format(end_time - start_time)
         print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
@@ -246,6 +249,7 @@ class MyGame:
         self.visited = beam.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
         end_time = time.time()
+        self.time_text.text = "Time: {:.6f}".format(end_time - start_time)
         print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
     
@@ -256,6 +260,7 @@ class MyGame:
         self.visited = ids.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
         end_time = time.time()
+        self.time_text.text = "Time: {:.6f}".format(end_time - start_time)
         print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
@@ -266,6 +271,7 @@ class MyGame:
         self.visited = ucs.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
         end_time = time.time()
+        self.time_text.text = "Time: {:.6f}".format(end_time - start_time)
         print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
     
@@ -276,6 +282,7 @@ class MyGame:
         self.visited = greedy.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
         end_time = time.time()
+        self.time_text.text = "Time: {:.6f}".format(end_time - start_time)
         print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
@@ -286,6 +293,7 @@ class MyGame:
         self.visited = astar.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
         end_time = time.time()
+        self.time_text.text = "Time: {:.6f}".format(end_time - start_time)
         print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
@@ -304,12 +312,14 @@ class MyGame:
             self.visited = hill.visited_states_count
             self.visited_text.text = "Visited States: " + str(self.visited)
             end_time = time.time()
+            self.time_text.text = "Time: {:.6f}".format(end_time - start_time)
             print(f"BFS took {end_time - start_time:.6f} seconds")
             self.AI_playing(path)
         else:
             self.visited = hill.visited_states_count
             self.visited_text.text = "Visited States: " + str(self.visited)
             end_time = time.time()
+            self.time_text.text = "Time: {:.6f}".format(end_time - start_time)
             print(f"BFS took {end_time - start_time:.6f} seconds")
             print('Maximum local: ',path[0])
 
@@ -502,7 +512,7 @@ class MyGame:
                         if event.key == pygame.K_RIGHT:
                             for i in all_car:
                                 if i.cate == 'x':
-                                    if map[i.end_y+1][i.end_x+2]==0:
+                                    if (map[i.end_y+1][i.end_x+2])==0 and i.end_x+1 < map_width-3:
                                         map[i.start_y+1][i.start_x+1] = 0
                                         map[i.end_y+1][i.end_x+2]='x'
                                         i.start_x += 1
