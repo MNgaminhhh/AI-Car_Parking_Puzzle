@@ -106,6 +106,14 @@ class UCS:
             current_node = current_element.value            
             key = self.convert_to_key(current_node.state)
             visited.append(key)
+            # #lấy ra 1 nút từ hàng đợi
+            # current_node = priority_queue.popleft()[1]
+            # #chuyển trạng thái hiện tại thành 1 khóa để kiểm tra              
+            # key = self.convert_to_key(current_node.state)
+            # #thêm trạng thái vào danh sách
+            # visited.append(key)
+            self.visited_states_count += 1
+            #(tạo các nút từ trạng thái hiện tại)
             for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars, current_node.cost):
                 neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], neighbor_state[4]) 
             #chuyển trạng thái thành khóa

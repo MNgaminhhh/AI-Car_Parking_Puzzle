@@ -15,7 +15,8 @@ from src.car import Car
 from src.text import Text
 from src.combobox import ComboBox
 from src.node import Node
-#from src.priority_queue import QueueElement
+import time
+
 class MyGame:
     pygame.init()
 
@@ -24,7 +25,7 @@ class MyGame:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.map=[]
         self.init_map()
-        self.combobox = ComboBox(71, 495, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'Greedy'])
+        self.combobox = ComboBox(71, 495, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'GREEDY'])
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -34,8 +35,8 @@ class MyGame:
         self.goal = (0, 0)
         self.initialize_buttons() 
         self.in_start_menu = True
-        self.buttons_visible = True
         self.newgame = True
+        self.settings_visible = True
         pygame.display.set_caption("Car Parking Puzzle")
 
     # Problem
@@ -43,7 +44,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[index]
+        self.problem = self.problems[9]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -107,7 +108,7 @@ class MyGame:
     # Buttons
     def btn_init(self):
         self.btn_list = []
-        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2', 'buttonstop','backtomenu']
+        list_btn = ['buttonNewGame', 'buttonReset', 'buttonStart2','backtomenu']
         tab_x = self.settings.tab_x_btn
         tab_y = self.settings.tab_y_btn
         height = self.settings.btn_height
@@ -174,6 +175,7 @@ class MyGame:
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
         relative_mouse_y = mouse_y - self.playing_area.rect.y
+        print(relative_mouse_x, relative_mouse_y)
         for car in self.cars.sprites():
             if car.click(relative_mouse_x, relative_mouse_y):
                 car.choose = 1
@@ -192,6 +194,11 @@ class MyGame:
                         car.move_up()
                     if event.key == pygame.K_DOWN:
                         car.move_down()
+                    if event.key == pygame.K_l:
+                        car.turn()
+                        self.update_screen()
+                        car.turn_left()
+                        self.cars.update()
                     print(car.cate, car.start_x, car.start_y)
         self.update_screen()
     def check_btn_click(self, mouse_x, mouse_y):
@@ -229,56 +236,81 @@ class MyGame:
                         self.run_IDS_solver()
           
     def run_bfs_solver(self):
+        start_time = time.time()
         bfs = BFS(self)
         path = bfs.solve()
         self.visited = bfs.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
     def run_beam_solver(self):
+        start_time = time.time()
         beam = BEAM(self, 100)
         path = beam.solve()
         self.visited = beam.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
     
     def run_IDS_solver(self):
+        start_time = time.time()
         ids = IDS(self)
         path = ids.solve()
         self.visited = ids.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
     def run_ucs_solver(self):
+        start_time = time.time()
         ucs = UCS(self)
         path = ucs.solve()
         self.visited = ucs.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
     
     def run_greedy_solver(self):
+        start_time = time.time()
         greedy = GREEDY(self)
         path = greedy.solve()
         self.visited = greedy.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
     def run_astar_solver(self):
+        start_time = time.time()
         astar = ASTAR(self)
         path = astar.solve()
         self.visited = astar.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
+        end_time = time.time()
+        print(f"BFS took {end_time - start_time:.6f} seconds")
         self.AI_playing(path)
 
 
     def run_hillclimbing_solver(self):
+        start_time = time.time()
         hill = Hill_climbing(self)
         path = hill.solve()
         if (len(path)>1):
             self.visited = hill.visited_states_count
             self.visited_text.text = "Visited States: " + str(self.visited)
+            end_time = time.time()
+            print(f"BFS took {end_time - start_time:.6f} seconds")
             self.AI_playing(path)
         else:
+            self.visited = hill.visited_states_count
+            self.visited_text.text = "Visited States: " + str(self.visited)
+            end_time = time.time()
+            print(f"BFS took {end_time - start_time:.6f} seconds")
             print('Maximum local: ',path[0])
 
     def AI_playing(self, path):
@@ -358,14 +390,13 @@ class MyGame:
                 self.check_end_game()
     
     def show_start_menu(self):
-        show_settings = True
+        
         background_image = pygame.image.load('assets/background_menu.png')
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, [0, 0])
-        if self.buttons_visible:
-            self.start_button.blitme()
-            self.settings_button.blitme()
-            self.quit_button.blitme()
+        self.start_button.blitme()
+        self.settings_button.blitme()
+        self.quit_button.blitme()
         while self.in_start_menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -375,7 +406,9 @@ class MyGame:
                     if self.start_button.click(mouse_x, mouse_y):
                         self.in_start_menu = False 
                     elif self.settings_button.click(mouse_x, mouse_y):
-                        self.show_settings(show_settings)
+                        # self.show_settings(True)
+                        # self.in_start_menu = False
+                        self.show_settings(self.settings_visible)
                     elif self.quit_button.click(mouse_x, mouse_y):
                         sys.exit()
             self.cars.update()
@@ -395,6 +428,13 @@ class MyGame:
             rect.center = (screen_width//2, 100)
             back_to_menu = Button(self, 0, 0, 'backtomenu', 0.4)
             map = []
+            hello_font = pygame.font.SysFont(None, 40)
+            hello_text = hello_font.render('<= or => move car playing, drag car to map to setting map press space rotate car', True, (255, 255, 255))
+            hello_rect = hello_text.get_rect()
+            hello_rect.center = (screen_width // 2, screen_height - 110)
+            back_to_menu_button = Button(self, 100, 110, 'backtomenu', 0.21)
+            acc_button = Button(self, 200, 110, 'buttonAcc', 0.20)
+
             for i in range(map_height):
                 map.append([])
                 for j in range(map_width):
@@ -404,14 +444,14 @@ class MyGame:
                         map[i].append(0)
             map[3][1] = 'x'
             map[3][2] = 'x'
-            settings_background = pygame.image.load('assets/background_setting.png')
+            settings_background = pygame.image.load('assets/background_setting2.png')
             settings_background = pygame.transform.scale(settings_background, (screen_width, screen_height))
             playing_area = PlayingArea(self)
             all_car = [Car(self, 'x', 'h', 0, 2)]
             for btn in self.all_btn:
                 btn.blitme()
-                cars = [('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2), ('f', 2), ('g', 2), ('h', 2),
-                        ('i', 2), ('j', 2), ('k', 2), ('l', 2), ('m', 2), ('n', 2), ('o', 2), ('p', 3), ('q', 3), ('r', 3)]
+                cars = [('a', 2), ('b', 2),('r', 3), ('c', 2), ('d', 2), ('e', 2), ('f', 2), ('g', 2), ('h', 2),
+                        ('i', 2), ('j', 2), ('k', 2), ('l', 2), ('m', 2), ('n', 2), ('o', 2), ('p', 3), ('q', 3)]
                 car_objects = []
                 for car_info in cars:
                     category, length = car_info
@@ -441,13 +481,18 @@ class MyGame:
                                 dragging_image = pygame.image.load(f'assets/{dragging_car.cate}.png')
                                 scaling_factor = 0.7
                                 dragging_image = pygame.transform.scale(dragging_image, (int(dragging_car.length * dragging_car.tile_size * scaling_factor), int(dragging_car.tile_size * scaling_factor)))
-                        mouse_x, mouse_y = pygame.mouse.get_pos()
-                        if back_to_menu.click(mouse_x, mouse_y):
-                            self.in_start_menu=True
+                        if back_to_menu_button.rect.collidepoint(event.pos):
                             self.show_start_menu()
+                            # print(self.settings_visible)
+                        if acc_button.rect.collidepoint(event.pos):
+                            self.in_start_menu=False
                             isVisible=False
+                            self.problem=problems 
+                            self.newgame=False
+                            self.init_game()
                             return
                     if event.type == pygame.KEYDOWN:
+
                         if event.key == pygame.K_SPACE and dragging_car is not None:
                             dragging_car.rotate()
                             dragging_image = pygame.transform.rotate(dragging_image, 90)
@@ -461,7 +506,7 @@ class MyGame:
                         if event.key == pygame.K_RIGHT:
                             for i in all_car:
                                 if i.cate == 'x':
-                                    if map[i.end_y+1][i.end_x+2]==0:
+                                    if (map[i.end_y+1][i.end_x+2])==0 and i.end_x+1 < map_width-3:
                                         map[i.start_y+1][i.start_x+1] = 0
                                         map[i.end_y+1][i.end_x+2]='x'
                                         i.start_x += 1
@@ -513,10 +558,10 @@ class MyGame:
                                             car_objects.pop(i)
                             dragging_car = None
                             dragging_image = None
-                self.screen.blit(playing_area.image, playing_area.rect.topleft)
+                
                 self.screen.fill((255, 255, 255))
-                self.screen.blit(settings_background, [0, 0])           
-                self.screen.blit(font_image, rect)
+                self.screen.blit(settings_background, [0, 0])
+                self.screen.blit(playing_area.image, playing_area.rect.topleft)
                 playing_area.draw(map)
                 back_to_menu.blitme()
                 for i in all_car:
@@ -534,25 +579,13 @@ class MyGame:
                     self.screen.blit(car_image, car.rect)
                 if dragging_image is not None:
                     self.screen.blit(dragging_image, (pygame.mouse.get_pos()[0] - offset_x, pygame.mouse.get_pos()[1] - offset_y))
+                self.screen.blit(hello_text, hello_rect)
+                back_to_menu_button.blitme()
+                acc_button.blitme()
                 for car in all_car:
                     car.update()
-                pygame.time.Clock().tick(60)
                 pygame.display.flip()
-                        
-    def btn_init_backtomenu(self):
-        # Initialize only the "backtomenu" button
-        self.all_btn.empty()
-        list_btn = ['backtomenu']
-        tab_x = self.settings.tab_x_btn
-        tab_y = self.settings.tab_y_btn
-        height = self.settings.btn_height
-        padding = self.settings.btn_padding_top
-        for i, image_path in enumerate(list_btn):
-            y_position = (tab_y + height) * i + padding
-            new_btn = Button(self, tab_x, y_position, image_path, 0.215)
-            self.all_btn.add(new_btn)
-
-
+                pygame.time.Clock().tick(60)
 if __name__ == '__main__':
     MG = MyGame()
     MG.load_problem()

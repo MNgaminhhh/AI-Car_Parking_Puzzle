@@ -126,7 +126,7 @@ class GREEDY:
 
             key = self.convert_to_key(current_node.state)
             visited.append(key)
-            
+            self.visited_states_count += 1
             for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
                 neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], None) #neighbor[4]
                 
