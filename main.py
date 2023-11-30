@@ -492,7 +492,7 @@ class MyGame:
                         if event.key == pygame.K_RIGHT:
                             for i in all_car:
                                 if i.cate == 'x':
-                                    if map[i.end_y+1][i.end_x+2]==0:
+                                    if (map[i.end_y+1][i.end_x+2])==0 and i.end_x+1 < map_width-3:
                                         map[i.start_y+1][i.start_x+1] = 0
                                         map[i.end_y+1][i.end_x+2]='x'
                                         i.start_x += 1
