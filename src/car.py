@@ -43,17 +43,16 @@ class Car(Sprite):
     def update(self):
         u = self.start_y+1
         v = self.start_x+1
-        if u%1==0 and v%1==0:
-            self.map[u][v] = self.cate
+        self.map[u][v] = self.cate
+        if self.lines == 'h':
+            self.end_x = self.start_x + self.length-1
+        else:
+            self.end_y = self.start_y + self.length-1 
+        for i in range(1, self.length):
             if self.lines == 'h':
-                self.end_x = self.start_x + self.length-1
+                self.map[u][v+i] = self.cate
             else:
-                self.end_y = self.start_y + self.length-1 
-            for i in range(1, self.length):
-                if self.lines == 'h':
-                    self.map[u][v+i] = self.cate
-                else:
-                    self.map[u+i][v] = self.cate
+                self.map[u+i][v] = self.cate
         self.rect.x = (self.start_x+1)*self.tile_size
         self.rect.y = (self.start_y+1)*self.tile_size
 
@@ -75,6 +74,7 @@ class Car(Sprite):
             self.game.expense_move()
 
     def move_right(self):
+        print(self.lines)
         if self.choose and self.lines == 'h' and self.can_move('r'):
             self.map[self.start_y+1][self.start_x+1] = 0
             self.rect.x += self.tile_size
@@ -95,25 +95,32 @@ class Car(Sprite):
             self.start_y += 1
             self.game.expense_move()
 
-    def turn(self):
-        if self.choose:
-            if self.can_move('ul'):
-                self.start_y -= 1
-                self.start_x -= 0.7
-                self.image = pygame.transform.rotate(self.image, 45)
-                self.action_turn = 1
-                print(self.start_x, self.start_y)
-
     def turn_left(self):
         if self.choose:
-            if self.action_turn == 1:
-                self.start_x = int(self.start_x-1.3)
-                self.image = pygame.transform.rotate(self.image, 45)
-                self.lines = 'h'
+            if self.can_move('ul'):
+                print(self.rect.center)
+                self.rotate_image = pygame.transform.rotate(self.image, 45)
+                rotate_rect = self.rotate_image.get_rect()
+                rotate_rect.center = self.rect.center
+                rotate_rect.y -= 0.7*self.tile_size
+                self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                self.game.expense_move()
+                self.image = pygame.transform.rotate(self.image, 90)
                 self.rect = self.image.get_rect()
-                self.rect.x = (self.start_x+1)*self.tile_size
-                self.rect.y = (self.start_y+1)*self.tile_size 
-                print(self.rect.x, self.rect.y)
+                for i in range(self.length):
+                    self.map[self.start_y+1+i][self.start_x+1] = 0
+                self.start_x -= self.length-1 
+                self.start_y -= 1
+                self.lines = 'h'
+                self.game.expense_move()
+                self.update()
+                print(self.start_x, self.start_y, self.end_x, self.end_y)
+                print(self.lines)
+                for i in range(8):
+                    for j in range(9):
+                        print(self.map[i][j], end = ' ')
+                    print()
+
 
     def can_move(self, dir):
         if dir == 'l':
@@ -129,8 +136,9 @@ class Car(Sprite):
             if (self.map[self.end_y+2][self.end_x+1] != 0):
                 return False  
         if dir == 'ul':
-            if self.map[self.start_y][self.start_x+1] != 0 and self.map[self.start_y][self.start_x] != 0:
-                return False          
+            for i in range(self.length):
+                 if self.map[self.start_y][self.start_x+1-i] != 0:
+                    return False          
         return True 
 
     def blitme(self, surface):

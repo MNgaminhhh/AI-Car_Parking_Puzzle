@@ -195,10 +195,7 @@ class MyGame:
                     if event.key == pygame.K_DOWN:
                         car.move_down()
                     if event.key == pygame.K_l:
-                        car.turn()
-                        self.update_screen()
                         car.turn_left()
-                        self.cars.update()
                     print(car.cate, car.start_x, car.start_y)
         self.update_screen()
     def check_btn_click(self, mouse_x, mouse_y):
@@ -421,12 +418,6 @@ class MyGame:
             screen_height = self.settings.screen_height
             map_width = self.settings.map_width
             map_height = self.settings.map_height
-            str = '- Press S: Starting the game settings \n- Drag each car into map to create map \n- Press K_Right or K_Left to move main car'
-            font = pygame.font.SysFont('Consolas', 15)
-            font_image = font.render(str, True, (0,0,0))
-            rect = font_image.get_rect()
-            rect.center = (screen_width//2, 100)
-            back_to_menu = Button(self, 0, 0, 'backtomenu', 0.4)
             map = []
             hello_font = pygame.font.SysFont(None, 40)
             hello_text = hello_font.render('<= or => move car playing, drag car to map to setting map press space rotate car', True, (255, 255, 255))
@@ -461,9 +452,7 @@ class MyGame:
             dragging_car = None
             offset_x, offset_y = 0, 0
             dragging_image = None
-            bool = True
-
-            while bool:
+            while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -563,7 +552,6 @@ class MyGame:
                 self.screen.blit(settings_background, [0, 0])
                 self.screen.blit(playing_area.image, playing_area.rect.topleft)
                 playing_area.draw(map)
-                back_to_menu.blitme()
                 for i in all_car:
                     i.blitme(playing_area.image)
                 for (car, _), i in zip(car_objects, range(len(car_objects))):
