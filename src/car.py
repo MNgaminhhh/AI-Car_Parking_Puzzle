@@ -146,7 +146,7 @@ class Car(Sprite):
                         rotate_rect = self.rotate_image.get_rect()
                         rotate_rect.center = self.rect.center
                         rotate_rect.y -= 0.3*self.tile_size
-                        rotate_rect.x += 0.9*self.tile_size
+                        rotate_rect.x += 1.2*self.tile_size
                         self.playing_area.image.blit(self.rotate_image, rotate_rect)
                         self.game.expense_move()
                         self.image = pygame.transform.rotate(self.image, 90)
@@ -192,7 +192,8 @@ class Car(Sprite):
                         self.rotate_image = pygame.transform.rotate(self.image, -30)
                         rotate_rect = self.rotate_image.get_rect()
                         rotate_rect.center = self.rect.center
-                        rotate_rect.y -= 0.7*self.tile_size
+                        rotate_rect.y -= 1.2*self.tile_size
+                        rotate_rect.x += 0.3*self.tile_size
                         self.playing_area.image.blit(self.rotate_image, rotate_rect)
                         self.game.expense_move()
                         
@@ -213,7 +214,8 @@ class Car(Sprite):
                         self.rotate_image = pygame.transform.rotate(self.image, 30)
                         rotate_rect = self.rotate_image.get_rect()
                         rotate_rect.center = self.rect.center
-                        rotate_rect.y += 0.7*self.tile_size
+                        rotate_rect.x += 0.3*self.tile_size
+                        rotate_rect.y += 0.9*self.tile_size
                         self.playing_area.image.blit(self.rotate_image, rotate_rect)
                         self.game.expense_move()
                         
@@ -228,6 +230,47 @@ class Car(Sprite):
                         self.game.expense_move()
                         self.update()
             #Xe ngang
+            else:
+                if dir == 'rd':
+                    if self.can_move('rd'):
+                        self.rotate_image = pygame.transform.rotate(self.image, -30)
+                        rotate_rect = self.rotate_image.get_rect()
+                        rotate_rect.center = self.rect.center
+                        rotate_rect.x += 1.2*self.tile_size
+                        rotate_rect.y += 0.3*self.tile_size
+                        self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                        self.game.expense_move()
+                        
+                        self.image = pygame.transform.rotate(self.image, -90)
+                        self.rect = self.image.get_rect()
+                        #map
+                        for i in range(self.length):
+                            self.map[self.start_y+1][self.start_x+1+i] = 0
+                        
+                        self.start_x += self.length
+                        self.lines = 'v'
+                        self.game.expense_move()
+                        self.update()
+                elif dir == 'ld':
+                    if self.can_move('ld'):
+                        self.rotate_image = pygame.transform.rotate(self.image, 30)
+                        rotate_rect = self.rotate_image.get_rect()
+                        rotate_rect.center = self.rect.center
+                        rotate_rect.x -= 0.7*self.tile_size
+                        rotate_rect.y += 1.2*self.tile_size
+                        self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                        self.game.expense_move()
+                        
+                        self.image = pygame.transform.rotate(self.image, 90)
+                        self.rect = self.image.get_rect()
+                        #map
+                        for i in range(self.length):
+                            self.map[self.start_y+1][self.start_x+1+i] = 0
+                        
+                        self.start_x -= 1
+                        self.lines = 'v'
+                        self.game.expense_move()
+                        self.update()
             
             for i in range(8):
                 for j in range(9):
@@ -284,6 +327,16 @@ class Car(Sprite):
             print('lu')
             for i in range(self.length):
                 if self.map[self.start_y+1-i][self.start_x] != 0:
+                    return False
+        if dir == 'rd':
+            print('rd')
+            for i in range(self.length):
+                if self.map[self.end_y+1+i][self.end_x+2] != 0:
+                    return False
+        if dir == 'ld':
+            print('ld')
+            for i in range(self.length):
+                if self.map[self.start_y+1+i][self.start_x]:
                     return False
         return True  
 

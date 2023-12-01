@@ -201,10 +201,18 @@ class MyGame:
                     if event.key == pygame.K_f:
                         car.turn_right('ur')
                     #xe ngang
+                    if event.key == pygame.K_q:
+                        car.turn_right('lu')
+                        car.turn_left('ul')
                     if event.key == pygame.K_e:
-                        car.turn_left('lu')
-                    if event.key == pygame.K_r:
+                        car.turn_right('ur')
                         car.turn_left('ru')
+                    if event.key == pygame.K_z:
+                        car.turn_left('dl')
+                        car.turn_right('ld')
+                    if event.key == pygame.K_c:
+                        car.turn_right('dr')
+                        car.turn_left('rd')
                     
 
                     print(car.cate, car.start_x, car.start_y)
