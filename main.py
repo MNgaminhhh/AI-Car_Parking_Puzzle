@@ -202,7 +202,7 @@ class MyGame:
                         car.turn_right('ur')
                     #xe ngang
                     if event.key == pygame.K_q:
-                        car.turn_right('lu')
+                        car.turn_left('lu')
                         car.turn_left('ul')
                     if event.key == pygame.K_e:
                         car.turn_right('ur')
@@ -212,7 +212,7 @@ class MyGame:
                         car.turn_right('ld')
                     if event.key == pygame.K_c:
                         car.turn_right('dr')
-                        car.turn_left('rd')
+                        car.turn_right('rd')
                     
 
                     print(car.cate, car.start_x, car.start_y)

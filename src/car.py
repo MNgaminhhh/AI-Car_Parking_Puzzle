@@ -279,19 +279,13 @@ class Car(Sprite):
 
 
     def can_move(self, dir):
-        if dir == 'l':
-            if (self.map[self.start_y+1][self.start_x] != 0):
-                return False
-        if dir == 'r':
-            if (self.map[self.end_y+1][self.end_x+2] != 0):
-                return False
+        #Xe nằm dọc:
         if dir == 'u':
             if (self.map[self.start_y][self.start_x+1] != 0):
                 return False
         if dir == 'd':
             if (self.map[self.end_y+2][self.end_x+1] != 0):
                 return False  
-        #Xe nằm dọc:
         if dir == 'ul':
             print('ul')
             for i in range(self.length):
@@ -317,6 +311,12 @@ class Car(Sprite):
                 if self.map[self.end_y+2][self.end_x+1-i] != 0:
                     return False
         #Xe nằm ngang:
+        if dir == 'l':
+            if (self.map[self.start_y+1][self.start_x] != 0):
+                return False
+        if dir == 'r':
+            if (self.map[self.end_y+1][self.end_x+2] != 0):
+                return False
         if dir == 'ru':
             print('ru')
             for i in range(self.length):
