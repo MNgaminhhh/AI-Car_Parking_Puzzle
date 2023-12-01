@@ -157,10 +157,7 @@ class MyGame:
                 self.move_car(event)
                 if event.key == pygame.K_b:
                     self.bfs = BFS(self)
-                    self.bfs.solve()      
-                if event.key == pygame.K_u:
-                    self.ucs = UCS(self)
-                    self.ucs.test()  
+                    self.bfs.solve()  
                 if event.key == pygame.K_g:
                     self.greedy = GREEDY(self)
                     self.run_greedy_solver()
@@ -194,8 +191,22 @@ class MyGame:
                         car.move_up()
                     if event.key == pygame.K_DOWN:
                         car.move_down()
-                    if event.key == pygame.K_l:
-                        car.turn_left()
+                    #xe dọc
+                    if event.key == pygame.K_a:
+                        car.turn_left('dl')
+                    if event.key == pygame.K_s:
+                        car.turn_left('ul')
+                    if event.key == pygame.K_d:
+                        car.turn_right('dr')
+                    if event.key == pygame.K_f:
+                        car.turn_right('ur')
+                    #xe ngang
+                    if event.key == pygame.K_e:
+                        car.turn_left('lu')
+                    if event.key == pygame.K_r:
+                        car.turn_left('ru')
+                    
+
                     print(car.cate, car.start_x, car.start_y)
         self.update_screen()
     def check_btn_click(self, mouse_x, mouse_y):
@@ -346,8 +357,6 @@ class MyGame:
                                 chosen_car.choose = 1
                                 chosen_car.move_down()
                         self.update_screen()
-                        pygame.time.wait(100) 
-                        self.update_screen()
                 print("---------------")
         else:
             print("No solution found.") 
@@ -378,6 +387,7 @@ class MyGame:
 
     def run_game(self):
         while True:
+            pygame.time.Clock().tick(24000)
             if self.in_start_menu:
                 self.show_start_menu()
             else:
@@ -401,10 +411,8 @@ class MyGame:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     if self.start_button.click(mouse_x, mouse_y):
-                        self.in_start_menu = False 
+                        self.in_start_menu = False
                     elif self.settings_button.click(mouse_x, mouse_y):
-                        # self.show_settings(True)
-                        # self.in_start_menu = False
                         self.show_settings(self.settings_visible)
                     elif self.quit_button.click(mouse_x, mouse_y):
                         sys.exit()
@@ -573,7 +581,7 @@ class MyGame:
                 for car in all_car:
                     car.update()
                 pygame.display.flip()
-                pygame.time.Clock().tick(60)
+                pygame.time.Clock().tick(30)
 if __name__ == '__main__':
     MG = MyGame()
     MG.load_problem()
