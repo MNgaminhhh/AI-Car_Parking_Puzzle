@@ -25,7 +25,8 @@ class MyGame:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.map=[]
         self.init_map()
-        self.combobox = ComboBox(71, 495, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'GREEDY'])
+        self.combobox = ComboBox(71, 660, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'GREEDY'])
+        self.checkbox_button = Button(self, 71, 820, 'checkbox', 0.21)
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
@@ -36,7 +37,8 @@ class MyGame:
         self.initialize_buttons() 
         self.in_start_menu = True
         self.newgame = True
-        self.settings_visible = True
+        self.settings_visible = False
+        self.checkbox_checked = False
         pygame.display.set_caption("Car Parking Puzzle")
 
     # Problem
@@ -94,10 +96,13 @@ class MyGame:
         self.expense.update()
         self.visited_text.update2()
         self.time_text.update2()
+        self.sevenseven_text.update3()
         self.cars.update()
         self.playing_area.draw(self.map)
         for car in self.cars.sprites():
             car.draw()
+        self.checkbox_button.blitme()
+
         pygame.display.flip()
 
     # Car
@@ -122,10 +127,11 @@ class MyGame:
     #Game
     def init_game(self):
         self.step = 0
-        self.expense = Text(self, 71, 580, 'Step: 0')
+        self.expense = Text(self, 730, 820, 'Step: 0')
         self.visited = 0
-        self.visited_text = Text(self, 49, 670, 'Visited States: 0')
-        self.time_text = Text(self, 49, 410, 'Time: 0')
+        self.visited_text = Text(self, 430, 820, 'Visited States: 0')
+        self.time_text = Text(self, 980, 820, 'Time: 0')
+        self.sevenseven_text = Text(self, 165, 840, '7x7')
         for car in self.cars:
             car.kill()
         for btn in self.all_btn:
@@ -155,6 +161,24 @@ class MyGame:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 self.check_car_click(mouse_x, mouse_y)
                 self.check_btn_click(mouse_x, mouse_y)
+                if self.checkbox_button.click(mouse_x, mouse_y):
+                    self.checkbox_checked = not self.checkbox_checked
+                    if self.checkbox_checked:
+                        self.settings.map_height = 9
+                        self.settings.map_width = 10
+                        self.sevenseven_text.text = '6x6'
+                        checkbox_image_path = 'assets/checkbox2.png'
+                        print(self.settings.map_height)
+                    else:
+                        self.settings.map_height = 8
+                        self.settings.map_width = 9
+                        checkbox_image_path = 'assets/checkbox.png'
+                        self.sevenseven_text.text = '7x7'
+                        print(self.settings.map_height)
+                    # self.playing_area = PlayingArea(self)
+                    self.create_map()
+                    checkbox_image = pygame.image.load(checkbox_image_path)
+                    self.checkbox_button.image = pygame.transform.scale(checkbox_image, self.checkbox_button.rect.size)
             if event.type == pygame.KEYDOWN:
                 self.move_car(event)
                 if event.key == pygame.K_b:
@@ -394,7 +418,6 @@ class MyGame:
                 self.check_end_game()
     
     def show_start_menu(self):
-        
         background_image = pygame.image.load('assets/background_menu.png')
         background_image = pygame.transform.scale(background_image, (self.settings.screen_width, self.settings.screen_height))
         self.screen.blit(background_image, [0, 0])
@@ -410,16 +433,15 @@ class MyGame:
                     if self.start_button.click(mouse_x, mouse_y):
                         self.in_start_menu = False 
                     elif self.settings_button.click(mouse_x, mouse_y):
-                        # self.show_settings(True)
-                        # self.in_start_menu = False
-                        self.show_settings(self.settings_visible)
+                        self.settings_visible = not self.settings_visible
+                        self.show_settings()
                     elif self.quit_button.click(mouse_x, mouse_y):
                         sys.exit()
             self.cars.update()
             pygame.display.flip() 
     
-    def show_settings(self, isVisible):
-        if isVisible:
+    def show_settings(self):
+        if self.settings_visible:
             problems = ['x02h']
             screen_width = self.settings.screen_width
             screen_height = self.settings.screen_height
@@ -432,7 +454,6 @@ class MyGame:
             hello_rect.center = (screen_width // 2, screen_height - 110)
             back_to_menu_button = Button(self, 100, 110, 'backtomenu', 0.21)
             acc_button = Button(self, 200, 110, 'buttonAcc', 0.20)
-
             for i in range(map_height):
                 map.append([])
                 for j in range(map_width):
@@ -444,7 +465,6 @@ class MyGame:
             map[3][2] = 'x'
             settings_background = pygame.image.load('assets/background_setting2.png')
             settings_background = pygame.transform.scale(settings_background, (screen_width, screen_height))
-            playing_area = PlayingArea(self)
             all_car = [Car(self, 'x', 'h', 0, 2)]
             for btn in self.all_btn:
                 btn.blitme()
@@ -480,6 +500,7 @@ class MyGame:
                         if back_to_menu_button.rect.collidepoint(event.pos):
                             self.show_start_menu()
                             # print(self.settings_visible)
+                       
                         if acc_button.rect.collidepoint(event.pos):
                             self.in_start_menu=False
                             isVisible=False
@@ -530,8 +551,8 @@ class MyGame:
                             dragging_car.rect.y = event.pos[1] - offset_y
                     if event.type == pygame.MOUSEBUTTONUP:
                         if dragging_car is not None:
-                            map_col = (event.pos[0] - playing_area.rect.topleft[0]) // playing_area.tile_size - 1
-                            map_row = (event.pos[1] - playing_area.rect.topleft[1]) // playing_area.tile_size - 1 
+                            map_col = (event.pos[0] - self.playing_area.rect.topleft[0]) // self.playing_area.tile_size - 1
+                            map_row = (event.pos[1] - self.playing_area.rect.topleft[1]) // self.playing_area.tile_size - 1 
                             self.map[map_row][map_col] = dragging_car.cate
                             print(f"Dropped car {dragging_car.cate} into map at row {map_row}, column {map_col} {dragging_car.lines}")
                             if ((map_col>=0 and map_col<map_width-1) and (map_row>=0 and map_row<map_height-1) and (map[map_row+1][map_col+1]==0)):
@@ -554,13 +575,16 @@ class MyGame:
                                             car_objects.pop(i)
                             dragging_car = None
                             dragging_image = None
-                
+                    if self.checkbox_checked:
+                        checkbox_image = pygame.image.load('assets/checkbox2.png')
+                    else:
+                        checkbox_image = pygame.image.load('assets/checkbox.png')
                 self.screen.fill((255, 255, 255))
                 self.screen.blit(settings_background, [0, 0])
-                self.screen.blit(playing_area.image, playing_area.rect.topleft)
-                playing_area.draw(map)
+                self.screen.blit(self.playing_area.image, self.playing_area.rect.topleft)
+                self.playing_area.draw(map)
                 for i in all_car:
-                    i.blitme(playing_area.image)
+                    i.blitme(self.playing_area.image)
                 for (car, _), i in zip(car_objects, range(len(car_objects))):
                     row = i // num_columns
                     col = i % num_columns
@@ -575,7 +599,10 @@ class MyGame:
                 if dragging_image is not None:
                     self.screen.blit(dragging_image, (pygame.mouse.get_pos()[0] - offset_x, pygame.mouse.get_pos()[1] - offset_y))
                 self.screen.blit(hello_text, hello_rect)
+                # button back to menu
                 back_to_menu_button.blitme()
+                
+                # tick button
                 acc_button.blitme()
                 for car in all_car:
                     car.update()
