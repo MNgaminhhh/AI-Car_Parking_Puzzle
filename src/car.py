@@ -317,6 +317,38 @@ class Car(Sprite):
         if dir == 'r':
             if (self.map[self.end_y+1][self.end_x+2] != 0):
                 return False
+        if dir == 'u':
+            if (self.map[self.start_y][self.start_x+1] != 0):
+                return False
+        if dir == 'd':
+            if (self.map[self.end_y+2][self.end_x+1] != 0):
+                return False  
+        #Xe nằm dọc:
+        if dir == 'ul':
+            print('ul')
+            for i in range(self.length):
+                if self.map[self.start_y][self.start_x+1-i] != 0:
+                    return False 
+        if dir == 'ur':
+            print('ur')
+            for i in range(self.length):
+                print(self.start_y, self.start_x+1+i)
+                if self.map[self.start_y][self.start_x+1+i] != 0:
+                    return False       
+        if dir == 'dr':
+            print('dr')
+            for i in range(self.length):
+                print(self.end_y+2, self.end_x+1+i)
+                if self.map[self.end_y+2][self.end_x+1+i] != 0:
+                    return False 
+        if dir == 'dl':
+            print('dl')
+            for i in range(self.length):
+                print(self.end_y+1, self.end_x+1)
+                print(self.end_y+2, self.end_x+1-i)
+                if self.map[self.end_y+2][self.end_x+1-i] != 0:
+                    return False
+        #Xe nằm ngang:
         if dir == 'ru':
             print('ru')
             for i in range(self.length):
