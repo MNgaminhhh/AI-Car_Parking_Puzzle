@@ -449,9 +449,12 @@ class MyGame:
             map_height = self.settings.map_height
             map = []
             hello_font = pygame.font.SysFont(None, 40)
-            hello_text = hello_font.render('<= or => move car playing, drag car to map to setting map press space rotate car', True, (255, 255, 255))
+            hello_text = hello_font.render('<= OR => MOVE CAR PLAYING', True, (255, 255, 255))
             hello_rect = hello_text.get_rect()
-            hello_rect.center = (screen_width // 2, screen_height - 110)
+            line2_text = hello_font.render('DRAG CAR TO MAP TO SETTING MAP PRESS SPACE ROTATE CAR', True, (255, 255, 255))
+            line2_rect = line2_text.get_rect()
+            line2_rect.center = (screen_width // 2, screen_height - 90)
+            hello_rect.center = (screen_width // 2, screen_height - 130)
             back_to_menu_button = Button(self, 100, 110, 'backtomenu', 0.21)
             acc_button = Button(self, 200, 110, 'buttonAcc', 0.20)
             for i in range(map_height):
@@ -601,7 +604,7 @@ class MyGame:
                 self.screen.blit(hello_text, hello_rect)
                 # button back to menu
                 back_to_menu_button.blitme()
-                
+                self.screen.blit(line2_text, line2_rect)
                 # tick button
                 acc_button.blitme()
                 for car in all_car:
