@@ -226,6 +226,30 @@ class MyGame:
                         car.move_up()
                     if event.key == pygame.K_DOWN:
                         car.move_down()
+                    #xe dọc
+                    if event.key == pygame.K_a:
+                        car.turn_left('dl')
+                    if event.key == pygame.K_s:
+                        car.turn_left('ul')
+                    if event.key == pygame.K_d:
+                        car.turn_right('dr')
+                    if event.key == pygame.K_f:
+                        car.turn_right('ur')
+                    #xe ngang
+                    if event.key == pygame.K_q:
+                        car.turn_right('lu')
+                        car.turn_left('ul')
+                    if event.key == pygame.K_e:
+                        car.turn_right('ur')
+                        car.turn_left('ru')
+                    if event.key == pygame.K_z:
+                        car.turn_left('dl')
+                        car.turn_right('ld')
+                    if event.key == pygame.K_c:
+                        car.turn_right('dr')
+                        car.turn_left('rd')
+                    
+
                     print(car.cate, car.start_x, car.start_y)
         self.update_screen()
     def check_btn_click(self, mouse_x, mouse_y):

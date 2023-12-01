@@ -91,6 +91,186 @@ class Car(Sprite):
             self.start_y += 1
             self.game.expense_move()
 
+    def turn_left(self, dir):
+        if self.choose:
+            if self.lines == 'v':
+                if dir == 'ul':
+                    if self.can_move('ul'):
+                        self.rotate_image = pygame.transform.rotate(self.image, 30)
+                        rotate_rect = self.rotate_image.get_rect()
+                        rotate_rect.center = self.rect.center
+                        rotate_rect.y -= 0.9*self.tile_size
+                        rotate_rect.x -= 0.3*self.tile_size
+                        self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                        self.game.expense_move()
+                        self.image = pygame.transform.rotate(self.image, 90)
+                        self.rect = self.image.get_rect()
+                        for i in range(self.length):
+                            self.map[self.start_y+1+i][self.start_x+1] = 0
+                        self.start_x -= self.length-1 
+                        self.start_y -= 1
+                        self.lines = 'h'
+                        self.game.expense_move()
+                        self.update()
+                if dir == 'dl':
+                    if self.can_move('dl'):
+                        print('Move')
+                        self.rotate_image = pygame.transform.rotate(self.image, -30)
+                        rotate_rect = self.rotate_image.get_rect()
+                        rotate_rect.center = self.rect.center
+                        rotate_rect.y += 0.9*self.tile_size
+                        rotate_rect.x -= 0.3*self.tile_size
+                        self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                        self.game.expense_move()
+                        self.image = pygame.transform.rotate(self.image, -90)
+                        self.rect = self.image.get_rect()
+                        for i in range(self.length):
+                            self.map[self.start_y+1+i][self.start_x+1] = 0
+                        self.start_x -= self.length-1 
+                        self.start_y += self.length
+                        self.lines = 'h'
+                        self.game.expense_move()
+                        self.update()
+
+            else:
+                if dir == 'ru':
+                    if self.can_move('ru'):
+                        self.rotate_image = pygame.transform.rotate(self.image, 30)
+                        rotate_rect = self.rotate_image.get_rect()
+                        rotate_rect.center = self.rect.center
+                        rotate_rect.y -= 0.3*self.tile_size
+                        rotate_rect.x += 1.2*self.tile_size
+                        self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                        self.game.expense_move()
+                        self.image = pygame.transform.rotate(self.image, 90)
+                        self.rect = self.image.get_rect()
+                        for i in range(self.length):
+                            self.map[self.start_y+1][self.start_x+1+i] = 0
+                        self.start_x += self.length 
+                        self.start_y -= 1
+                        self.lines = 'v'
+                        self.game.expense_move()
+                        self.update()
+                if dir == 'lu':
+                    if self.can_move('lu'):
+                        self.rotate_image = pygame.transform.rotate(self.image, -30)
+                        rotate_rect = self.rotate_image.get_rect()
+                        rotate_rect.center = self.rect.center
+                        rotate_rect.y -= 0.3*self.tile_size
+                        rotate_rect.x -= 0.9*self.tile_size
+                        self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                        self.game.expense_move()
+                        self.image = pygame.transform.rotate(self.image, -90)
+                        self.rect = self.image.get_rect()
+                        for i in range(self.length):
+                            self.map[self.start_y+1][self.start_x+1+i] = 0
+                        self.start_x -= self.length - 1
+                        self.start_y -= 1
+                        self.lines = 'v'
+                        self.game.expense_move()
+                        self.update()
+
+            for i in range(8):
+                for j in range(9):
+                    print(self.map[i][j], end=' ')
+                print()
+        
+    def turn_right(self, dir):  
+        if self.choose:
+            #Xe dọc
+            #1.
+            if self.lines == 'v':
+                if dir == 'ur':
+                    if self.can_move('ur'):
+                        self.rotate_image = pygame.transform.rotate(self.image, -30)
+                        rotate_rect = self.rotate_image.get_rect()
+                        rotate_rect.center = self.rect.center
+                        rotate_rect.y -= 1.2*self.tile_size
+                        rotate_rect.x += 0.3*self.tile_size
+                        self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                        self.game.expense_move()
+                        
+                        self.image = pygame.transform.rotate(self.image, -90)
+                        self.rect = self.image.get_rect()
+                        #map
+                        for i in range(self.length):
+                            self.map[self.start_y+1+i][self.start_x+1] = 0
+
+                        self.start_y -= 1
+                        self.lines = 'h'
+                        self.game.expense_move()
+                        self.update()
+            #2
+            if self.lines == 'v':
+                if dir == 'dr':
+                    if self.can_move('dr'):
+                        self.rotate_image = pygame.transform.rotate(self.image, 30)
+                        rotate_rect = self.rotate_image.get_rect()
+                        rotate_rect.center = self.rect.center
+                        rotate_rect.x += 0.3*self.tile_size
+                        rotate_rect.y += 0.9*self.tile_size
+                        self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                        self.game.expense_move()
+                        
+                        self.image = pygame.transform.rotate(self.image, 90)
+                        self.rect = self.image.get_rect()
+                        #map
+                        for i in range(self.length):
+                            self.map[self.start_y+1+i][self.start_x+1] = 0
+
+                        self.start_y += self.length
+                        self.lines = 'h'
+                        self.game.expense_move()
+                        self.update()
+            #Xe ngang
+            else:
+                if dir == 'rd':
+                    if self.can_move('rd'):
+                        self.rotate_image = pygame.transform.rotate(self.image, -30)
+                        rotate_rect = self.rotate_image.get_rect()
+                        rotate_rect.center = self.rect.center
+                        rotate_rect.x += 1.2*self.tile_size
+                        rotate_rect.y += 0.3*self.tile_size
+                        self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                        self.game.expense_move()
+                        
+                        self.image = pygame.transform.rotate(self.image, -90)
+                        self.rect = self.image.get_rect()
+                        #map
+                        for i in range(self.length):
+                            self.map[self.start_y+1][self.start_x+1+i] = 0
+                        
+                        self.start_x += self.length
+                        self.lines = 'v'
+                        self.game.expense_move()
+                        self.update()
+                elif dir == 'ld':
+                    if self.can_move('ld'):
+                        self.rotate_image = pygame.transform.rotate(self.image, 30)
+                        rotate_rect = self.rotate_image.get_rect()
+                        rotate_rect.center = self.rect.center
+                        rotate_rect.x -= 0.7*self.tile_size
+                        rotate_rect.y += 1.2*self.tile_size
+                        self.playing_area.image.blit(self.rotate_image, rotate_rect)
+                        self.game.expense_move()
+                        
+                        self.image = pygame.transform.rotate(self.image, 90)
+                        self.rect = self.image.get_rect()
+                        #map
+                        for i in range(self.length):
+                            self.map[self.start_y+1][self.start_x+1+i] = 0
+                        
+                        self.start_x -= 1
+                        self.lines = 'v'
+                        self.game.expense_move()
+                        self.update()
+            
+            for i in range(8):
+                for j in range(9):
+                    print(self.map[i][j], end=' ')
+                print()
+
+
     def can_move(self, dir):
         if dir == 'l':
             if (self.map[self.start_y+1][self.start_x] != 0):
@@ -103,8 +283,55 @@ class Car(Sprite):
                 return False
         if dir == 'd':
             if (self.map[self.end_y+2][self.end_x+1] != 0):
-                return False                  
-        return True
+                return False  
+        #Xe nằm dọc:
+        if dir == 'ul':
+            print('ul')
+            for i in range(self.length):
+                if self.map[self.start_y][self.start_x+1-i] != 0:
+                    return False 
+        if dir == 'ur':
+            print('ur')
+            for i in range(self.length):
+                print(self.start_y, self.start_x+1+i)
+                if self.map[self.start_y][self.start_x+1+i] != 0:
+                    return False       
+        if dir == 'dr':
+            print('dr')
+            for i in range(self.length):
+                print(self.end_y+2, self.end_x+1+i)
+                if self.map[self.end_y+2][self.end_x+1+i] != 0:
+                    return False 
+        if dir == 'dl':
+            print('dl')
+            for i in range(self.length):
+                print(self.end_y+1, self.end_x+1)
+                print(self.end_y+2, self.end_x+1-i)
+                if self.map[self.end_y+2][self.end_x+1-i] != 0:
+                    return False
+        #Xe nằm ngang:
+        if dir == 'ru':
+            print('ru')
+            for i in range(self.length):
+                print(self.end_y+1+i, self.end_x+2)
+                if self.map[self.end_y+1-i][self.end_x+2] != 0:
+                    return False
+        if dir == 'lu':
+            print('lu')
+            for i in range(self.length):
+                if self.map[self.start_y+1-i][self.start_x] != 0:
+                    return False
+        if dir == 'rd':
+            print('rd')
+            for i in range(self.length):
+                if self.map[self.end_y+1+i][self.end_x+2] != 0:
+                    return False
+        if dir == 'ld':
+            print('ld')
+            for i in range(self.length):
+                if self.map[self.start_y+1+i][self.start_x]:
+                    return False
+        return True  
 
     def blitme(self, surface):
         surface.blit(self.image, self.rect)
