@@ -25,12 +25,13 @@ class MyGame:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.map=[]
         self.init_map()
-        self.combobox = ComboBox(71, 660, 230, 83, 'assets/combobox.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'GREEDY'])
+        self.combobox = ComboBox(71, 660, 230, 83, 'assets/combobox2.png', ['BFS', 'UCS', 'IDS', 'A*', 'BEAM', 'Hill climbing', 'GREEDY'])
         self.checkbox_button = Button(self, 71, 820, 'checkbox', 0.21)
         self.playing_area = PlayingArea(self)
         self.btn_count = 0
         self.problems = []
         self.problem = []
+        self.car_cate = []
         self.all_btn = pygame.sprite.Group()
         self.cars = pygame.sprite.Group()
         self.goal = (0, 0)
@@ -46,7 +47,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[2]
+        self.problem = self.problems[index]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -93,6 +94,7 @@ class MyGame:
         self.screen.blit(background_image, (0, 0))
         self.draw()
         self.combobox.draw(self.screen)
+        self.combobox_car.draw2(self.screen)
         self.expense.update()
         self.visited_text.update2()
         self.time_text.update2()
@@ -102,7 +104,6 @@ class MyGame:
         for car in self.cars.sprites():
             car.draw()
         self.checkbox_button.blitme()
-
         pygame.display.flip()
 
     # Car
@@ -126,6 +127,7 @@ class MyGame:
     
     #Game
     def init_game(self):
+        self.car_cate = []
         self.step = 0
         self.expense = Text(self, 730, 820, 'Step: 0')
         self.visited = 0
@@ -142,6 +144,10 @@ class MyGame:
         self.btn_init()
         self.create_map()
         self.create_car()
+        for car in self.cars.sprites():
+            self.car_cate.append(car.cate)
+        print(self.car_cate)
+        self.combobox_car = ComboBox(71, 500, 230, 83, 'assets/combobox2.png', self.car_cate)
         for car in self.cars:
             if car.cate == 'x':
                 start_y = car.start_y
@@ -155,6 +161,7 @@ class MyGame:
     def check_event(self):
         for event in pygame.event.get() :
             self.combobox.handle_event(event)
+            self.combobox_car.handle_event(event)
             if event.type == pygame.QUIT:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -228,6 +235,8 @@ class MyGame:
                     self.newgame = True
                     self.map_settings = False
                     self.problem_settings = []
+                    
+                    self.combobox_car = ComboBox(71, 500, 230, 83, 'assets/combobox2.png', self.car_cate)
                     self.init_map()
                     self.init_game()
                 if btn.name == "buttonReset":

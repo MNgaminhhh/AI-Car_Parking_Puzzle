@@ -48,5 +48,15 @@ class ComboBox:
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
         transparent_color = (200, 200, 200, 100)
+    def draw2(self, screen):
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+        selected_option = self.options[self.selected_option_index]
+        selected_image_path = 'assets/' + selected_option + '.png'
+        original_image = pygame.image.load(selected_image_path)
+        selected_image = pygame.transform.scale(original_image, (int(self.rect.width * 0.5), int(self.rect.height * 0.65)))
+        x = (self.rect.width - selected_image.get_width()) // 2 + self.rect.x
+        y = (self.rect.height - selected_image.get_height()) // 2 + self.rect.y
+        screen.blit(selected_image, (x, y))
+
     def get_selected_option(self):
         return self.options[self.selected_option_index]
