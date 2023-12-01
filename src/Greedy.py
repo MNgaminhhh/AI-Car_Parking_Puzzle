@@ -10,6 +10,7 @@ class GREEDY:
         self.goal = game.goal
         self.cars = game.cars
         self.game = game
+        self.settings = game.settings
         self.visited_states_count = 0
     def init_cars(self):
         self.cars = []
@@ -33,40 +34,43 @@ class GREEDY:
 
     def can_move(self, quizz, car, dir):
         #Horizontal
-        if car["line"] == 'h':
+        if car["lines"] == 'h':
             if dir == 'l':
-                if (quizz[car["start_y"]+1][car["start_x"]] == 0 and car["start_x"]>0):
+                if (quizz[car["start_y"]+1][car["start_x"]] == 0):
                     return True
             if dir == 'r':
-                if (car["end_x"]+1 < self.game.settings.map_width - 1):
+                if (car["end_x"]+1):
                     if (quizz[car["end_y"]+1][car["end_x"]+2] == 0 ):
                         return True
             if dir == 'ru':
                 bool = True
                 for i in range(car['length']):
-                    if self.map[self.end_y+1-i][self.end_x+2] != 0:
+                    if quizz[car["end_y"]+1+i][car["end_x"]+2] != 0:
                         bool = False
                         break
                 return bool
             if dir == 'lu':
                 bool = True
                 for i in range(car['length']):
-                    if self.map[self.start_y+1-i][self.start_x] != 0:
+                    if quizz[car['start_y']+1-i][car['start_x']+2] != 0:
                        bool = False
                        break
                 return bool
             if dir == 'rd':
                 bool = True
                 for i in range(self.length):
-                    if self.map[self.end_y+1+i][self.end_x+2] != 0:
+                    if quizz[car['end_y+1']+i][car['end_x']+2] != 0:
                         bool = False
                         break
                 return bool
         if dir == 'ld':
             print('ld')
             for i in range(self.length):
-                if self.map[self.start_y+1+i][self.start_x]:
-                    return False
+                bool = True
+                if quizz[self.start_y+1+i][self.start_x]:
+                    bool = False
+                    break
+                return bool
         #Vertical
         else:
             if dir == 'u':
@@ -104,6 +108,23 @@ class GREEDY:
                     new_car[index]["start_x"] += 1
                     new_car[index]["end_x"] +=1
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'r'))
+                if self.can_move(parent, cars[index], 'ru'):
+                    length = cars[index]['length']
+                    print(length)
+                    new_state = copy.deepcopy(parent)
+                    new_car = copy.deepcopy(cars)
+                    new_car[index]["start_x"] += length
+                    new_car[index]["start_y"] -= 1
+                    new_car[index]['end_x'] = new_car[index]["start_x"]
+                    print(new_car[index]["start_x"], new_car[index]["start_y"])
+                    new_car[index]["end_y"] = new_car[index]["start_y"] + length - 1
+                    print(new_car[index]['end_x'], new_car[index]["end_y"])
+                    for i in range(length):
+                        new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]-i] = 0
+                    for i in range(length):
+                        new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
+                    new_car[index]['lines'] = 'v'
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
             if cars[index]["lines"] == 'v':
                 if self.can_move(parent, cars[index], 'u'):
                     new_state = copy.deepcopy(parent)
@@ -160,3 +181,15 @@ class GREEDY:
                     priority_queue.put(QueueElement(neighbor_node, n_distance, 0))
         return None
 
+    def test(self):
+        self.init_cars()
+        node = Node(self.quizz, None, self.cars, None, None, 0)
+        list = self.create_neighbors(node.state, node.all_cars)
+        for i in list:
+            for a in range(self.settings.map_height):
+                for b in range(self.settings.map_width):
+                    print(i[0][a][b], end= ' ')
+                print()
+            print()
+            for car in i[1]:
+                print(car['lines'])

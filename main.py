@@ -193,7 +193,8 @@ class MyGame:
                     self.bfs.solve()  
                 if event.key == pygame.K_g:
                     self.greedy = GREEDY(self)
-                    self.run_greedy_solver()
+                    #self.run_greedy_solver()
+                    self.greedy.test()
                 if event.key == pygame.K_h: 
                     self.run_hillclimbing_solver()
                 if event.key == pygame.K_j:
