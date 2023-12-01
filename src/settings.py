@@ -1,7 +1,7 @@
 class Settings:
     def __init__(self):
         #screen settings:
-        self.screen_height = 800
+        self.screen_height = 940
         self.screen_width = 1350
         self.fps = 60
         self.bg_color = (0, 0, 0)
@@ -19,10 +19,10 @@ class Settings:
         self.font_color = (7, 37, 65)
         self.btn_padding_top = 55
         #menu settings:
-        self.menu_btn_height = 40
-        self.menu_btn_width = 100
-        self.menu_x_btn = 360
-        self.menu_y_btn = 65
+        self.menu_btn_height = 70
+        self.menu_btn_width = 120
+        self.menu_x_btn = 340
+        self.menu_y_btn = 55
         self.menu_btn_color = (200, 200, 200)
         self.menu_btn_margin = 240
         #expense settings:
