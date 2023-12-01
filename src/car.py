@@ -30,21 +30,26 @@ class Car(Sprite):
         self.rect.x = (self.start_x+1)*self.tile_size
         self.rect.y = (self.start_y+1)*self.tile_size
         self.map = game.map
+        self.action_turn = 0
         self.update()
+    
     def rotate(self):
         if self.lines == 'h':
             self.lines = 'v'
         else:
             self.lines = 'h'
         return self.lines
+    
     def update(self):
         u = self.start_y+1
         v = self.start_x+1
         self.map[u][v] = self.cate
         if self.lines == 'h':
             self.end_x = self.start_x + self.length-1
+            self.end_y = self.start_y
         else:
             self.end_y = self.start_y + self.length-1 
+            self.end_x = self.start_x
         for i in range(1, self.length):
             if self.lines == 'h':
                 self.map[u][v+i] = self.cate
@@ -71,6 +76,7 @@ class Car(Sprite):
             self.game.expense_move()
 
     def move_right(self):
+        print(self.lines)
         if self.choose and self.lines == 'h' and self.can_move('r'):
             self.map[self.start_y+1][self.start_x+1] = 0
             self.rect.x += self.tile_size
@@ -79,6 +85,7 @@ class Car(Sprite):
 
     def move_up(self):
         if self.choose and self.lines == 'v' and self.can_move('u'):
+            print(self.end_y+1, self.end_x+1)
             self.map[self.end_y+1][self.end_x+1] = 0
             self.rect.y -= self.tile_size
             self.start_y -= 1
@@ -272,6 +279,38 @@ class Car(Sprite):
 
 
     def can_move(self, dir):
+        #Xe nằm dọc:
+        if dir == 'u':
+            if (self.map[self.start_y][self.start_x+1] != 0):
+                return False
+        if dir == 'd':
+            if (self.map[self.end_y+2][self.end_x+1] != 0):
+                return False  
+        if dir == 'ul':
+            print('ul')
+            for i in range(self.length):
+                if self.map[self.start_y][self.start_x+1-i] != 0:
+                    return False 
+        if dir == 'ur':
+            print('ur')
+            for i in range(self.length):
+                print(self.start_y, self.start_x+1+i)
+                if self.map[self.start_y][self.start_x+1+i] != 0:
+                    return False       
+        if dir == 'dr':
+            print('dr')
+            for i in range(self.length):
+                print(self.end_y+2, self.end_x+1+i)
+                if self.map[self.end_y+2][self.end_x+1+i] != 0:
+                    return False 
+        if dir == 'dl':
+            print('dl')
+            for i in range(self.length):
+                print(self.end_y+1, self.end_x+1)
+                print(self.end_y+2, self.end_x+1-i)
+                if self.map[self.end_y+2][self.end_x+1-i] != 0:
+                    return False
+        #Xe nằm ngang:
         if dir == 'l':
             if (self.map[self.start_y+1][self.start_x] != 0):
                 return False
