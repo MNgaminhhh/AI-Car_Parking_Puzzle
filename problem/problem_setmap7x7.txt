@@ -1,0 +1,32 @@
+a00v b30h c51v d11h e33v f24v g44h h05h i35h o22v p61v q36h x32h
+a30h b21h c41v d22v e32v f03h g43h m16h n36h h04h i24v k05h o50v p44h q35h x02h
+a20v b40h c01v d31h e03h f23v g33v h44h m06h n26h i15h j35h o10v p51v q64v x22h
+a30v b40h c32v d42v e14v f24v m36h g34h h45h i06h o00v p03h q63v x12h
+a00h b20v c40h d01h e42v f14v m61v n23h g34v h44h i45h o51v p02v q26h x12h
+a10h b30v c40v d11v e33v f24v g44h m16h n56h h05h i35h o00v p51v q03h x32h
+a00h b30v c01h d03h e22v f04v x02h n61v l16h o42v p51v q32v r35h
+a10v b40h c41h d03v e14h l06h m61v h46h f34v g45h o20v p52v q13h x02h
+a20v b40h c02h d42h e03h f23v g33v h44h i15h m55h j26h o10v p61v x22h
+a30h b21h c62v d22v e32v m56h l36h f03h g43h h04h i24v k05h o60v p34h q35h x02h
+a20v b01h c41v d02v e43h f04h g24h h54v q61v l65v i05h j25h o30h p31v x12h
+a10h b30h c01h d06h m56h e23v f33v g44h h15h i35h o41v p51v q62v r12v x22h
+a00h b42v c40h d40h e34v f44h g21h l65v m26h n04h h14h x12h o51v p02v q13h i62v 
+a00h b42v e34v f44h g21h l65v m26h n15h h50h x02h o51v p04v q13h i62v 
+a20v b01h c41v d02v e43h f04h g24h h54v l61v n51v q46h i05h j25h o30h p31v x12h
+a20v b40h c01v d31h e03h f23v g33v h44h m06h n26h i15h j35h o10v p51v x12h
+a10v b30h c51v d01v e33v f24v g44h h05h i35h o22v p61v q36h x32h
+a00h b31h c52v d61v e02h f13v g24h h35h i46h o20v p03v q30h x22h
+a10v b30h c50v d00v e33v f24v g44h h05h l41v i35h o22v p61v q36h x02h
+a31v b40h c41h d03v e14h l06h m61v h46h f34v g45h o20v p52v q13h x02h
+a00h b42v e34v f44h g21h l65v m26h n04h h15h x12h o51v p01v q13h i62v 
+a06h b31h c61v l30h d13h e02h f33h g44v q04h h55h i15h o20v p51v x32h
+a20h b40h c02h d42v e03h f23v g33v h44h i15h m55h j26h o10v q61v p46h x22h
+a20h b40h c01v d31h e03h f23v g33v h44h m06h n26h q61v i15h j35h o10v p51v x12h
+a20h b31h c44h d51v e02h f13v g24h h35h i46h o00h p40h q06h m62v x22h
+a63v b40h c41h d03v e14h l06h m61v h46h f34v g45h o20v p52v q13h x02h
+a20h b40h c01v d31h e03h f23v g33v h44h m06h n26h i15h q62v j35h o10v p51v x12h
+a10h b01h c41v d02v e43h f04h m36h g24h h16h q61v l65v i05h j25h o30h p31v x12h
+a10h b30h c51v d01v e33v f24v g44h h05h i35h o22v p61v q36h x32h
+a00h b31h c61v d26h e02h l50h f33h g44v q04h h56h i15h o20v p51v x32h
+
+
