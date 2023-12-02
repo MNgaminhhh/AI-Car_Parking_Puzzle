@@ -173,6 +173,7 @@ class MyGame:
                     if self.checkbox_checked:
                         self.settings.map_height = 9
                         self.settings.map_width = 10
+                        self.init_game()    
                         self.sevenseven_text.text = '6x6'
                         checkbox_image_path = 'assets/checkbox2.png'
                         print(self.settings.map_height)
@@ -180,9 +181,11 @@ class MyGame:
                         self.settings.map_height = 8
                         self.settings.map_width = 9
                         checkbox_image_path = 'assets/checkbox.png'
+                        self.init_game()
                         self.sevenseven_text.text = '7x7'
                         print(self.settings.map_height)
                     # self.playing_area = PlayingArea(self)
+                    
                     self.create_map()
                     checkbox_image = pygame.image.load(checkbox_image_path)
                     self.checkbox_button.image = pygame.transform.scale(checkbox_image, self.checkbox_button.rect.size)
