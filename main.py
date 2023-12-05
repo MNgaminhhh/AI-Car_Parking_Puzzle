@@ -32,6 +32,7 @@ class MyGame:
         self.problems = []
         self.problem = []
         self.car_cate = []
+        self.selected_car = None
         self.all_btn = pygame.sprite.Group()
         self.cars = pygame.sprite.Group()
         self.goal = (0, 0)
@@ -217,7 +218,8 @@ class MyGame:
                     self.bfs = BFS(self)
                     self.bfs.solve()  
                 if event.key == pygame.K_g:
-                    self.greedy = GREEDY(self)
+                    # self.greedy = GREEDY(self)
+                    self.greedy = ASTAR(self)
                     #self.run_greedy_solver()
                     self.greedy.test()
                 if event.key == pygame.K_h: 
@@ -295,6 +297,8 @@ class MyGame:
                     self.check_back_to_menu()
                 if btn.name == "buttonStart2":
                     selected_algorithm = self.combobox.get_selected_option()
+                    self.selected_car = self.combobox_car.get_selected_option_car()
+                    
                     if selected_algorithm == 'BFS':
                         self.run_bfs_solver()   
                     elif selected_algorithm == 'GREEDY':
@@ -368,7 +372,7 @@ class MyGame:
     def run_astar_solver(self):
         start_time = time.time()
         astar = ASTAR(self)
-        path = astar.solve()
+        path = astar.solve(self.selected_car)
         self.visited = astar.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
         end_time = time.time()
@@ -403,6 +407,11 @@ class MyGame:
                 print(f"Step {i}:")
                 print("Selected Car:", node.car_choose)
                 print("Action:", node.action)
+                # print("path:", node.state)
+                for a in range(self.settings.map_height):
+                    for b in range(self.settings.map_width):
+                        print(node.state[a][b], end= ' ')
+                    print()
                 if node.car_choose is not None:
                     chosen_car = None
                     for car in self.cars:
@@ -461,7 +470,7 @@ class MyGame:
                                 chosen_car.choose = 1
                                 chosen_car.turn_right('dr')
                         self.update_screen()
-                        pygame.time.Clock().tick(1)
+                        pygame.time.Clock().tick(60)
                 print("---------------")
         else:
             print("No solution found.") 
@@ -470,8 +479,11 @@ class MyGame:
         for car in self.cars:
             if car.cate == 'x':
                 if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1] and car.lines == 'h':
-                    self.message("Win")
-                    return True
+                    for i in range(car.end_x + 1, self.settings.map_width):
+                        if(self.map[car.start_y +1][i] != 0 ):
+                            return False
+                        self.message("Win")
+                        return True
         return False
     
     def message(self, text):

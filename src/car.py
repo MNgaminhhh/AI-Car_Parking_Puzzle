@@ -170,8 +170,8 @@ class Car(Sprite):
                         self.rect = self.image.get_rect()
                         for i in range(self.length):
                             self.map[self.start_y+1][self.start_x+1+i] = 0
-                        self.start_x -= self.length - 1
-                        self.start_y -= 1
+                        self.start_x -= 1
+                        self.start_y -= self.length - 1
                         self.lines = 'v'
                         self.game.expense_move()
                         self.update()
