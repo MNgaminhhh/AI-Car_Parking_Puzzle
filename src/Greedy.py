@@ -58,14 +58,14 @@ class GREEDY:
                 return bool
             if dir == 'rd':
                 bool = True
-                for i in range(self.length):
+                for i in range(car['length']):
                     if quizz[car['end_y']+1+i][car['end_x']+2] != 0:
                         bool = False
                         break
                 return bool
         if dir == 'ld':
             print('ld')
-            for i in range(self.length):
+            for i in range(car['length']):
                 bool = True
                 if quizz[self.start_y+1+i][self.start_x]:
                     bool = False
@@ -80,6 +80,31 @@ class GREEDY:
                 if (quizz[car["end_y"]+2][car["end_x"]+1] == 0):
                     return True
             return False
+        if dir == 'ul':
+            print('ul')
+            for i in range(self.length):
+                if quizz[car[self.start_y][self.start_x+1-i]] != 0:
+                    return False 
+        if dir == 'ur':
+            print('ur')
+            for i in range(car["length"]):
+                bool = True
+                if quizz[[self.start_y][self.start_x+1+i]] != 0:
+                    bool = False
+                return bool   
+        if dir == 'dr':
+            print('dr')
+            for i in range(self.length):
+                print(self.end_y+2, self.end_x+1+i)
+                if self.map[self.end_y+2][self.end_x+1+i] != 0:
+                    return False 
+        if dir == 'dl':
+            print('dl')
+            for i in range(self.length):
+                print(self.end_y+1, self.end_x+1)
+                print(self.end_y+2, self.end_x+1-i)
+                if self.map[self.end_y+2][self.end_x+1-i] != 0:
+                    return False
 
     def convert_to_key(self, state):
         key = ''.join([str(i) for list in state for i in list])
@@ -109,8 +134,8 @@ class GREEDY:
                     new_car[index]["end_x"] +=1
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'r'))
                 if self.can_move(parent, cars[index], 'ru'):
+                    print("-------ru--------")
                     length = cars[index]['length']
-                    print(length)
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_car[index]["start_x"] += length
@@ -128,7 +153,7 @@ class GREEDY:
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
                 if self.can_move(parent, cars[index], 'lu'):
                     length = cars[index]['length']
-                    print(length)
+                    print("-------lu--------")
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_car[index]["start_x"] -= length-1
@@ -145,7 +170,7 @@ class GREEDY:
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'lu'))
                 if self.can_move(parent, cars[index], 'rd'):
                     length = cars[index]['length']
-                    print(length)
+                    print("-------rd--------")
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_car[index]["start_x"] += length
@@ -179,7 +204,6 @@ class GREEDY:
                 if self.can_move(parent, cars[index], 'ur'):
                     print("------ur-------")
                     length = cars[index]['length']
-                    print(length)
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_car[index]["start_y"] -= 1
