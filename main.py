@@ -412,23 +412,52 @@ class MyGame:
                             if node.action == 'l':
                                 print("Moving Left")
                                 chosen_car.choose = 1
-                                chosen_car.move_left()
-                            
-                            elif node.action == 'r':
+                                chosen_car.move_left() 
+                            if node.action == 'r':
                                 print("Moving Right")
                                 chosen_car.choose = 1
                                 chosen_car.move_right()
-                                
+                            if node.action == 'lu':
+                                print("Moving Left up")
+                                chosen_car.choose = 1
+                                chosen_car.turn_left('lu')
+                            if node.action == 'ru':
+                                print("Moving Right up")
+                                chosen_car.choose = 1
+                                chosen_car.turn_left('ru')
+                            if node.action == 'ld':
+                                print("Moving Left down")
+                                chosen_car.choose = 1
+                                chosen_car.turn_right('ld')
+                            if node.action == 'rd':
+                                print("Moving Right down")
+                                chosen_car.choose = 1
+                                chosen_car.turn_right('rd')     
                         elif chosen_car.lines == 'v':
                             if node.action == 'u':
                                 print("Moving Up")
                                 chosen_car.choose = 1
                                 chosen_car.move_up()
-                                
-                            elif node.action == 'd':
+                            if node.action == 'd':
                                 print("Moving Down")
                                 chosen_car.choose = 1
                                 chosen_car.move_down()
+                            if node.action == 'ul':
+                                print("Moving up left")
+                                chosen_car.choose = 1
+                                chosen_car.turn_left('ul')
+                            if node.action == 'ur':
+                                print("Moving up right")
+                                chosen_car.choose = 1
+                                chosen_car.turn_right('ur')
+                            if node.action == 'dl':
+                                print("Moving down left")
+                                chosen_car.choose = 1
+                                chosen_car.turn_left('dl')
+                            if node.action == 'dr':
+                                print("Moving Down right")
+                                chosen_car.choose = 1
+                                chosen_car.turn_right('dr')
                         self.update_screen()
                 print("---------------")
         else:
@@ -437,7 +466,7 @@ class MyGame:
     def check_end_game(self):
         for car in self.cars:
             if car.cate == 'x':
-                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]:
+                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1] and car.lines == 'h':
                     self.message("Win")
                     return True
         return False
@@ -460,7 +489,7 @@ class MyGame:
 
     def run_game(self):
         while True:
-            pygame.time.Clock().tick(24000)
+            # pygame.time.Clock().tick(24000)
             if self.in_start_menu:
                 self.show_start_menu()
             else:
@@ -662,7 +691,7 @@ class MyGame:
                 for car in all_car:
                     car.update()
                 pygame.display.flip()
-                pygame.time.Clock().tick(30)
+                pygame.time.Clock().tick(10)
 if __name__ == '__main__':
     MG = MyGame()
     MG.load_problem()
