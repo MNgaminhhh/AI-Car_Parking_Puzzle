@@ -45,21 +45,21 @@ class GREEDY:
             if dir == 'ru':
                 bool = True
                 for i in range(car['length']):
-                    if quizz[car["end_y"]+1+i][car["end_x"]+2] != 0:
+                    if quizz[car["end_y"]+1-i][car["end_x"]+2] != 0:
                         bool = False
                         break
                 return bool
             if dir == 'lu':
                 bool = True
                 for i in range(car['length']):
-                    if quizz[car['start_y']+1-i][car['start_x']+2] != 0:
+                    if quizz[car['start_y']+1-i][car['start_x']] != 0:
                        bool = False
                        break
                 return bool
             if dir == 'rd':
                 bool = True
                 for i in range(self.length):
-                    if quizz[car['end_y+1']+i][car['end_x']+2] != 0:
+                    if quizz[car['end_y']+1+i][car['end_x']+2] != 0:
                         bool = False
                         break
                 return bool
