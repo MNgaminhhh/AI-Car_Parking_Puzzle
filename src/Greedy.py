@@ -118,10 +118,12 @@ class GREEDY:
                     new_car[index]['end_x'] = cars[index]["end_x"]+1
                     new_car[index]["end_y"] = cars[index]["end_y"]
                     print(new_car[index]['end_x'], new_car[index]["end_y"])
+                    #Luc xe nam doc
                     for i in range(length):
-                        new_state[cars[index]["start_y"]+1][cars[index]["start_x"]+i] = 0
+                        new_state[cars[index]["start_y"]+1+i][cars[index]["start_x"]+1] = 0
+                    #Luc xe nam ngang sau khi turn
                     for i in range(length):
-                        new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
+                        new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1+i] = cars[index]['cate']
                     new_car[index]['lines'] = 'v'
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
                 if self.can_move(parent, cars[index], 'lu'):
@@ -133,12 +135,14 @@ class GREEDY:
                     new_car[index]["start_y"] -= 1
                     new_car[index]['end_x'] = cars[index]['start_x']-1
                     new_car[index]['end_y'] = cars[index]['end_y']
+                    #Luc xe nam doc
                     for i in range(length):
-                        new_state[cars[index]["start_y"]+1][cars[index]["start_x"]+i] = 0
+                        new_state[cars[index]["start_y"]+1+i][cars[index]["start_x"]+1] = 0
+                    #Luc xe nam ngang sau khi turn
                     for i in range(length):
-                        new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
+                        new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1+i] = cars[index]['cate']
                     new_car[index]['lines'] = 'v'
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'lu'))
                 if self.can_move(parent, cars[index], 'rd'):
                     length = cars[index]['length']
                     print(length)
@@ -147,13 +151,14 @@ class GREEDY:
                     new_car[index]["start_x"] += length
                     new_car[index]['end_x'] = cars[index]['start_x']+length -1
                     new_car[index]['end_y'] = cars[index]['end_y']
+                    #Luc xe nam doc
                     for i in range(length):
-                        new_state[cars[index]["start_y"]+1][cars[index]["start_x"]+i] = 0
+                        new_state[cars[index]["start_y"]+1+i][cars[index]["start_x"]+1] = 0
+                    #Luc xe nam ngang sau khi turn
                     for i in range(length):
-                        new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
+                        new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1+i] = cars[index]['cate']
                     new_car[index]['lines'] = 'v'
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
-                if self.
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'rd'))
             if cars[index]["lines"] == 'v':
                 if self.can_move(parent, cars[index], 'u'):
                     new_state = copy.deepcopy(parent)
@@ -171,6 +176,24 @@ class GREEDY:
                     new_car[index]["start_y"] += 1
                     new_car[index]["end_y"] +=1
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'd'))
+                if self.can_move(parent, cars[index], 'ur'):
+                    print("------ur-------")
+                    length = cars[index]['length']
+                    print(length)
+                    new_state = copy.deepcopy(parent)
+                    new_car = copy.deepcopy(cars)
+                    new_car[index]["start_y"] -= 1
+                    new_car[index]['end_x'] = cars[index]["start_x"]
+                    new_car[index]["end_y"] = cars[index]["start_y"]+length-1
+                    print(new_car[index]['end_x'], new_car[index]["end_y"])
+                    #Luc xe nam ngang
+                    for i in range(length):
+                        new_state[cars[index]["start_y"]+1][cars[index]["start_x"]+1+i] = 0
+                    #Luc xe nam doc sau khi turn
+                    for i in range(length):
+                        new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
+                    new_car[index]['lines'] = 'h'
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
         return neighbors
 
     def solve(self):
