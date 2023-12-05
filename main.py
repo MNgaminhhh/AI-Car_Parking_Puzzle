@@ -47,7 +47,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[index]
+        self.problem = self.problems[22]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -165,6 +165,10 @@ class MyGame:
             if event.type == pygame.QUIT:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                for i in range(self.settings.map_height):
+                    for j in range(self.settings.map_width):
+                        print(self.map[i][j],end=" ")
+                    print() 
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 self.check_car_click(mouse_x, mouse_y)
                 self.check_btn_click(mouse_x, mouse_y)

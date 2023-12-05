@@ -154,10 +154,11 @@ class Car(Sprite):
                         for i in range(self.length):
                             self.map[self.start_y+1][self.start_x+1+i] = 0
                         self.start_x += self.length 
-                        self.start_y -= 1
+                        self.start_y -= self.length - 1
                         self.lines = 'v'
                         self.game.expense_move()
                         self.update()
+                        print(self.end_x, self.end_y)
                 if dir == 'lu':
                     if self.can_move('lu'):
                         self.rotate_image = pygame.transform.rotate(self.image, -30)
@@ -353,6 +354,7 @@ class Car(Sprite):
             print('ru')
             for i in range(self.length):
                 print(self.end_y+1+i, self.end_x+2)
+                print(len(self.map))
                 if self.map[self.end_y+1-i][self.end_x+2] != 0:
                     return False
         if dir == 'lu':

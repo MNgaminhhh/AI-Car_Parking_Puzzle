@@ -114,7 +114,7 @@ class GREEDY:
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_car[index]["start_x"] += length
-                    new_car[index]["start_y"] -= 1
+                    new_car[index]["start_y"] -= length - 1
                     new_car[index]['end_x'] = new_car[index]["start_x"]
                     print(new_car[index]["start_x"], new_car[index]["start_y"])
                     new_car[index]["end_y"] = new_car[index]["start_y"] + length - 1
@@ -125,6 +125,14 @@ class GREEDY:
                         new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
                     new_car[index]['lines'] = 'v'
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
+                if self.can_move(parent, cars[index], 'lu'):
+                    length = cars[index]['length']
+                    print(length)
+                    new_state = copy.deepcopy(parent)
+                    new_car = copy.deepcopy(cars)
+                    new_car[index]["start_x"] -= self
+                    new_car[index]["start_y"] -= 1
+                    new_car[index]['end_x'] = new_car[index]["start_x"]
             if cars[index]["lines"] == 'v':
                 if self.can_move(parent, cars[index], 'u'):
                     new_state = copy.deepcopy(parent)
