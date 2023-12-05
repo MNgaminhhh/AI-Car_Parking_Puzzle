@@ -46,16 +46,28 @@ class MyGame:
     def shuffle_problem(self):
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
+        
         print(index)
-        self.problem = self.problems[2]
+        self.problem = self.problems[index]
 
     def load_problem(self):
-        with open('problem/problem_set.txt', 'r') as f:
-            lines = f.readlines()
-        for line in lines:
-            line = line.rstrip()
-            problem = line.split(" ")
-            self.problems.append(problem)
+        self.problems = []
+        if self.checkbox_checked:
+            print("7x7")
+            with open('problem/problem_7x7.txt', 'r') as f:
+                lines = f.readlines()
+            for line in lines:
+                line = line.rstrip()
+                problem = line.split(" ")
+                self.problems.append(problem)
+        else:
+            print("6x6")
+            with open('problem/problem_set.txt', 'r') as f:
+                lines = f.readlines()
+            for line in lines:
+                line = line.rstrip()
+                problem = line.split(" ")
+                self.problems.append(problem)
     # Map
     def init_map(self):
         map_width = self.settings.map_width
@@ -191,7 +203,7 @@ class MyGame:
                         self.sevenseven_text.text = '7x7'
                         print(self.settings.map_height)
                     # self.playing_area = PlayingArea(self)
-                    
+                    self.load_problem()
                     self.create_map()
                     checkbox_image = pygame.image.load(checkbox_image_path)
                     self.checkbox_button.image = pygame.transform.scale(checkbox_image, self.checkbox_button.rect.size)
