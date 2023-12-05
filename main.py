@@ -47,7 +47,7 @@ class MyGame:
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
         print(index)
-        self.problem = self.problems[index]
+        self.problem = self.problems[2]
 
     def load_problem(self):
         with open('problem/problem_set.txt', 'r') as f:
@@ -141,6 +141,12 @@ class MyGame:
         if self.newgame:
             self.shuffle_problem()
             self.newgame=False
+        if self.checkbox_checked:
+            self.settings.map_height = 9
+            self.settings.map_width = 10
+        else:
+            self.settings.map_height = 8
+            self.settings.map_width = 9
         self.btn_init()
         self.create_map()
         self.create_car()
@@ -151,7 +157,7 @@ class MyGame:
         for car in self.cars:
             if car.cate == 'x':
                 start_y = car.start_y
-                self.goal = (start_y+1, self.settings.map_width-4)
+                self.goal = (start_y+1, self.settings.map_width-2)
                 self.map[start_y+1][self.settings.map_width-2] = 0
                 self.map[start_y+1][self.settings.map_width-1] = 0
     
@@ -240,19 +246,21 @@ class MyGame:
                         car.turn_right('ur')
                     #xe ngang
                     if event.key == pygame.K_q:
-                        car.turn_right('lu')
+                        car.turn_left('lu')
+                    if event.key == pygame.K_u:
                         car.turn_left('ul')
                     if event.key == pygame.K_e:
                         car.turn_right('ur')
+                    if event.key == pygame.K_i:
                         car.turn_left('ru')
                     if event.key == pygame.K_z:
                         car.turn_left('dl')
+                    if event.key == pygame.K_o:
                         car.turn_right('ld')
-                    if event.key == pygame.K_c:
+                    if event.key == pygame.K_p:
                         car.turn_right('dr')
-                        car.turn_left('rd')
-                    
-
+                    if event.key == pygame.K_c:
+                        car.turn_right('rd')
                     print(car.cate, car.start_x, car.start_y)
         self.update_screen()
     def check_btn_click(self, mouse_x, mouse_y):

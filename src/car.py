@@ -71,6 +71,7 @@ class Car(Sprite):
             self.game.expense_move()
 
     def move_right(self):
+        print(self.end_x,self.end_y)    
         if self.choose and self.lines == 'h' and self.can_move('r'):
             self.map[self.start_y+1][self.start_x+1] = 0
             self.rect.x += self.tile_size
@@ -276,6 +277,7 @@ class Car(Sprite):
             if (self.map[self.start_y+1][self.start_x] != 0):
                 return False
         if dir == 'r':
+            
             if (self.map[self.end_y+1][self.end_x+2] != 0):
                 return False
         if dir == 'u':
