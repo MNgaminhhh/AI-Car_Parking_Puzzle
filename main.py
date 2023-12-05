@@ -169,7 +169,7 @@ class MyGame:
         for car in self.cars:
             if car.cate == 'x':
                 start_y = car.start_y
-                self.goal = (start_y+1, self.settings.map_width-2)
+                self.goal = (start_y+1, self.settings.map_width-4)
                 self.map[start_y+1][self.settings.map_width-2] = 0
                 self.map[start_y+1][self.settings.map_width-1] = 0
     

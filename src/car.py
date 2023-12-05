@@ -368,7 +368,7 @@ class Car(Sprite):
         if dir == 'ld':
             print('ld')
             for i in range(self.length):
-                if self.map[self.start_y+1+i][self.start_x]:
+                if self.map[self.start_y+1+i][self.start_x] != 0:
                     return False
         return True  
 
