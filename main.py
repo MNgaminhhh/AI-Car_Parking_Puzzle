@@ -226,6 +226,8 @@ class MyGame:
                     self.run_astar_solver()
                 if event.key == pygame.K_k:
                     self.run_beam_solver()
+                if event.key == pygame.K_m:
+                    self.run_greedy_solver()
 
 
     def check_car_click(self, mouse_x, mouse_y):
@@ -459,6 +461,7 @@ class MyGame:
                                 chosen_car.choose = 1
                                 chosen_car.turn_right('dr')
                         self.update_screen()
+                        pygame.time.Clock().tick(1)
                 print("---------------")
         else:
             print("No solution found.") 
@@ -691,7 +694,7 @@ class MyGame:
                 for car in all_car:
                     car.update()
                 pygame.display.flip()
-                pygame.time.Clock().tick(10)
+                pygame.time.Clock().tick(60)
 if __name__ == '__main__':
     MG = MyGame()
     MG.load_problem()
