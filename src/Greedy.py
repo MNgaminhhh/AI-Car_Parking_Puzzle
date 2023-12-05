@@ -47,7 +47,7 @@ class GREEDY:
             if dir == 'ru':
                 bool = True
                 for i in range(car['length']):
-                    if (car["end_x"]+1 < self.game.settings.map_width-1):
+                    if (car["end_y"]+1-i < self.game.settings.map_height):
                         if quizz[car["end_y"]+1-i][car["end_x"]+2] != 0:
                             bool = False
                             break
@@ -55,14 +55,15 @@ class GREEDY:
             if dir == 'lu':
                 bool = True
                 for i in range(car['length']):
-                    if quizz[car['start_y']+1-i][car['start_x']] != 0:
-                       bool = False
-                       break
+                    if (car['start_y']+1-i < self.game.settings.map_height):
+                        if quizz[car['start_y']+1-i][car['start_x']] != 0:
+                            bool = False
+                            break
                 return bool
             if dir == 'rd':
                 bool = True
                 for i in range(car['length']):
-                    if (car['end_x']+2 < self.settings.map_width):
+                    if (car['end_y']+1+i < self.settings.map_heiht and car['end_x']+2 < self.settings.map_width):
                         if quizz[car['end_y']+1+i][car['end_x']+2] != 0:
                             bool = False
                             break
@@ -73,14 +74,15 @@ class GREEDY:
                 bool = True
                 for i in range(car['length']):
                     print(car["start_y"]+1+i, car["start_x"])
-                    if quizz[car["start_y"]+1+i][car["start_x"]] != 0:
-                        bool = False
-                        break
+                    if (car["start_y"]+1+i < self.settings.map_heiht and car["start_x"] < self.settings.map_width):
+                        if quizz[car["start_y"]+1+i][car["start_x"]] != 0:
+                            bool = False
+                            break
                 return bool
         #Vertical
         else:
             if dir == 'u':
-                if (car["start_y"]<height and  car["start_x"]+1<width):
+                if (car["start_y"]<height-1):
                     if (quizz[car["start_y"]][car["start_x"]+1] == 0):
                         return True
                     return False
@@ -171,8 +173,8 @@ class GREEDY:
                     print("-------lu--------")
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
-                    new_car[index]["start_x"] -= length-1
-                    new_car[index]["start_y"] -= 1
+                    new_car[index]["start_x"] -= 1
+                    new_car[index]["start_y"] -= length - 1
                     new_car[index]['lines'] = 'v'
                     self.update_car(new_car[index])
                     #Luc xe nam ngang
@@ -222,7 +224,7 @@ class GREEDY:
                     new_state[new_car[index]["start_y"]][new_car[index]["start_x"]+1] = new_car[index]["cate"]
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+1] = 0
                     new_car[index]["start_y"] -= 1
-                    new_car[index]["end_y"] -=1
+                    self.update_car(new_car[index])
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'u'))
                 if self.can_move(parent, cars[index], 'd'):
                     new_state = copy.deepcopy(parent)
@@ -230,7 +232,7 @@ class GREEDY:
                     new_state[new_car[index]["end_y"]+2][new_car[index]["end_x"]+1] = new_car[index]["cate"]
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_y"] += 1
-                    new_car[index]["end_y"] +=1
+                    self.update_car(new_car[index])
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'd'))
                 
                 if self.can_move(parent, cars[index], 'ur'):
@@ -271,7 +273,7 @@ class GREEDY:
                     length = cars[index]['length']
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
-                    new_car[index]["start_y"] += 1
+                    new_car[index]["start_y"] += length
                     new_car[index]['lines'] = 'h'
                     self.update_car(new_car[index])
                     print(new_car[index]['end_x'], new_car[index]["end_y"])
@@ -308,11 +310,7 @@ class GREEDY:
         else:
             car['end_x'] = car['start_x']
             car['end_y'] = car['start_y'] + car['length']-1
-
-    def update_map(self, car, map):
-        if car['lines'] == 'h':
             
-    
     def solve(self):
         self.init_cars()
         visited = []
@@ -351,15 +349,16 @@ class GREEDY:
         return None
 
     def test(self):
-        self.init_cars()
-        node = Node(self.quizz, None, self.cars, None, None, 0)
-        list = self.create_neighbors(node.state, node.all_cars)
-        for i in list:
-            print("----------", i[3], i[2])
-            for a in range(self.settings.map_height):
-                for b in range(self.settings.map_width):
-                    print(i[0][a][b], end= ' ')
-                print()
-            print()
-            for car in i[1]:
-                print(car['lines'])
+        print(self.goal)
+        # self.init_cars()
+        # node = Node(self.quizz, None, self.cars, None, None, 0)
+        # list = self.create_neighbors(node.state, node.all_cars)
+        # for i in list:
+        #     print("----------", i[3], i[2])
+        #     for a in range(self.settings.map_height):
+        #         for b in range(self.settings.map_width):
+        #             print(i[0][a][b], end= ' ')
+        #         print()
+        #     print()
+        #     for car in i[1]:
+        #         print(car['lines'])
