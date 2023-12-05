@@ -74,8 +74,7 @@ class Car(Sprite):
             self.start_x -= 1
             self.game.expense_move()
 
-    def move_right(self):
-        print(self.lines)
+    def move_right(self):  
         if self.choose and self.lines == 'h' and self.can_move('r'):
             self.map[self.start_y+1][self.start_x+1] = 0
             self.rect.x += self.tile_size
@@ -153,10 +152,11 @@ class Car(Sprite):
                         for i in range(self.length):
                             self.map[self.start_y+1][self.start_x+1+i] = 0
                         self.start_x += self.length 
-                        self.start_y -= 1
+                        self.start_y -= self.length - 1
                         self.lines = 'v'
                         self.game.expense_move()
                         self.update()
+                        print(self.end_x, self.end_y)
                 if dir == 'lu':
                     if self.can_move('lu'):
                         self.rotate_image = pygame.transform.rotate(self.image, -30)
@@ -309,7 +309,6 @@ class Car(Sprite):
                 print(self.end_y+2, self.end_x+1-i)
                 if self.map[self.end_y+2][self.end_x+1-i] != 0:
                     return False
-        #Xe nằm ngang:
         if dir == 'l':
             if (self.map[self.start_y+1][self.start_x] != 0):
                 return False
@@ -350,9 +349,7 @@ class Car(Sprite):
                     return False
         #Xe nằm ngang:
         if dir == 'ru':
-            print('ru')
             for i in range(self.length):
-                print(self.end_y+1+i, self.end_x+2)
                 if self.map[self.end_y+1-i][self.end_x+2] != 0:
                     return False
         if dir == 'lu':

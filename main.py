@@ -183,6 +183,10 @@ class MyGame:
             if event.type == pygame.QUIT:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                for i in range(self.settings.map_height):
+                    for j in range(self.settings.map_width):
+                        print(self.map[i][j],end=" ")
+                    print() 
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 self.check_car_click(mouse_x, mouse_y)
                 self.check_btn_click(mouse_x, mouse_y)
@@ -246,32 +250,26 @@ class MyGame:
                         car.move_up()
                     if event.key == pygame.K_DOWN:
                         car.move_down()
-                    #xe dọc
-                    if event.key == pygame.K_a:
-                        car.turn_left('dl')
-                    if event.key == pygame.K_s:
-                        car.turn_left('ul')
-                    if event.key == pygame.K_d:
-                        car.turn_right('dr')
-                    if event.key == pygame.K_f:
-                        car.turn_right('ur')
-                    #xe ngang
+
                     if event.key == pygame.K_q:
                         car.turn_left('lu')
-                    if event.key == pygame.K_u:
-                        car.turn_left('ul')
                     if event.key == pygame.K_e:
-                        car.turn_right('ur')
-                    if event.key == pygame.K_i:
                         car.turn_left('ru')
                     if event.key == pygame.K_z:
-                        car.turn_left('dl')
-                    if event.key == pygame.K_o:
-                        car.turn_right('ld')
-                    if event.key == pygame.K_p:
-                        car.turn_right('dr')
+                        car.turn_left('ld')
                     if event.key == pygame.K_c:
                         car.turn_right('rd')
+
+                    if event.key == pygame.K_7:
+                        car.turn_left('ul')
+                    if event.key == pygame.K_9:
+                        car.turn_right('ur')
+                    if event.key == pygame.K_1:
+                        car.turn_left('dl')
+                    if event.key == pygame.K_3:
+                        car.turn_right('dr')
+                    
+
                     print(car.cate, car.start_x, car.start_y)
         self.update_screen()
     def check_btn_click(self, mouse_x, mouse_y):
