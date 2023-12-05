@@ -28,18 +28,20 @@ class GREEDY:
         cars = node.all_cars
         for car in cars:
             if car['cate'] == 'a':
-                distance_x = self.goal[1] - car['start_x'] - 1
-                distance_y = self.goal[0] - car['start_y'] - 1
+                distance_x = abs(self.goal[1] - car['start_x'] - 1)
+                distance_y = abs(self.goal[0] - car['start_y'] - 1)
         return distance_x + distance_y
 
     def can_move(self, quizz, car, dir):
         #Horizontal
+        height = self.settings.map_height
+        width = self.settings.map_width
         if car["lines"] == 'h':
             if dir == 'l':
                 if (quizz[car["start_y"]+1][car["start_x"]] == 0):
                     return True
             if dir == 'r':
-                if (car["end_x"]+1 < self.game.settings.map_width-1):
+                if (car["end_x"]+2 < self.game.settings.map_width-1):
                     if (quizz[car["end_y"]+1][car["end_x"]+2] == 0 ):
                         return True
             if dir == 'ru':
@@ -78,9 +80,10 @@ class GREEDY:
         #Vertical
         else:
             if dir == 'u':
-                if (quizz[car["start_y"]][car["start_x"]+1] == 0):
-                    return True
-                return False
+                if (car["start_y"]<height and  car["start_x"]+1<width):
+                    if (quizz[car["start_y"]][car["start_x"]+1] == 0):
+                        return True
+                    return False
             if dir =='d':
                 if (quizz[car["end_y"]+2][car["end_x"]+1] == 0):
                     return True
@@ -136,7 +139,7 @@ class GREEDY:
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+1] = 0
                     new_car[index]
                     new_car[index]["start_x"] -= 1
-                    new_car[index]["end_x"] -=1
+                    self.update_car(new_car[index])
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'l'))
                 if self.can_move(parent, cars[index], 'r'):
                     new_state = copy.deepcopy(parent)
@@ -144,7 +147,7 @@ class GREEDY:
                     new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+2] = new_car[index]["cate"]
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_x"] += 1
-                    new_car[index]["end_x"] +=1
+                    self.update_car(new_car[index])
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'r'))
                 if self.can_move(parent, cars[index], 'ru'):
                     print("-------ru--------")
@@ -155,14 +158,12 @@ class GREEDY:
                     new_car[index]["start_y"] -= length - 1
                     new_car[index]['lines'] = 'v'
                     self.update_car(new_car[index])
-                    print(new_car[index]['end_x'], new_car[index]["end_y"])
                     #Luc xe nam ngang
                     for i in range(length):
                         new_state[cars[index]["start_y"]+1][cars[index]["start_x"]+1+i] = 0
                     #Luc xe nam doc sau khi turn
                     for i in range(length):
-                        if (new_car[index]["start_x"]+1+i < self.settings.map_width):
-                            new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
+                        new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
                     
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
                 if self.can_move(parent, cars[index], 'lu'):
@@ -307,6 +308,10 @@ class GREEDY:
         else:
             car['end_x'] = car['start_x']
             car['end_y'] = car['start_y'] + car['length']-1
+
+    def update_map(self, car, map):
+        if car['lines'] == 'h':
+            
     
     def solve(self):
         self.init_cars()
@@ -335,7 +340,7 @@ class GREEDY:
                 
                 if key not in visited:
                     for car in neighbor_node.all_cars:
-                        if car["cate"] == 'x': 
+                        if car["cate"] == 'a': 
                             if car["start_y"] + 1 == self.goal[0] and car["start_x"] + 1 == self.goal[1]: 
                                 path = [neighbor_node]
                                 while neighbor_node.parent is not None:
