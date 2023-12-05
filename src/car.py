@@ -43,8 +43,10 @@ class Car(Sprite):
         self.map[u][v] = self.cate
         if self.lines == 'h':
             self.end_x = self.start_x + self.length-1
+            self.end_y = self.start_y
         else:
             self.end_y = self.start_y + self.length-1 
+            self.end_x = self.start_x
         for i in range(1, self.length):
             if self.lines == 'h':
                 self.map[u][v+i] = self.cate
@@ -52,7 +54,6 @@ class Car(Sprite):
                 self.map[u+i][v] = self.cate
         self.rect.x = (self.start_x+1)*self.tile_size
         self.rect.y = (self.start_y+1)*self.tile_size
-
     def draw(self):
         self.playing_area.image.blit(self.image, self.rect)
 
