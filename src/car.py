@@ -350,10 +350,7 @@ class Car(Sprite):
                     return False
         #Xe nằm ngang:
         if dir == 'ru':
-            print('ru')
             for i in range(self.length):
-                print(self.end_y+1+i, self.end_x+2)
-                print(len(self.map))
                 if self.map[self.end_y+1-i][self.end_x+2] != 0:
                     return False
         if dir == 'lu':

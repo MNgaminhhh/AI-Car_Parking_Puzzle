@@ -115,12 +115,11 @@ class GREEDY:
                     new_car = copy.deepcopy(cars)
                     new_car[index]["start_x"] += length
                     new_car[index]["start_y"] -= length - 1
-                    new_car[index]['end_x'] = new_car[index]["start_x"]
-                    print(new_car[index]["start_x"], new_car[index]["start_y"])
-                    new_car[index]["end_y"] = new_car[index]["start_y"] + length - 1
+                    new_car[index]['end_x'] = cars[index]["end_x"]+1
+                    new_car[index]["end_y"] = cars[index]["end_y"]
                     print(new_car[index]['end_x'], new_car[index]["end_y"])
                     for i in range(length):
-                        new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]-i] = 0
+                        new_state[cars[index]["start_y"]+1][cars[index]["start_x"]+i] = 0
                     for i in range(length):
                         new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
                     new_car[index]['lines'] = 'v'
@@ -130,9 +129,31 @@ class GREEDY:
                     print(length)
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
-                    new_car[index]["start_x"] -= self
+                    new_car[index]["start_x"] -= length-1
                     new_car[index]["start_y"] -= 1
-                    new_car[index]['end_x'] = new_car[index]["start_x"]
+                    new_car[index]['end_x'] = cars[index]['start_x']-1
+                    new_car[index]['end_y'] = cars[index]['end_y']
+                    for i in range(length):
+                        new_state[cars[index]["start_y"]+1][cars[index]["start_x"]+i] = 0
+                    for i in range(length):
+                        new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
+                    new_car[index]['lines'] = 'v'
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
+                if self.can_move(parent, cars[index], 'rd'):
+                    length = cars[index]['length']
+                    print(length)
+                    new_state = copy.deepcopy(parent)
+                    new_car = copy.deepcopy(cars)
+                    new_car[index]["start_x"] += length
+                    new_car[index]['end_x'] = cars[index]['start_x']+length -1
+                    new_car[index]['end_y'] = cars[index]['end_y']
+                    for i in range(length):
+                        new_state[cars[index]["start_y"]+1][cars[index]["start_x"]+i] = 0
+                    for i in range(length):
+                        new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
+                    new_car[index]['lines'] = 'v'
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
+                if self.
             if cars[index]["lines"] == 'v':
                 if self.can_move(parent, cars[index], 'u'):
                     new_state = copy.deepcopy(parent)
