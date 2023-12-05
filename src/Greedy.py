@@ -39,15 +39,16 @@ class GREEDY:
                 if (quizz[car["start_y"]+1][car["start_x"]] == 0):
                     return True
             if dir == 'r':
-                if (car["end_x"]+1):
+                if (car["end_x"]+1 < self.game.settings.map_width-1):
                     if (quizz[car["end_y"]+1][car["end_x"]+2] == 0 ):
                         return True
             if dir == 'ru':
                 bool = True
                 for i in range(car['length']):
-                    if quizz[car["end_y"]+1-i][car["end_x"]+2] != 0:
-                        bool = False
-                        break
+                    if (car["end_x"]+1 < self.game.settings.map_width-1):
+                        if quizz[car["end_y"]+1-i][car["end_x"]+2] != 0:
+                            bool = False
+                            break
                 return bool
             if dir == 'lu':
                 bool = True
@@ -59,53 +60,64 @@ class GREEDY:
             if dir == 'rd':
                 bool = True
                 for i in range(car['length']):
-                    if quizz[car['end_y']+1+i][car['end_x']+2] != 0:
+                    if (car['end_x']+2 < self.settings.map_width):
+                        if quizz[car['end_y']+1+i][car['end_x']+2] != 0:
+                            bool = False
+                            break
+                return bool
+            if dir == 'ld':
+                print('ld can move')
+                print(car['length'])
+                bool = True
+                for i in range(car['length']):
+                    print(car["start_y"]+1+i, car["start_x"])
+                    if quizz[car["start_y"]+1+i][car["start_x"]] != 0:
                         bool = False
                         break
-                return bool
-        if dir == 'ld':
-            print('ld')
-            for i in range(car['length']):
-                bool = True
-                if quizz[car["start_y"]+1+i][car["start_x"]]:
-                    bool = False
-                    break
                 return bool
         #Vertical
         else:
             if dir == 'u':
                 if (quizz[car["start_y"]][car["start_x"]+1] == 0):
                     return True
+                return False
             if dir =='d':
                 if (quizz[car["end_y"]+2][car["end_x"]+1] == 0):
                     return True
-            return False
-        if dir == 'ul':
-            print('ul')
-            for i in range(self.length):
+                return False
+            if dir == 'ul':
+                print('ul')
                 bool = True
-                if quizz[car["start_y"][car["start_x"]+1-i]] != 0:
-                    bool = False
+                for i in range(car['length']):
+                    if quizz[car["start_y"]][car["start_x"]+1-i] != 0:
+                        bool = False
+                        break
                 return bool    
-        if dir == 'ur':
-            print('ur')
-            for i in range(car["length"]):
+            if dir == 'ur':
+                print('ur')
                 bool = True
-                if quizz[car["start_y"]][car["start_x"]+1+i] != 0:
-                    bool = False
+                for i in range(car['length']):
+                    
+                    if quizz[car["start_y"]][car["start_x"]+1+i] != 0:
+                        bool = False
+                        break
                 return bool   
-            
-        if dir == 'dr':
-            for i in range(self.length):
+                
+            if dir == 'dr':
                 bool = True
-                if quizz[car['end_y']+2][car['end_x']+1+i] != 0:
-                    bool = False
+                for i in range(car["length"]):
+                    if quizz[car['end_y']+2][car['end_x']+1+i] != 0:
+                        bool = False
+                        break
                 return bool  
-        if dir == 'dl':
-            print('dl')
-            for i in range(self.length):
-                if quizz[car['end_y']+2][car['end_x']+1-i] != 0:
-                    return False
+            if dir == 'dl':
+                print('dl')
+                bool = True
+                for i in range(car["length"]):
+                    if quizz[car['end_y']+2][car['end_x']+1-i] != 0:
+                        return False
+                        break
+                return bool
 
     def convert_to_key(self, state):
         key = ''.join([str(i) for list in state for i in list])
@@ -149,7 +161,8 @@ class GREEDY:
                         new_state[cars[index]["start_y"]+1][cars[index]["start_x"]+1+i] = 0
                     #Luc xe nam doc sau khi turn
                     for i in range(length):
-                        new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
+                        if (new_car[index]["start_x"]+1+i < self.settings.map_width):
+                            new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
                     
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
                 if self.can_move(parent, cars[index], 'lu'):
@@ -182,7 +195,8 @@ class GREEDY:
                         new_state[cars[index]["start_y"]+1][cars[index]["start_x"]+1+i] = 0
                     #Luc xe nam doc sau khi turn
                     for i in range(length):
-                        new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
+                        if (new_car[index]["start_x"]+1 < self.settings.map_width):
+                            new_state[new_car[index]["start_y"]+1+i][new_car[index]["start_x"]+1] = cars[index]['cate']
                     
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'rd'))
                 if self.can_move(parent, cars[index], 'ld'):
@@ -233,7 +247,7 @@ class GREEDY:
                     #Luc xe nam doc sau khi turn
                     for i in range(length):
                         new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1+i] = cars[index]['cate']
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'ru'))
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'ur'))
                 if self.can_move(parent, cars[index], 'ul'):
                     print("------ul-------")
                     length = cars[index]['length']
@@ -283,7 +297,7 @@ class GREEDY:
                     #Luc xe nam doc sau khi turn
                     for i in range(length):
                         new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1+i] = cars[index]['cate']
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'ul'))
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'dl'))
         return neighbors
 
     def update_car(self, car):
@@ -336,7 +350,7 @@ class GREEDY:
         node = Node(self.quizz, None, self.cars, None, None, 0)
         list = self.create_neighbors(node.state, node.all_cars)
         for i in list:
-            print("----------", i[3])
+            print("----------", i[3], i[2])
             for a in range(self.settings.map_height):
                 for b in range(self.settings.map_width):
                     print(i[0][a][b], end= ' ')

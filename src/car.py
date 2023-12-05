@@ -309,7 +309,6 @@ class Car(Sprite):
                 print(self.end_y+2, self.end_x+1-i)
                 if self.map[self.end_y+2][self.end_x+1-i] != 0:
                     return False
-        #Xe nằm ngang:
         if dir == 'l':
             if (self.map[self.start_y+1][self.start_x] != 0):
                 return False
