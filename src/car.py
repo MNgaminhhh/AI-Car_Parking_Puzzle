@@ -57,7 +57,6 @@ class Car(Sprite):
                 self.map[u+i][v] = self.cate
         self.rect.x = (self.start_x+1)*self.tile_size
         self.rect.y = (self.start_y+1)*self.tile_size
-
     def draw(self):
         self.playing_area.image.blit(self.image, self.rect)
 
@@ -75,8 +74,7 @@ class Car(Sprite):
             self.start_x -= 1
             self.game.expense_move()
 
-    def move_right(self):
-        print(self.lines)
+    def move_right(self):  
         if self.choose and self.lines == 'h' and self.can_move('r'):
             self.map[self.start_y+1][self.start_x+1] = 0
             self.rect.x += self.tile_size
@@ -316,6 +314,7 @@ class Car(Sprite):
             if (self.map[self.start_y+1][self.start_x] != 0):
                 return False
         if dir == 'r':
+            
             if (self.map[self.end_y+1][self.end_x+2] != 0):
                 return False
         if dir == 'u':
