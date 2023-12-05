@@ -32,6 +32,7 @@ class MyGame:
         self.problems = []
         self.problem = []
         self.car_cate = []
+        self.selected_car = None
         self.all_btn = pygame.sprite.Group()
         self.cars = pygame.sprite.Group()
         self.goal = (0, 0)
@@ -46,16 +47,28 @@ class MyGame:
     def shuffle_problem(self):
         max_int = len(self.problems)
         index = random.randint(0,max_int-1)
+        
         print(index)
         self.problem = self.problems[index]
 
     def load_problem(self):
-        with open('problem/problem_set.txt', 'r') as f:
-            lines = f.readlines()
-        for line in lines:
-            line = line.rstrip()
-            problem = line.split(" ")
-            self.problems.append(problem)
+        self.problems = []
+        if self.checkbox_checked:
+            print("7x7")
+            with open('problem/problem_7x7.txt', 'r') as f:
+                lines = f.readlines()
+            for line in lines:
+                line = line.rstrip()
+                problem = line.split(" ")
+                self.problems.append(problem)
+        else:
+            print("6x6")
+            with open('problem/problem_set.txt', 'r') as f:
+                lines = f.readlines()
+            for line in lines:
+                line = line.rstrip()
+                problem = line.split(" ")
+                self.problems.append(problem)
     # Map
     def init_map(self):
         map_width = self.settings.map_width
@@ -195,7 +208,7 @@ class MyGame:
                         self.sevenseven_text.text = '7x7'
                         print(self.settings.map_height)
                     # self.playing_area = PlayingArea(self)
-                    
+                    self.load_problem()
                     self.create_map()
                     checkbox_image = pygame.image.load(checkbox_image_path)
                     self.checkbox_button.image = pygame.transform.scale(checkbox_image, self.checkbox_button.rect.size)
@@ -205,7 +218,8 @@ class MyGame:
                     self.bfs = BFS(self)
                     self.bfs.solve()  
                 if event.key == pygame.K_g:
-                    self.greedy = GREEDY(self)
+                    # self.greedy = GREEDY(self)
+                    self.greedy = ASTAR(self)
                     #self.run_greedy_solver()
                     self.greedy.test()
                 if event.key == pygame.K_h: 
@@ -214,6 +228,8 @@ class MyGame:
                     self.run_astar_solver()
                 if event.key == pygame.K_k:
                     self.run_beam_solver()
+                if event.key == pygame.K_m:
+                    self.run_greedy_solver()
 
 
     def check_car_click(self, mouse_x, mouse_y):
@@ -281,6 +297,8 @@ class MyGame:
                     self.check_back_to_menu()
                 if btn.name == "buttonStart2":
                     selected_algorithm = self.combobox.get_selected_option()
+                    self.selected_car = self.combobox_car.get_selected_option_car()
+                    
                     if selected_algorithm == 'BFS':
                         self.run_bfs_solver()   
                     elif selected_algorithm == 'GREEDY':
@@ -354,7 +372,7 @@ class MyGame:
     def run_astar_solver(self):
         start_time = time.time()
         astar = ASTAR(self)
-        path = astar.solve()
+        path = astar.solve(self.selected_car)
         self.visited = astar.visited_states_count
         self.visited_text.text = "Visited States: " + str(self.visited)
         end_time = time.time()
@@ -389,6 +407,11 @@ class MyGame:
                 print(f"Step {i}:")
                 print("Selected Car:", node.car_choose)
                 print("Action:", node.action)
+                # print("path:", node.state)
+                for a in range(self.settings.map_height):
+                    for b in range(self.settings.map_width):
+                        print(node.state[a][b], end= ' ')
+                    print()
                 if node.car_choose is not None:
                     chosen_car = None
                     for car in self.cars:
@@ -400,24 +423,54 @@ class MyGame:
                             if node.action == 'l':
                                 print("Moving Left")
                                 chosen_car.choose = 1
-                                chosen_car.move_left()
-                            
-                            elif node.action == 'r':
+                                chosen_car.move_left() 
+                            if node.action == 'r':
                                 print("Moving Right")
                                 chosen_car.choose = 1
                                 chosen_car.move_right()
-                                
+                            if node.action == 'lu':
+                                print("Moving Left up")
+                                chosen_car.choose = 1
+                                chosen_car.turn_left('lu')
+                            if node.action == 'ru':
+                                print("Moving Right up")
+                                chosen_car.choose = 1
+                                chosen_car.turn_left('ru')
+                            if node.action == 'ld':
+                                print("Moving Left down")
+                                chosen_car.choose = 1
+                                chosen_car.turn_right('ld')
+                            if node.action == 'rd':
+                                print("Moving Right down")
+                                chosen_car.choose = 1
+                                chosen_car.turn_right('rd')     
                         elif chosen_car.lines == 'v':
                             if node.action == 'u':
                                 print("Moving Up")
                                 chosen_car.choose = 1
                                 chosen_car.move_up()
-                                
-                            elif node.action == 'd':
+                            if node.action == 'd':
                                 print("Moving Down")
                                 chosen_car.choose = 1
                                 chosen_car.move_down()
+                            if node.action == 'ul':
+                                print("Moving up left")
+                                chosen_car.choose = 1
+                                chosen_car.turn_left('ul')
+                            if node.action == 'ur':
+                                print("Moving up right")
+                                chosen_car.choose = 1
+                                chosen_car.turn_right('ur')
+                            if node.action == 'dl':
+                                print("Moving down left")
+                                chosen_car.choose = 1
+                                chosen_car.turn_left('dl')
+                            if node.action == 'dr':
+                                print("Moving Down right")
+                                chosen_car.choose = 1
+                                chosen_car.turn_right('dr')
                         self.update_screen()
+                        pygame.time.Clock().tick(60)
                 print("---------------")
         else:
             print("No solution found.") 
@@ -425,9 +478,12 @@ class MyGame:
     def check_end_game(self):
         for car in self.cars:
             if car.cate == 'x':
-                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1]:
-                    self.message("Win")
-                    return True
+                if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1] and car.lines == 'h':
+                    for i in range(car.end_x + 1, self.settings.map_width):
+                        if(self.map[car.start_y +1][i] != 0 ):
+                            return False
+                        self.message("Win")
+                        return True
         return False
     
     def message(self, text):
@@ -448,7 +504,7 @@ class MyGame:
 
     def run_game(self):
         while True:
-            pygame.time.Clock().tick(24000)
+            # pygame.time.Clock().tick(24000)
             if self.in_start_menu:
                 self.show_start_menu()
             else:
@@ -650,7 +706,7 @@ class MyGame:
                 for car in all_car:
                     car.update()
                 pygame.display.flip()
-                pygame.time.Clock().tick(30)
+                pygame.time.Clock().tick(60)
 if __name__ == '__main__':
     MG = MyGame()
     MG.load_problem()

@@ -60,3 +60,6 @@ class ComboBox:
 
     def get_selected_option(self):
         return self.options[self.selected_option_index]
+    def get_selected_option_car(self):
+        return self.options[self.selected_option_index]
+
