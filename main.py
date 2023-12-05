@@ -211,13 +211,11 @@ class MyGame:
                 self.move_car(event)
                 if event.key == pygame.K_b:
                     self.bfs = BFS(self)
-                    self.bfs.solve()      
-                if event.key == pygame.K_u:
-                    self.ucs = UCS(self)
-                    self.ucs.test()  
+                    self.bfs.solve()  
                 if event.key == pygame.K_g:
                     self.greedy = GREEDY(self)
-                    self.run_greedy_solver()
+                    #self.run_greedy_solver()
+                    self.greedy.test()
                 if event.key == pygame.K_h: 
                     self.run_hillclimbing_solver()
                 if event.key == pygame.K_j:
@@ -229,6 +227,7 @@ class MyGame:
     def check_car_click(self, mouse_x, mouse_y):
         relative_mouse_x = mouse_x - self.playing_area.rect.x
         relative_mouse_y = mouse_y - self.playing_area.rect.y
+        print(relative_mouse_x, relative_mouse_y)
         for car in self.cars.sprites():
             if car.click(relative_mouse_x, relative_mouse_y):
                 car.choose = 1
@@ -433,8 +432,6 @@ class MyGame:
                                 chosen_car.choose = 1
                                 chosen_car.move_down()
                         self.update_screen()
-                        pygame.time.wait(100) 
-                        self.update_screen()
                 print("---------------")
         else:
             print("No solution found.") 
@@ -465,6 +462,7 @@ class MyGame:
 
     def run_game(self):
         while True:
+            pygame.time.Clock().tick(24000)
             if self.in_start_menu:
                 self.show_start_menu()
             else:
@@ -487,7 +485,7 @@ class MyGame:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     if self.start_button.click(mouse_x, mouse_y):
-                        self.in_start_menu = False 
+                        self.in_start_menu = False
                     elif self.settings_button.click(mouse_x, mouse_y):
                         self.settings_visible = not self.settings_visible
                         self.show_settings()
@@ -666,7 +664,7 @@ class MyGame:
                 for car in all_car:
                     car.update()
                 pygame.display.flip()
-                pygame.time.Clock().tick(60)
+                pygame.time.Clock().tick(30)
 if __name__ == '__main__':
     MG = MyGame()
     MG.load_problem()
