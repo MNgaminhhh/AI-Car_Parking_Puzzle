@@ -479,11 +479,8 @@ class MyGame:
         for car in self.cars:
             if car.cate == 'x':
                 if car.start_y + 1 == self.goal[0] and car.start_x + 1 == self.goal[1] and car.lines == 'h':
-                    for i in range(car.end_x + 1, self.settings.map_width):
-                        if(self.map[car.start_y +1][i] != 0 ):
-                            return False
-                        self.message("Win")
-                        return True
+                    self.message("Win")
+                    return True
         return False
     
     def message(self, text):

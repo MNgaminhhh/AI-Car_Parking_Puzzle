@@ -98,7 +98,7 @@ class UCS:
         start_node = Node(self.quizz, None, self.cars, None, None, 0)
 
         priority_queue = queue.PriorityQueue()
-        priority_queue.put(QueueElement(start_node, 0, start_node.cost))
+        priority_queue.put(QueueElement(start_node, 0, start_node.cost, 0))
 
         #duyệt hàng đợi
         while not priority_queue.empty():
@@ -131,7 +131,7 @@ class UCS:
                                     neighbor_node = neighbor_node.parent
                                 return path
                     #không phải đích thì thêm vào hàng đợi ưu tiên    
-                    priority_queue.put(QueueElement(neighbor_node, current_node.cost, neighbor_node.cost))        
+                    priority_queue.put(QueueElement(neighbor_node, current_node.cost, neighbor_node.cost, 0))        
         return None
        
     def test(self):

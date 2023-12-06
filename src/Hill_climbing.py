@@ -112,7 +112,7 @@ class Hill_climbing:
         visited = []
         priority_queue = queue.PriorityQueue()
         priority_queue.put(QueueElement(start_node, self.heuristic_distance(start_node), 
-                                        self.heuristic_obstacle(start_node)))
+                                        self.heuristic_obstacle(start_node), 0))
         while priority_queue:
             current_element = priority_queue.get()
             current_node = current_element.value
@@ -139,7 +139,7 @@ class Hill_climbing:
                                     path.insert(0, neighbor_node.parent)
                                     neighbor_node = neighbor_node.parent
                                 return path
-                        priority_queue.put(QueueElement(neighbor_node, n_distance, n_obstacle))
+                        priority_queue.put(QueueElement(neighbor_node, n_distance, n_obstacle, 0))
                         improvement = True
             if not improvement:
                 return [self.convert_to_key(current_node.state)]
