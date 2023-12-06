@@ -107,7 +107,7 @@ class ASTAR:
             
             if dir == 'dl':
                 for i in range(car["length"]):
-                    if quizz[car['start_y']+1+length][car['star_x']+1-i] != 0:
+                    if quizz[car['start_y']+1+length][car['start_x']+1-i] != 0:
                         return False
                 return True
 
@@ -115,6 +115,7 @@ class ASTAR:
         key = ''.join([str(i) for list in state for i in list])
         key = key.replace('-1','')
         return key
+    
     def create_neighbors(self, parent, cars):  
         neighbors = []
         print("parent: ",self.convert_to_key(parent))
@@ -124,18 +125,15 @@ class ASTAR:
                     cost = 1
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
-                    self.update_car(new_car[index])
-                    new_car[index]
                     new_car[index]["start_x"] -= 1
-                    new_car[index]["end_x"] -=1
+                    self.update_car(new_car[index])
                     new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]] = new_car[index]["cate"]
+                    new_state[new_car[index]['start_y']+1][new_car[index]['end_x']+2] = 0
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'l', cost))
                 if self.can_move(parent, cars[index], 'r'):
                     cost = 1
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
-                    new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+2] = new_car[index]["cate"]
-                    new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
                     new_car[index]["start_x"] += 1
                     new_car[index]["end_x"] +=1
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'r', cost))
