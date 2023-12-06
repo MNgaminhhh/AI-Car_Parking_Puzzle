@@ -362,87 +362,20 @@ class ASTAR:
         distance = abs(x_car_position[0] - goal_position[0]) + abs(x_car_position[1] - goal_position[1])
 
         return distance
-    # def solve(self):
-    #     self.init_cars()
-    #     print(self.goal)
-    #     visited = set()
-    #     start_node = Node(self.quizz, None, self.cars, None, None, 0)
-
-    #     priority_queue = queue.PriorityQueue()
-    #     priority_queue.put(QueueElement(start_node, 0, self.heuristic(start_node), 0))
-
-    #     while not priority_queue.empty():
-    #         current_element = priority_queue.get()
-    #         current_node = current_element.value
-
-    #         key = self.convert_to_key(current_node.state)
-    #         if key in visited:
-    #             continue
-            
-    #         visited.add(key)
-    #         self.visited_states_count += 1
-    #         for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
-    #             cost = neighbor_state[4]
-    #             neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3],neighbor_state[4])
-    #             n_distance = self.heuristic(neighbor_node) 
-    #             key = self.convert_to_key(neighbor_node.state)
-    #             if key not in visited:
-    #                 for car in neighbor_node.all_cars:
-    #                     if car['cate'] == 'x' and car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1] and car['lines'] == 'h':
-    #                         # Found the goal state
-    #                         print(car["end_x"])
-    #                         # for i in range(car["end_x"] + 2, self.settings.map_width):
-    #                         #     if(neighbor_node.state[car["start_y"] +1][i] != 0 ):
-    #                         #         return False
-    #                         path = [neighbor_node]
-    #                         while neighbor_node.parent is not None:
-    #                             path.insert(0, neighbor_node.parent)
-    #                             neighbor_node = neighbor_node.parent
-    #                         return path
-    #                 priority_queue.put(QueueElement(neighbor_node, cost, n_distance, 0))
-
-    #     return None
-    # def solve(self, index):
-    #     self.init_cars()
-    #     visited = set()
-    #     start_node = Node(self.quizz, None, self.cars, None, None, 0)
-
-    #     priority_queue = queue.PriorityQueue()
-    #     priority_queue.put(QueueElement(start_node, 0, self.heuristic(start_node.state),0))
-
-    #     while not priority_queue.empty():
-    #         current_element = priority_queue.get()
-    #         current_node = current_element.value
-
-    #         key = self.convert_to_key(current_node.state)
-    #         if key in visited:
-    #             continue
-    #         visited.add(key)
-    #         self.visited_states_count += 1
-    #         for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
-    #             neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], current_node.cost + 1)
-    #             key = self.convert_to_key(neighbor_node.state)
-    #             if key not in visited:
-    #                 if self.is_goal_state(neighbor_node):
-    #                     path = [neighbor_node]
-    #                     while neighbor_node.parent is not None:
-    #                         path.insert(0, neighbor_node.parent)
-    #                         neighbor_node = neighbor_node.parent
-    #                     return path
-    #                 priority_queue.put(QueueElement(neighbor_node, current_element.priority1 + 1, current_element.priority2 + 1,0))
-
-    #     return None
-    # def is_goal_state(self, node):
-    #     for car in node.all_cars:
-    #         if car['cate'] == 'x' and car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1] and car['lines'] == 'h':
-    #             return True
-    #     return False
+    def heuristic_obstacle(self, node):
+        total_obstacle_distance = 0
+        if hasattr(self, 'game') and hasattr(self.game, 'obstacles') and self.game.obstacles:
+            for obstacle in self.game.obstacles:
+                for car in node.all_cars:
+                    if car['cate'] != 'x' and obstacle["type"] == 'x':
+                        distance = abs(car["start_x"] - obstacle["x"]) + abs(car["start_y"] - obstacle["y"])
+                        total_obstacle_distance += distance
+        return total_obstacle_distance
     def solve(self, index):
         self.init_cars()
         visited = set()
         start_node = Node(self.quizz, None, self.cars, None, None, 0)
         self.index_car = index
-        print(self.index_car)
         priority_queue = queue.PriorityQueue()
         priority_queue.put(QueueElement(start_node, 0, self.heuristic(start_node.state), 0))
 
@@ -470,7 +403,8 @@ class ASTAR:
                 neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], current_node.cost + 1)
                 key = self.convert_to_key(neighbor_node.state)
                 if key not in visited:
-                    priority_queue.put(QueueElement(neighbor_node, current_element.priority1 + 1, current_element.priority2 + 1, 0))
+                    heuristic_value = self.heuristic(neighbor_node.state) + self.heuristic_obstacle(neighbor_node)
+                    priority_queue.put(QueueElement(neighbor_node, current_element.priority1 + 1, heuristic_value, 0))
 
         return None
 
