@@ -27,8 +27,8 @@ class ASTAR:
     
     def can_move(self, quizz, car, dir):
         #Horizontal
-        width = self.settings.map_width;
-        height = self.settings.map_height;
+        width = self.settings.map_width
+        height = self.settings.map_height
         if car["lines"] == 'h':
             if dir == 'l':
                 if (car["start_x"] < width and car["start_y"]+1< height):
@@ -259,9 +259,9 @@ class ASTAR:
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'd', cost))
                 
                 if self.can_move(parent, cars[index], 'ur'):
-                    cost = 2
                     print("------ur-------")
                     length = cars[index]['length']
+                    cost = length
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_car[index]["start_y"] -= 1
@@ -279,9 +279,9 @@ class ASTAR:
                             new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1+i] = cars[index]['cate']
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'ur', cost))
                 if self.can_move(parent, cars[index], 'ul'):
-                    cost = 2
                     print("------ul-------")
                     length = cars[index]['length']
+                    cost = length
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_car[index]['start_x'] -= length-1
@@ -300,9 +300,9 @@ class ASTAR:
                             new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1+i] = cars[index]['cate']
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'ul', cost))
                 if self.can_move(parent, cars[index], 'dr'):
-                    cost = 2
                     print("------dr-------")
                     length = cars[index]['length']
+                    cost = length
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     
@@ -322,9 +322,9 @@ class ASTAR:
                             new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1+i] = cars[index]['cate']
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'dr', cost))
                 if self.can_move(parent, cars[index], 'dl'):
-                    cost = 2
                     print("------dl-------")
                     length = cars[index]['length']
+                    cost = length
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_car[index]['start_x'] -= length-1
@@ -452,7 +452,7 @@ class ASTAR:
         self.index_car = index
         print(self.index_car)
         priority_queue = queue.PriorityQueue()
-        priority_queue.put(QueueElement(start_node, 0, self.heuristic(start_node.state), 0))
+        priority_queue.put(QueueElement(start_node, self.heuristic(start_node.state), 0, 0))
 
         while not priority_queue.empty():
             current_element = priority_queue.get()
@@ -475,10 +475,12 @@ class ASTAR:
                     return path
 
             for neighbor_state in self.create_neighbors(current_node.state, current_node.all_cars):
-                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], current_node.cost + 1)
+                neighbor_node = Node(neighbor_state[0], current_node, neighbor_state[1], neighbor_state[2], neighbor_state[3], neighbor_state[4])
                 key = self.convert_to_key(neighbor_node.state)
+                n_distance = self.heuristic(neighbor_node.state)
+                cost = neighbor_node.cost
                 if key not in visited:
-                    priority_queue.put(QueueElement(neighbor_node, current_element.priority1 + 1, current_element.priority2 + 1, 0))
+                    priority_queue.put(QueueElement(neighbor_node, n_distance, cost, 0))
 
         return None
 
