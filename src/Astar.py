@@ -27,99 +27,89 @@ class ASTAR:
     
     def can_move(self, quizz, car, dir):
         #Horizontal
-        width = self.settings.map_width;
-        height = self.settings.map_height;
+        width = self.settings.map_width
+        height = self.settings.map_height
+        length = car['length']
         if car["lines"] == 'h':
             if dir == 'l':
-                if (car["start_x"] < width and car["start_y"]+1< height):
-                    if (quizz[car["start_y"]+1][car["start_x"]] == 0):
-                        return True
+                if (quizz[car["start_y"]+1][car["start_x"]] == 0):
+                    return True
+                return False
             if dir == 'r':
-                if (car["end_x"]+2 < width and car["end_y"]+1 < height):
-                    if (quizz[car["end_y"]+1][car["end_x"]+2] == 0 ):
-                        return True
+                if (car['start_x']+1+length >= width):
+                    return False
+                if (quizz[car["start_y"]+1][car['start_x']+1+length] == 0 ):
+                    return True
+                return False
+            
             if dir == 'ru':
-                bool = True
                 for i in range(car['length']):
-                    if (car["end_x"]+2 < width and car["end_y"]+1-i < height):
-                        if quizz[car["end_y"]+1-i][car["end_x"]+2] != 0:
-                            bool = False
-                            break
-                return bool
+                    if (car["start_y"]+1-i>=height or car["start_x"]+1+length >= width):
+                        return False
+                    if quizz[car["start_y"]+1-i][car["start_x"]+1+length] != 0:
+                        return False
+                return True
+            
             if dir == 'lu':
-                bool = True
-                for i in range(car['length']):
-                    if (car['start_x'] < width and car['start_y']+1-i < height):
-                        if quizz[car['start_y']+1-i][car['start_x']] != 0:
-                            bool = False
-                            break
-                return bool
+                for i in range(length):
+                    if (car['start_y']+1-i >= height):
+                        return False
+                    if quizz[car['start_y']+1-i][car['start_x']] != 0:
+                        return False
+                return True
+            
             if dir == 'rd':
-                bool = True
-                for i in range(car['length']):
-                    if (car['start_x']+car["length"] < self.settings.map_width and car['start_y']+1+i < height):
-                        if quizz[car['start_y']+1+i][car['start_x']+car["length"]] != 0:
-                            bool = False
-                            break
-                return bool
+                for i in range(length):
+                    if (car['start_x']+length >= self.settings.map_width or car['start_y']+1+i >= height):
+                        return False
+                    if quizz[car['start_y']+1+i][car['start_x']+length] != 0:
+                        return False
+                return True
+            
             if dir == 'ld':
-                print('ld can move')
-                print(car['length'])
-                bool = True
-                for i in range(car['length']):
-                    if (car["start_x"] < width and car["start_y"]+1+i < height):
-                        if quizz[car["start_y"]+1+i][car["start_x"]] != 0:
-                            bool = False
-                            break
-                return bool
+                for i in range(length):
+                    if (car["start_x"] >= width or car["start_y"]+1+i >= height):
+                        return False
+                    if quizz[car["start_y"]+1+i][car["start_x"]] != 0:
+                        return False
+                return True
         #Vertical
         else:
             if dir == 'u':
-                if(car["start_y"] < height and car["start_x"]+1 < width):
-                    if (quizz[car["start_y"]][car["start_x"]+1] == 0):
-                        return True
-                    return False
+                if (quizz[car["start_y"]][car["start_x"]+1] == 0):
+                    return True
+                return False
             if dir =='d':
-                if(car["end_y"]+2 < height and car["end_x"]+1 < width):
-                    if (quizz[car["end_y"]+2][car["end_x"]+1] == 0):
-                        return True
-                    return False
+                if (quizz[car["start_y"]+length+1][car["start_x"]+1] == 0):
+                    return True
+                return False
             if dir == 'ul':
-                print('ul')
-                bool = True
                 for i in range(car['length']):
-                    if(car["start_y"] < height and car["start_x"]+1-i < width):
-                        if quizz[car["start_y"]][car["start_x"]+1-i] != 0:
-                            bool = False
-                            break
-                return bool    
+                    if quizz[car["start_y"]][car["start_x"]+1-i] != 0:
+                        return False
+                return True    
+            
             if dir == 'ur':
-                print('ur')
-                bool = True
                 for i in range(car['length']):
-                    if(car["start_y"] < height and car["start_x"]+1+i < width):
-                        if quizz[car["start_y"]][car["start_x"]+1+i] != 0:
-                            bool = False
-                            break
-                return bool   
+                    if(car["start_x"]+1+i>= width):
+                        return False
+                    if quizz[car["start_y"]][car["start_x"]+1+i] != 0:
+                        return False
+                return True
                 
             if dir == 'dr':
-                bool = True
                 for i in range(car["length"]):
-                    if (car['end_y']+2 < height and car['end_x']+1+i < width):
-                        if quizz[car['end_y']+2][car['end_x']+1+i] != 0:
-                            bool = False
-                            break
-                return bool  
+                    if (car['start_x']+1+length+i >= width):
+                        return False
+                    if quizz[car['start_y']+1+length][car['start_x']+1+length+i] != 0:
+                        return False
+                return True 
+            
             if dir == 'dl':
-                print('dl')
-                bool = True
                 for i in range(car["length"]):
-                    if(car['end_y']+2 < height and car['end_x']+1-i < width):
-                        if quizz[car['end_y']+2][car['end_x']+1-i] != 0:
-                            return False
-                            break
-                return bool
+                    if quizz[car['start_y']+1+length][car['start_x']+1-i] != 0:
+                        return False
+                return True
 
     def convert_to_key(self, state):
         key = ''.join([str(i) for list in state for i in list])
@@ -142,12 +132,13 @@ class ASTAR:
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'l', cost))
                 if self.can_move(parent, cars[index], 'r'):
                     cost = 1
+                    length = cars[index]['length']
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
-                    new_state[new_car[index]["end_y"]+1][new_car[index]["end_x"]+2] = new_car[index]["cate"]
-                    new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
-                    new_car[index]["start_x"] += 1
-                    new_car[index]["end_x"] +=1
+                    new_car[index]["start_x"] += 1 
+                    self.update_car(new_car[index])
+                    new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"] + 2] = new_car[index]["cate"] 
+                    new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]] = 0
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'r', cost))
                 if self.can_move(parent, cars[index], 'ru'):
                     cost = 2
@@ -250,12 +241,13 @@ class ASTAR:
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'u', cost))
                 if self.can_move(parent, cars[index], 'd'):
                     cost = 1
+                    length = cars[index]['length']
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
-                    new_state[new_car[index]["end_y"]+2][new_car[index]["end_x"]+1] = new_car[index]["cate"]
-                    new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
-                    new_car[index]["start_y"] += 1
-                    new_car[index]["end_y"] +=1
+                    new_car[index]["start_y"] += 1 
+                    self.update_car(new_car[index])
+                    new_state[new_car[index]["start_y"]+2][new_car[index]["start_x"] + 1] = new_car[index]["cate"] 
+                    new_state[new_car[index]["start_y"]][new_car[index]["start_x"] + 1] = 0
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'd', cost))
                 
                 if self.can_move(parent, cars[index], 'ur'):
