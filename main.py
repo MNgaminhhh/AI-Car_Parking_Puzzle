@@ -32,7 +32,7 @@ class MyGame:
         self.problems = []
         self.problem = []
         self.car_cate = []
-        self.selected_car = None
+        self.selected_car = 'x'
         self.all_btn = pygame.sprite.Group()
         self.cars = pygame.sprite.Group()
         self.goal = (0, 0)
@@ -260,7 +260,7 @@ class MyGame:
                     if event.key == pygame.K_e:
                         car.turn_left('ru')
                     if event.key == pygame.K_z:
-                        car.turn_left('ld')
+                        car.turn_right('ld')
                     if event.key == pygame.K_c:
                         car.turn_right('rd')
 
@@ -505,6 +505,7 @@ class MyGame:
             if self.in_start_menu:
                 self.show_start_menu()
             else:
+                self.selected_car = self.combobox_car.get_selected_option_car()
                 self.update_screen()
                 self.all_btn.update()
                 self.check_event()

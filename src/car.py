@@ -366,6 +366,7 @@ class Car(Sprite):
             print('ld')
             for i in range(self.length):
                 if self.map[self.start_y+1+i][self.start_x] != 0:
+                    print(self.start_y+1+i, self.start_x)
                     return False
         return True  
 
