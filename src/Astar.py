@@ -25,7 +25,6 @@ class ASTAR:
             length = car.length
             self.cars.append({"cate": cate, "lines": lines, "start_x": start_x, "start_y": start_y, "end_x": end_x, "end_y": end_y, "length":length})
 
-    
     def can_move(self, quizz, car, dir):
         #Horizontal
         width = self.settings.map_width
@@ -37,13 +36,12 @@ class ASTAR:
                     return True
                 return False
             if dir == 'r':
-                if (car["start_x"]+1+length >= width):
-                        return False
+
                 if (quizz[car["start_y"]+1][car['start_x']+1+length] == 0 ):
                     return True
                 return False
             
-            if dir == 'ru':
+            elif dir == 'ru':
                 for i in range(car['length']):
                     if (car["start_y"]+1-i>=height or car["start_x"]+1+length >= width):
                         return False
@@ -51,7 +49,7 @@ class ASTAR:
                         return False
                 return True
             
-            if dir == 'lu':
+            elif dir == 'lu':
                 for i in range(length):
                     if (car['start_y']+1-i >= height):
                         return False
@@ -59,7 +57,7 @@ class ASTAR:
                         return False
                 return True
             
-            if dir == 'rd':
+            elif dir == 'rd':
                 for i in range(length):
                     if (car['start_x']+length >= self.settings.map_width or car['start_y']+1+i >= height):
                         return False
@@ -67,7 +65,7 @@ class ASTAR:
                         return False
                 return True
             
-            if dir == 'ld':
+            elif dir == 'ld':
                 for i in range(length):
                     if (car["start_x"] >= width or car["start_y"]+1+i >= height):
                         return False
@@ -80,17 +78,17 @@ class ASTAR:
                 if (quizz[car["start_y"]][car["start_x"]+1] == 0):
                     return True
                 return False
-            if dir =='d':
+            elif dir =='d':
                 if (quizz[car["start_y"]+length+1][car["start_x"]+1] == 0):
                     return True
                 return False
-            if dir == 'ul':
+            elif dir == 'ul':
                 for i in range(car['length']):
                     if quizz[car["start_y"]][car["start_x"]+1-i] != 0:
                         return False
                 return True    
             
-            if dir == 'ur':
+            elif dir == 'ur':
                 for i in range(car['length']):
                     if(car["start_x"]+1+i>= width):
                         return False
@@ -98,7 +96,7 @@ class ASTAR:
                         return False
                 return True
                 
-            if dir == 'dr':
+            elif dir == 'dr':
                 for i in range(car["length"]):
                     if (car['start_x']+1+length+i >= width):
                         return False
@@ -106,7 +104,7 @@ class ASTAR:
                         return False
                 return True 
             
-            if dir == 'dl':
+            elif dir == 'dl':
                 for i in range(car["length"]):
                     if quizz[car['start_y']+1+length][car['start_x']+1-i] != 0:
                         return False
@@ -228,13 +226,20 @@ class ASTAR:
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'ld', cost))
             if cars[index]["lines"] == 'v':
                 if self.can_move(parent, cars[index], 'u'):
-                    print("------u-------")
                     cost = 1
                     length = cars[index]['length']
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_state[new_car[index]["start_y"]][new_car[index]["start_x"]+1] = new_car[index]["cate"]
-                    new_car
+                    new_car[index]["start_y"] -= 1
+                    new_car[index]["end_y"] -=1
+                    new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
+                    for i in range(length):
+                        if (cars[index]["start_x"]+1< self.settings.map_width and cars[index]["start_y"]+1 + i < self.settings.map_height):
+
+                            new_state[cars[index]["start_y"]+1+i][cars[index]["start_x"]+1] = new_car[index]["cate"]
+                    
+                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'u', cost))
                 if self.can_move(parent, cars[index], 'd'):
                     print("------d-------")
                     cost = 1
@@ -438,8 +443,4 @@ class ASTAR:
                 for b in range(self.settings.map_width):
                     print(i[0][a][b], end= ' ')
                 print()
-            # print(i.parent.parent.parent.all_cars, end= ' ')
-            # print(i.parent.parent.all_cars, end= ' ')
-            # print(i.parent.all_cars, end= ' ')
-                # print()
     
