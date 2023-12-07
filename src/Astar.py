@@ -37,7 +37,8 @@ class ASTAR:
                     return True
                 return False
             if dir == 'r':
-
+                if (car["start_x"]+1+length >= width):
+                        return False
                 if (quizz[car["start_y"]+1][car['start_x']+1+length] == 0 ):
                     return True
                 return False
@@ -122,6 +123,7 @@ class ASTAR:
         for index in range(len(cars)):
             if cars[index]["lines"] == 'h':
                 if self.can_move(parent, cars[index], 'l'):
+                    print("------l-------")
                     cost = 1
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
@@ -131,6 +133,7 @@ class ASTAR:
                     new_state[new_car[index]['start_y']+1][new_car[index]['end_x']+2] = 0
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'l', cost))
                 if self.can_move(parent, cars[index], 'r'):
+                    print("------r-------")
                     cost = 1
                     length = cars[index]['length']
                     new_state = copy.deepcopy(parent)
@@ -225,21 +228,15 @@ class ASTAR:
                     neighbors.append((new_state, new_car, new_car[index]["cate"], 'ld', cost))
             if cars[index]["lines"] == 'v':
                 if self.can_move(parent, cars[index], 'u'):
+                    print("------u-------")
                     cost = 1
                     length = cars[index]['length']
                     new_state = copy.deepcopy(parent)
                     new_car = copy.deepcopy(cars)
                     new_state[new_car[index]["start_y"]][new_car[index]["start_x"]+1] = new_car[index]["cate"]
-                    new_car[index]["start_y"] -= 1
-                    new_car[index]["end_y"] -=1
-                    new_state[new_car[index]["start_y"]+1][new_car[index]["start_x"]+1] = 0
-                    for i in range(length):
-                        if (cars[index]["start_x"]+1< self.settings.map_width and cars[index]["start_y"]+1 + i < self.settings.map_height):
-
-                            new_state[cars[index]["start_y"]+1+i][cars[index]["start_x"]+1] = new_car[index]["cate"]
-                    
-                    neighbors.append((new_state, new_car, new_car[index]["cate"], 'u', cost))
+                    new_car
                 if self.can_move(parent, cars[index], 'd'):
+                    print("------d-------")
                     cost = 1
                     length = cars[index]['length']
                     new_state = copy.deepcopy(parent)
@@ -399,7 +396,7 @@ class ASTAR:
         print(self.convert_to_key(start_node.state))
         priority_queue.put(QueueElement(start_node, self.heuristic(self.selected_car), 0, 0))
 
-        while not priority_queue.empty():
+        for i in range(5):
             current_element = priority_queue.get()
             current_node = current_element.value
             print("Parent: ", self.convert_to_key(current_node.state))
@@ -414,14 +411,14 @@ class ASTAR:
                                      neighbor_state[3], neighbor_state[4])
                 key = self.convert_to_key(neighbor_node.state)
                 for car in neighbor_node.all_cars:
-                    if car['cate'] == self.selected_car:
+                    if car['cate'] == self.selected_car['cate']:
                         n_distance = self.heuristic(car)
                         n_obstacle = self.heuristic_obstacle(car, neighbor_node.state)
                         cost = neighbor_node.cost
                 if key not in visited:
                     print(key)
                     for car in neighbor_node.all_cars:
-                        if car['cate'] == 'x':
+                        if car['cate'] == self.selected_car['cate']:
                             if car["start_y"]+1 == self.goal[0] and car["start_x"]+1 == self.goal[1] and car["lines"] == 'h':
                                 path = [neighbor_node]
                                 while neighbor_node.parent is not None:
